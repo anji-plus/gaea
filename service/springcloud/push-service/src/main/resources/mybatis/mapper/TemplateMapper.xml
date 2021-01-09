@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.push.mapper.TemplateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.push.domain.po.TemplatePO">
+        <id column="template_id" property="templateId"/>
+        <result column="template_name" property="templateName"/>
+        <result column="template_code" property="templateCode"/>
+        <result column="template_type" property="templateType"/>
+        <result column="template" property="template"/>
+        <result column="template_info" property="templateInfo"/>
+<!--        <result column="sms_sorts" property="smsSorts"/>-->
+        <result column="template_show" property="templateShow"/>
+        <result column="template_param" property="templateParam"/>
+        <result column="enable_flag" property="enableFlag"/>
+        <result column="delete_flag" property="deleteFlag"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.push.domain.vo.TemplateVO" extends="BaseResultMap">
+    </resultMap>
+
+<!--    sms_sorts,-->
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        template_id, template_name, template_code, template_type, template, template_show, template_param, template_info, enable_flag, delete_flag, created_by, created_time, updated_by, updated_time
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.push.domain.vo.TemplateVO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_template a
+        <where>
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            <if test="templateVO.templateType != null and templateVO.templateType != ''">
+                and a.template_type = #{templateVO.templateType}
+            </if>
+            <if test="templateVO.deleteFlag != null">
+                and a.delete_flag = #{templateVO.deleteFlag}
+            </if>
+            <if test="templateVO.keyword != null and templateVO.keyword != ''">
+                and (
+                a.template_name like CONCAT(CONCAT('%',#{templateVO.keyword,jdbcType=VARCHAR}),'%')
+                OR
+                a.template_code like CONCAT(CONCAT('%',#{templateVO.keyword,jdbcType=VARCHAR}),'%')
+                )
+            </if>
+            <if test="templateVO.startTime != null and templateVO.startTime != '' and templateVO.endTime != null and templateVO.endTime != ''">
+                AND a.created_time between #{templateVO.startTime} and #{templateVO.endTime}
+            </if>
+        </where>
+        ORDER BY updated_time DESC
+    </select>
+
+
+</mapper>
