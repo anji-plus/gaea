@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.auth.mapper.OrgMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.auth.domain.po.OrgPO">
+        <id column="org_id" property="orgId" />
+        <result column="org_code" property="orgCode" />
+        <result column="org_name" property="orgName" />
+        <result column="org_parent_code" property="orgParentCode" />
+        <result column="org_parent_name" property="orgParentName" />
+        <result column="out_org_code" property="outOrgCode" />
+        <result column="out_org_parent_code" property="outOrgParentCode" />
+        <result column="org_level" property="orgLevel" />
+        <result column="org_type" property="orgType" />
+        <result column="linkman" property="linkman" />
+        <result column="mobile_phone" property="mobilePhone" />
+        <result column="telephone" property="telephone" />
+        <result column="enable_flag" property="enableFlag" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="remark" property="remark" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_by" property="updatedBy" />
+        <result column="updated_time" property="updatedTime" />
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.auth.domain.vo.OrgVO" extends="BaseResultMap">
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        org_id, org_code, org_name, org_parent_code, org_parent_name, out_org_code, out_org_parent_code, org_level, org_type, linkman, mobile_phone, telephone, enable_flag, delete_flag, remark, created_by, created_time, updated_by, updated_time
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.auth.domain.vo.OrgVO">
+        select
+        <include refid="Base_Column_List" />
+        from t_org
+        <where >
+            <!--  当前登录用户所属组织数据权限 -->
+            <if test="orgVO.orgIdList != null and orgVO.orgIdList.size() != 0">
+                and org_id IN
+                <foreach collection="orgVO.orgIdList" item="item" index="index" open="(" close=")"
+                         separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            <if test="orgVO.orgId != null" >
+                and org_id = #{orgVO.orgId}
+            </if>
+            <if test="orgVO.orgCode != null and orgVO.orgCode != ''" >
+                and org_code LIKE CONCAT('%',#{orgVO.orgCode},'%')
+            </if>
+<!--            <if test="orgVO.orgPCode != null and orgVO.orgPCode != ''" >-->
+<!--                and org_parent_code = #{orgVO.orgPCode}-->
+<!--            </if>-->
+            <if test="orgVO.orgName != null and orgVO.orgName != ''" >
+                and org_name LIKE CONCAT('%',#{orgVO.orgName},'%')
+            </if>
+            <if test="orgVO.orgParentCode != null and orgVO.orgParentCode != ''" >
+                and org_parent_code LIKE CONCAT('%',#{orgVO.orgParentCode},'%')
+            </if>
+            <if test="orgVO.orgParentName != null and orgVO.orgParentName != ''" >
+                and org_parent_name LIKE CONCAT('%',#{orgVO.orgParentName},'%')
+            </if>
+            <if test="orgVO.outOrgCode != null" >
+                and out_org_code LIKE CONCAT('%',#{orgVO.outOrgCode},'%')
+            </if>
+            <if test="orgVO.outOrgParentCode != null" >
+                and out_org_parent_code LIKE CONCAT('%',#{orgVO.outOrgParentCode},'%')
+            </if>
+            <if test="orgVO.orgLevel != null" >
+                and org_level = #{orgVO.orgLevel}
+            </if>
+            <if test="orgVO.orgType != null" >
+                and org_type = #{orgVO.orgType}
+            </if>
+            <if test="orgVO.linkman != null and orgVO.linkman != ''" >
+                and linkman LIKE CONCAT('%',#{orgVO.linkman},'%')
+            </if>
+            <if test="orgVO.mobilePhone != null" >
+                and mobile_phone = #{orgVO.mobilePhone}
+            </if>
+            <if test="orgVO.telephone != null" >
+                and telephone = #{orgVO.telephone}
+            </if>
+            <if test="orgVO.enableFlag != null" >
+                and enable_flag = #{orgVO.enableFlag}
+            </if>
+            <if test="orgVO.deleteFlag != null" >
+                and delete_flag = #{orgVO.deleteFlag}
+            </if>
+            <if test="orgVO.remark != null" >
+                and remark = #{orgVO.remark}
+            </if>
+            <if test="orgVO.createdBy != null" >
+                and created_by = #{orgVO.createdBy}
+            </if>
+            <if test="orgVO.createdTime != null" >
+                and created_time = #{orgVO.createdTime}
+            </if>
+            <if test="orgVO.updatedBy != null" >
+                and updated_by = #{orgVO.updatedBy}
+            </if>
+            <if test="orgVO.updatedTime != null" >
+                and updated_time = #{orgVO.updatedTime}
+            </if>
+        </where>
+        order by updated_time desc
+    </select>
+</mapper>

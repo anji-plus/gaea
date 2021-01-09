@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.auth.mapper.DictMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.auth.domain.po.DictPO">
+        <id column="dict_id" property="dictId" />
+        <result column="dict_name" property="dictName" />
+        <result column="dict_desc" property="dictDesc" />
+        <result column="item_name" property="itemName" />
+        <result column="item_value" property="itemValue" />
+        <result column="item_desc" property="itemDesc" />
+        <result column="item_extend" property="itemExtend" />
+        <result column="enable_flag" property="enableFlag" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="sort" property="sort" />
+        <result column="remark" property="remark" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_by" property="updatedBy" />
+        <result column="updated_time" property="updatedTime" />
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.auth.domain.vo.DictVO" extends="BaseResultMap">
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        dict_id, dict_name, dict_desc, item_name, item_value, item_desc, item_extend, enable_flag, delete_flag, sort, remark, created_by, created_time, updated_by, updated_time
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.auth.domain.vo.DictVO">
+        select
+        <include refid="Base_Column_List" />
+        from t_dict
+        <where >
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            <if test="dictVO.dictId != null" >
+                and dict_id = #{dictVO.dictId}
+            </if>
+            <if test="dictVO.dictName != null and dictVO.dictName != ''" >
+                and dict_name like CONCAT(CONCAT('%',#{dictVO.dictName,jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="dictVO.dictDesc != null and dictVO.dictDesc != ''" >
+                and dict_desc like CONCAT(CONCAT('%',#{dictVO.dictDesc,jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="dictVO.itemName != null and dictVO.itemName != ''" >
+                and item_name like CONCAT(CONCAT('%',#{dictVO.itemName,jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="dictVO.itemValue != null and dictVO.itemValue != ''" >
+                and item_value like CONCAT(CONCAT('%',#{dictVO.itemValue,jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="dictVO.itemDesc != null and dictVO.itemDesc != ''" >
+                and item_desc like CONCAT(CONCAT('%',#{dictVO.itemDesc,jdbcType=VARCHAR}),'%')
+            </if>
+            <if test="dictVO.itemExtend != null and dictVO.itemExtend != ''" >
+                and item_extend = #{dictVO.itemExtend}
+            </if>
+            <if test="dictVO.enableFlag != null" >
+                and enable_flag = #{dictVO.enableFlag}
+            </if>
+            <if test="dictVO.deleteFlag != null" >
+                and delete_flag = #{dictVO.deleteFlag}
+            </if>
+            <if test="dictVO.sort != null" >
+                and sort = #{dictVO.sort}
+            </if>
+            <if test="dictVO.remark != null and dictVO.remark != ''" >
+                and remark = #{dictVO.remark}
+            </if>
+            <if test="dictVO.createdBy != null and dictVO.createdBy != ''" >
+                and created_by = #{dictVO.createdBy}
+            </if>
+            <if test="dictVO.createdTime != null" >
+                and created_time = #{dictVO.createdTime}
+            </if>
+            <if test="dictVO.updatedBy != null and dictVO.updatedBy != ''" >
+                and updated_by = #{dictVO.updatedBy}
+            </if>
+            <if test="dictVO.updatedTime != null" >
+                and updated_time = #{dictVO.updatedTime}
+            </if>
+        </where>
+        ORDER BY updated_time DESC
+    </select>
+</mapper>

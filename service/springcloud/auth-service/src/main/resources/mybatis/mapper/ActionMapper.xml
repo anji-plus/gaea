@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.auth.mapper.ActionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.auth.domain.po.ActionPO">
+        <id column="action_id" property="actionId" />
+        <result column="action_code" property="actionCode" />
+        <result column="action_name" property="actionName" />
+        <result column="sort" property="sort" />
+        <result column="enable_flag" property="enableFlag" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_by" property="updatedBy" />
+        <result column="updated_time" property="updatedTime" />
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.auth.domain.vo.ActionVO" extends="BaseResultMap">
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        action_id, action_code, action_name, sort, enable_flag, delete_flag, created_by, created_time, updated_by, updated_time
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.auth.domain.vo.ActionVO">
+        select
+        <include refid="Base_Column_List" />
+        from t_action
+        <where >
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            <if test="actionVO.actionId != null" >
+                and action_id = #{actionVO.actionId}
+            </if>
+            <if test="actionVO.actionCode != null" >
+                and action_code LIKE CONCAT('%',#{actionVO.actionCode},'%')
+            </if>
+            <if test="actionVO.actionName != null" >
+                and action_name LIKE CONCAT('%',#{actionVO.actionName},'%')
+            </if>
+            <if test="actionVO.sort != null" >
+                and sort = #{actionVO.sort}
+            </if>
+            <if test="actionVO.enableFlag != null" >
+                and enable_flag = #{actionVO.enableFlag}
+            </if>
+            <if test="actionVO.deleteFlag != null" >
+                and delete_flag = #{actionVO.deleteFlag}
+            </if>
+            <if test="actionVO.createdBy != null" >
+                and created_by = #{actionVO.createdBy}
+            </if>
+            <if test="actionVO.createdTime != null" >
+                and created_time = #{actionVO.createdTime}
+            </if>
+            <if test="actionVO.updatedBy != null" >
+                and updated_by = #{actionVO.updatedBy}
+            </if>
+            <if test="actionVO.updatedTime != null" >
+                and updated_time = #{actionVO.updatedTime}
+            </if>
+        </where>
+        ORDER BY updated_time DESC
+    </select>
+</mapper>
