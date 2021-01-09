@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.push.mapper.PushHistoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.push.domain.po.PushHistoryPO">
+        <id column="push_id" property="pushId"/>
+        <result column="template_type" property="templateType"/>
+        <result column="template_code" property="templateCode"/>
+        <result column="content" property="content"/>
+        <result column="push_title" property="pushTitle"/>
+        <result column="push_from" property="pushFrom"/>
+        <result column="push_to" property="pushTo"/>
+        <result column="mobiles" property="mobiles"/>
+        <result column="mail_copy" property="mailCopy"/>
+        <result column="mail_bcc" property="mailBcc"/>
+        <result column="operator" property="operator"/>
+        <result column="send_time" property="sendTime"/>
+        <result column="send_status" property="sendStatus"/>
+        <result column="send_result" property="sendResult"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.push.domain.vo.PushHistoryVO" extends="BaseResultMap">
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        push_id, template_type, template_code, content, push_title, push_from, push_to, mobiles, mail_copy, mail_bcc, operator, send_time, send_status, send_result, created_by, created_time, updated_by, updated_time
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.push.domain.vo.PushHistoryVO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_history a
+        <where>
+            <if test="pushHistoryVO.templateType != null and pushHistoryVO.templateType != ''">
+                and a.template_type = #{pushHistoryVO.templateType}
+            </if>
+            <if test="pushHistoryVO.keyword != null and pushHistoryVO.keyword != ''">
+                and (
+                a.mobiles like CONCAT(CONCAT('%',#{pushHistoryVO.keyword,jdbcType=VARCHAR}),'%')
+                OR
+                a.push_to like CONCAT(CONCAT('%',#{pushHistoryVO.keyword,jdbcType=VARCHAR}),'%')
+                OR
+                a.push_title like CONCAT(CONCAT('%',#{pushHistoryVO.keyword,jdbcType=VARCHAR}),'%')
+                OR
+                a.template_code like CONCAT(CONCAT('%',#{pushHistoryVO.keyword,jdbcType=VARCHAR}),'%')
+                )
+            </if>
+            <if test="pushHistoryVO.startTime != null and pushHistoryVO.startTime != '' and pushHistoryVO.endTime != null and pushHistoryVO.endTime != ''">
+                AND a.send_time between #{pushHistoryVO.startTime} and #{pushHistoryVO.endTime}
+            </if>
+        </where>
+        ORDER BY send_time DESC
+    </select>
+
+    <select id="queryCountByDay" resultType="java.lang.Integer">
+        select count(0) from t_history
+        <where>
+            date_format(created_time,'%Y-%m-%d')=date_format(#{sendTime},'%Y-%m-%d')
+            <if test="templateType != null">
+                AND template_type=#{templateType}
+            </if>
+            <if test="sendStatus != null">
+                AND send_status=#{sendStatus}
+            </if>
+        </where>
+    </select>
+
+    <update id="createTable" parameterType="string">
+        CREATE TABLE IF NOT EXISTS t_history_${format} LIKE t_history;
+    </update>
+
+    <update id="copyArchiveData" parameterType="string">
+    INSERT INTO `t_history_${format}`
+    select
+        *
+    from
+        t_history e
+    where
+        e.created_time &lt; #{timestamp}
+    </update>
+
+    <delete id="deleteArchiveData">
+    delete from t_history where created_time &lt; #{timestamp}
+  </delete>
+</mapper>
