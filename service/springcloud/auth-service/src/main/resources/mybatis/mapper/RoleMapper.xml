@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.auth.mapper.RoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.auth.domain.po.RolePO">
+        <id column="role_id" property="roleId" />
+        <result column="role_name" property="roleName" />
+        <result column="role_desc" property="roleDesc" />
+        <result column="enable_flag" property="enableFlag" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_by" property="updatedBy" />
+        <result column="updated_time" property="updatedTime" />
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.auth.domain.vo.RoleVO" extends="BaseResultMap">
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        role_id, role_name, role_desc, enable_flag, delete_flag, created_by, created_time, updated_by, updated_time
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.auth.domain.vo.RoleVO">
+        select
+        <include refid="Base_Column_List" />
+        from t_role
+        <where >
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            <if test="roleVO.roleId != null and roleVO.roleId != ''" >
+                and role_id = #{roleVO.roleId}
+            </if>
+            <if test="roleVO.roleName != null" >
+                and role_name LIKE CONCAT('%',#{roleVO.roleName},'%')
+            </if>
+            <if test="roleVO.roleDesc != null" >
+                and role_desc LIKE CONCAT('%',#{roleVO.roleDesc},'%')
+            </if>
+            <if test="roleVO.enableFlag != null" >
+                and enable_flag = #{roleVO.enableFlag}
+            </if>
+            <if test="roleVO.deleteFlag != null" >
+                and delete_flag = #{roleVO.deleteFlag}
+            </if>
+            <if test="roleVO.createdBy != null and roleVO.createdBy != ''" >
+                and created_by = #{roleVO.createdBy}
+            </if>
+            <if test="roleVO.createdTime != null" >
+                and created_time = #{roleVO.createdTime}
+            </if>
+            <if test="roleVO.updatedBy != null and roleVO.updatedBy != ''" >
+                and updated_by = #{roleVO.updatedBy}
+            </if>
+            <if test="roleVO.updatedTime != null" >
+                and updated_time = #{roleVO.updatedTime}
+            </if>
+        </where>
+        ORDER BY updated_time DESC
+    </select>
+</mapper>

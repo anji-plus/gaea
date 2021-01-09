@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.auth.mapper.RoleOrgMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.auth.domain.po.RoleOrgPO">
+        <id column="role_org_id" property="roleOrgId" />
+        <result column="role_id" property="roleId" />
+        <result column="org_id" property="orgId" />
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.auth.domain.vo.RoleOrgVO" extends="BaseResultMap">
+        <result column="org_name" property="orgName" />
+        <result column="role_name" property="roleName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        role_org_id, role_id, org_id
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.auth.domain.vo.RoleOrgVO">
+        select
+        <include refid="Base_Column_List" />
+        from t_role_org
+        <where >
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            <if test="roleOrgVO.roleOrgId != null and roleOrgVO.roleOrgId != ''" >
+                and role_org_id = #{roleOrgVO.roleOrgId}
+            </if>
+            <if test="roleOrgVO.roleId != null and roleOrgVO.roleId != ''" >
+                and role_id = #{roleOrgVO.roleId}
+            </if>
+            <if test="roleOrgVO.orgId != null and roleOrgVO.orgId != ''" >
+                and org_id = #{roleOrgVO.orgId}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="queryAllRoleOrg" resultMap="ResultMapWithVO">
+        SELECT
+            a.role_org_id,
+            b.org_id,
+            b.org_name,
+            c.role_id,
+            c.role_name
+        FROM
+            t_role_org a
+            LEFT JOIN t_org b ON a.org_id = b.org_id
+            LEFT JOIN t_role c ON a.role_id = c.role_id
+        WHERE
+            b.enable_flag = 1
+            AND b.delete_flag = 0
+            AND c.enable_flag = 1
+            AND c.delete_flag = 0
+    </select>
+</mapper>
