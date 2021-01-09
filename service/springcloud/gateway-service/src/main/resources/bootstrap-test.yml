@@ -1,0 +1,17 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    nacos:
+      config:
+        server-addr: 10.108.6.131:8848
+        group: DEFAULT_GROUP
+        namespace: 0efbc9a5-e6c0-46c9-bb69-2cba830ee7ba
+        file-extension: yaml
+      discovery:
+        server-addr: 10.108.6.131:8848
+        group: DEFAULT_GROUP
+        namespace: 0efbc9a5-e6c0-46c9-bb69-2cba830ee7ba
+        file-extension: yaml
