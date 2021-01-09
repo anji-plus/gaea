@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.auth.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.auth.domain.po.UserPO">
+        <id column="user_id" property="userId" />
+        <result column="login_name" property="loginName" />
+        <result column="password" property="password" />
+        <result column="real_name" property="realName" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="enable_flag" property="enableFlag" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="remark" property="remark" />
+        <result column="recommender" property="recommender" />
+        <result column="last_login_time" property="lastLoginTime" />
+        <result column="last_login_ip" property="lastLoginIp" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_by" property="updatedBy" />
+        <result column="updated_time" property="updatedTime" />
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.auth.domain.vo.UserVO" extends="BaseResultMap">
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id, login_name, password, real_name, phone, email, enable_flag, delete_flag, remark, recommender, last_login_time, last_login_ip, created_by, created_time, updated_by, updated_time
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.auth.domain.vo.UserVO">
+        select
+        a.user_id, a.login_name,
+        a.real_name, a.phone, a.email, a.enable_flag, a.delete_flag, a.remark,
+        a.recommender, a.last_login_time, a.last_login_ip, a.created_by,
+        a.created_time, a.updated_by, a.updated_time
+        from t_user a
+        LEFT JOIN t_user_role_org b ON a.user_id=b.user_id
+        <where >
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            <if test="userVO.orgIdLists != null and userVO.orgIdLists.size() != 0">
+                and ( b.org_id IN
+                <foreach collection="userVO.orgIdLists" item="item" index="index" open="(" close=")"
+                         separator=",">
+                    #{item}
+                </foreach>
+                or b.org_id IS NULL )
+            </if>
+            <if test="userVO.userId != null and userVO.userId != ''" >
+                and a.user_id = #{userVO.userId}
+            </if>
+            <if test="userVO.loginName != null and userVO.loginName != ''" >
+                and a.login_name LIKE CONCAT('%',#{userVO.loginName},'%')
+            </if>
+            <if test="userVO.password != null and userVO.password != ''" >
+                and a.password = #{userVO.password}
+            </if>
+            <if test="userVO.realName != null and userVO.realName != ''" >
+                and a.real_name LIKE CONCAT('%',#{userVO.realName},'%')
+            </if>
+            <if test="userVO.phone != null and userVO.phone != ''" >
+                and a.phone = #{userVO.phone}
+            </if>
+            <if test="userVO.email != null and userVO.email != ''" >
+                and a.email = #{userVO.email}
+            </if>
+            <if test="userVO.enableFlag != null" >
+                and a.enable_flag = #{userVO.enableFlag}
+            </if>
+            <if test="userVO.deleteFlag != null" >
+                and a.delete_flag = #{userVO.deleteFlag}
+            </if>
+            <if test="userVO.remark != null and userVO.remark != ''" >
+                and a.remark = #{userVO.remark}
+            </if>
+            <if test="userVO.recommender != null and userVO.recommender != ''" >
+                and a.recommender = #{userVO.recommender}
+            </if>
+            <if test="userVO.lastLoginTime != null and userVO.lastLoginTime != ''" >
+                and a.last_login_time = #{userVO.lastLoginTime}
+            </if>
+            <if test="userVO.lastLoginIp != null and userVO.lastLoginIp != ''" >
+                and a.last_login_ip = #{userVO.lastLoginIp}
+            </if>
+            <if test="userVO.createdBy != null and userVO.createdBy != ''" >
+                and a.created_by = #{userVO.createdBy}
+            </if>
+            <if test="userVO.createdTime != null" >
+                and a.created_time = #{userVO.createdTime}
+            </if>
+            <if test="userVO.updatedBy != null and userVO.updatedBy != ''" >
+                and a.updated_by = #{userVO.updatedBy}
+            </if>
+            <if test="userVO.updatedTime != null" >
+                and a.updated_time = #{userVO.updatedTime}
+            </if>
+        </where>
+        GROUP BY a.user_id
+        ORDER BY a.updated_time DESC
+    </select>
+
+    <select id="queryUserByUserNameOrMail" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.auth.domain.vo.UserVO">
+        select
+        <include refid="Base_Column_List" />
+        from
+         (select <include refid="Base_Column_List" />  from t_user where enable_flag=1 AND delete_flag=0) t
+        <where >
+            <if test="userVO.loginName != null">
+                or login_name LIKE CONCAT('%',#{userVO.loginName},'%')
+            </if>
+
+            <if test="userVO.realName != null">
+                or real_name LIKE CONCAT('%',#{userVO.realName},'%')
+            </if>
+
+            <if test="userVO.email != null">
+                or email LIKE CONCAT('%',#{userVO.email},'%')
+            </if>
+            <if test="userVO.phone != null">
+                or phone LIKE CONCAT('%',#{userVO.phone},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="queryByLoginNameOrPhone"  resultMap="ResultMapWithVO" resultType="com.anji.mirror.auth.domain.vo.UserVO">
+        select
+        <include refid="Base_Column_List" />
+        from t_user
+        <where >
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            enable_flag=1 AND delete_flag=0
+            <if test="userVO.loginName != null and userVO.loginName != ''" >
+                AND (login_name LIKE CONCAT('%',#{userVO.loginName,jdbcType=VARCHAR},'%')
+                or real_name LIKE CONCAT('%',#{userVO.loginName,jdbcType=VARCHAR},'%')
+                or phone LIKE CONCAT('%',#{userVO.loginName,jdbcType=VARCHAR},'%')
+                )
+            </if>
+
+        </where>
+
+    </select>
+</mapper>
