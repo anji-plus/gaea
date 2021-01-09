@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.auth.mapper.FileMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.auth.domain.po.FilePO">
+        <id column="file_id" property="fileId" />
+        <result column="file_path" property="filePath" />
+        <result column="url_path" property="urlPath" />
+        <result column="file_instruction" property="fileInstruction" />
+        <result column="file_create_time" property="fileCreateTime" />
+        <result column="creater_userid" property="createrUserid" />
+        <result column="creater_username" property="createrUsername" />
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.auth.domain.vo.FileVO" extends="BaseResultMap">
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        file_id, file_path, url_path, file_instruction, file_create_time, creater_userid, creater_username
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.auth.domain.vo.FileVO">
+        select
+        <include refid="Base_Column_List" />
+        from t_file
+        <where >
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            <if test="fileVO.fileId != null" >
+                and file_id = #{fileVO.fileId}
+            </if>
+            <if test="fileVO.filePath != null" >
+                and file_path = #{fileVO.filePath}
+            </if>
+            <if test="fileVO.urlPath != null" >
+                and url_path = #{fileVO.urlPath}
+            </if>
+            <if test="fileVO.fileInstruction != null" >
+                and file_instruction = #{fileVO.fileInstruction}
+            </if>
+            <if test="fileVO.fileCreateTime != null" >
+                and file_create_time = #{fileVO.fileCreateTime}
+            </if>
+            <if test="fileVO.createrUserid != null" >
+                and creater_userid = #{fileVO.createrUserid}
+            </if>
+            <if test="fileVO.createrUsername != null" >
+                and creater_username = #{fileVO.createrUsername}
+            </if>
+        </where>
+    </select>
+</mapper>
