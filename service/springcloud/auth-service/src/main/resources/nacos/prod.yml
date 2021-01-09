@@ -1,0 +1,117 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: auth-service
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+  #/d/App/apache-maven-3.5.3/repository/com/alibaba/druid/1.1.23
+  #java -cp druid-1.1.23.jar com.alibaba.druid.filter.config.ConfigTools "cst-admin@test1234"
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://10.10.10.10:3306/gaea_auth?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
+      username: xxxxxx
+      password: xxxxx
+      publicKey: ccccc
+      connection-properties: config.decrypt=true;config.decrypt.key=${public-key}
+      filter.config.enabled: true
+      initial-size: 1
+      max-active: 100
+      min-idle: 1
+      max-wait: 30000
+      keep-alive: true
+      phy-timeout-millis: 1200000
+      validation-query: "select 1"
+      validation-query-timeout: 10000
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      #间隔多久检测一次需要关闭的空闲连接 毫秒
+      time-between-eviction-runs-millis: 10000
+      #连接在连接池中最小生存的时间，毫秒
+      min-evictable-idle-time-millis: 300000
+      filters: stat
+      web-stat-filter.enabled: true
+      stat-view-servlet.enabled: true
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    password:
+    timeout: 10000
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: -1
+      min-idle: 0
+
+mybatis-plus:
+  mapper-locations: classpath*:/mybatis/mapper/*Mapper.xml
+
+ribbon:
+  ConnectTimeout: 60000
+  ReadTimeout: 60000
+  eagerLoad:
+    enabled: true
+
+hystrix:
+  command:
+    default: #default全局有效，service id指定应用有效
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000 #断路器超时时间，默认1000ms
+      circuitBreaker:
+        requestVolumeThreshold: 20 #默认20，时间窗口10s内请求失败数量达到20个，断路器开
+        sleepWindowInMilliseconds: 5000 #短路多久以后开始尝试是否恢复，默认5s
+        errorThresholdPercentage: 50 #出错百分比阈值，当达到此阈值后，开始短路。默认50%
+  threadpool:
+    default:
+      coreSize: 120 #并发执行的最大线程数，默认10
+      maxQueueSize: -1 #默认-1，最大排队长度
+      queueSizeRejectionThreshold: 5 #排队线程数量阈值，默认为5，达到时拒绝。maxQueueSize=-1的话，则该选项不起作用
+
+
+#actuator 默认关闭所有endpoint，只打开health。
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+  health:
+    diskspace:
+      enabled: true            #为false时只显示{"status":"UP"}，不显示明细
+      threshold: 10737418240 #空闲磁盘阀值<10737418240 bytes / 1024 /1024 /1024 = 10G
+    db:
+      enabled: true
+    redis:
+      enabled: true
+    elasticsearch:
+      enabled: true
+
+#行为验证码
+aj:
+  captcha:
+    login:
+      second:
+        check: false
+    cache-type: redis
+    interference-options: 1
+    water-mark: 安吉加加
+
+customer:
+  user:
+    login:
+      tokenExpiredSecond: 2592000 #用户登录有效期，30天有效=30 * 24 * 60 * 60l
+  file:
+    dist-path: /app/dist/upload/
+    white-list: .png|.jpg|.gif|.icon|.pdf|.xlsx|.xls|.csv|.mp4|.avi
+    excelSuffix: .xlsx|.xls|.csv
+  environment:
+    path: https://gaea.anji-plus.com
