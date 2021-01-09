@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.auth.mapper.MenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.auth.domain.po.MenuPO">
+        <id column="menu_id" property="menuId" />
+        <result column="menu_code" property="menuCode" />
+        <result column="menu_name" property="menuName" />
+        <result column="sys_code" property="sysCode" />
+        <result column="parent_id" property="parentId" />
+        <result column="menu_url" property="menuUrl" />
+        <result column="menu_icon" property="menuIcon" />
+        <result column="sort" property="sort" />
+        <result column="enable_flag" property="enableFlag" />
+        <result column="delete_flag" property="deleteFlag" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_by" property="updatedBy" />
+        <result column="updated_time" property="updatedTime" />
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.auth.domain.vo.MenuVO" extends="BaseResultMap">
+        <result column="parent_menu_name" property="parentMenuName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        menu_id, menu_code, menu_name, sys_code, parent_id, menu_url, menu_icon, sort, enable_flag, delete_flag, created_by, created_time, updated_by, updated_time
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.auth.domain.vo.MenuVO">
+        select
+        a.menu_id, a.menu_code, a.menu_name, a.sys_code, a.parent_id, a.menu_url, a.menu_icon, a.sort, a.enable_flag, a.delete_flag, a.created_by, a.created_time, a.updated_by, a.updated_time, b.menu_name as parent_menu_name
+        from t_menu a left join t_menu b on a.parent_id = b.menu_id
+
+        <where >
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            <if test="menuVO.menuId != null and menuVO.menuId != ''" >
+                and a.menu_id = #{menuVO.menuId}
+            </if>
+            <if test="menuVO.menuCode != null and menuVO.menuCode != ''" >
+                and a.menu_code LIKE CONCAT('%',#{menuVO.menuCode},'%')
+            </if>
+            <if test="menuVO.menuName != null and menuVO.menuName != ''" >
+                and a.menu_name LIKE CONCAT('%',#{menuVO.menuName},'%')
+            </if>
+            <if test="menuVO.sysCode != null and menuVO.sysCode != ''" >
+                and a.sys_code = #{menuVO.sysCode}
+            </if>
+            <if test="menuVO.parentId != null and menuVO.parentId != ''" >
+                and a.parent_id = #{menuVO.parentId}
+            </if>
+            <if test="menuVO.menuUrl != null and menuVO.menuUrl != ''" >
+                and a.menu_url LIKE CONCAT('%',#{menuVO.menuUrl},'%')
+            </if>
+            <if test="menuVO.menuIcon != null and menuVO.menuIcon != ''" >
+                and a.menu_icon = #{menuVO.menuIcon}
+            </if>
+            <if test="menuVO.sort != null and menuVO.sort != ''" >
+                and a.sort = #{menuVO.sort}
+            </if>
+            <if test="menuVO.enableFlag != null" >
+                and a.enable_flag = #{menuVO.enableFlag}
+            </if>
+            <if test="menuVO.deleteFlag != null" >
+                and a.delete_flag = #{menuVO.deleteFlag}
+            </if>
+            <if test="menuVO.createdBy != null and menuVO.createdBy != ''" >
+                and a.created_by = #{menuVO.createdBy}
+            </if>
+            <if test="menuVO.createdTime != null" >
+                and a.created_time = #{menuVO.createdTime}
+            </if>
+            <if test="menuVO.updatedBy != null and menuVO.updatedBy != ''" >
+                and a.updated_by = #{menuVO.updatedBy}
+            </if>
+            <if test="menuVO.updatedTime != null" >
+                and a.updated_time = #{menuVO.updatedTime}
+            </if>
+        </where>
+        ORDER BY updated_time DESC
+    </select>
+
+    <!-- 查询所有菜单权限码-->
+    <select id="queryAllMenuActionCode" resultMap="ResultMapWithVO">
+        select m.menu_code,a.action_code
+        from t_menu_action ma LEFT JOIN t_menu m on ma.menu_id=m.menu_id
+        LEFT JOIN t_action a on ma.action_id = a.action_id
+    </select>
+
+    <!-- 查询用户userId，针对每个组织的有哪些操作权限码-->
+    <select id="queryMenuActionCodeByUserId" resultType="com.anji.mirror.auth.domain.vo.UserRoleOrgVO" parameterType="java.lang.Long">
+        SELECT o.org_id,o.org_code,m.menu_code,a.action_code,m.parent_id from t_user_role_org uro
+		INNER JOIN t_org o on o.org_id = uro.org_id
+        INNER JOIN t_role_org ro on uro.role_id = ro.role_id AND uro.org_id = ro.org_id
+        INNER JOIN t_role_menu_action rma on ro.role_id = rma.role_id
+        INNER JOIN t_menu_action ma on rma.menu_id = ma.menu_id AND rma.action_id = ma.action_id
+        INNER JOIN t_menu m ON ma.menu_id = m.menu_id
+        INNER JOIN t_action a on ma.action_id = a.action_id
+        where uro.user_id = #{userId}
+    </select>
+</mapper>

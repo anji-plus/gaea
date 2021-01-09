@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anji.mirror.auth.mapper.RoleMenuActionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.anji.mirror.auth.domain.po.RoleMenuActionPO">
+        <id column="id" property="id" />
+        <result column="role_id" property="roleId" />
+        <result column="menu_id" property="menuId" />
+        <result column="action_id" property="actionId" />
+    </resultMap>
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.anji.mirror.auth.domain.vo.RoleMenuActionVO" extends="BaseResultMap">
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, role_id, menu_id, action_id
+    </sql>
+
+    <!-- 自定义分页查询 -->
+    <select id="queryByPage" resultMap="ResultMapWithVO" parameterType="com.anji.mirror.auth.domain.vo.RoleMenuActionVO">
+        select
+        <include refid="Base_Column_List" />
+        from t_role_menu_action
+        <where >
+            <!-- 模糊查询参考 columnName LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') -->
+            <!-- 子查询参考 columnName IN <foreach collection="list" item="item" index="index" separator="," open="(" close=")">#{item}</foreach> -->
+            <if test="roleMenuActionVO.id != null and roleMenuActionVO.id != ''" >
+                and id = #{roleMenuActionVO.id}
+            </if>
+            <if test="roleMenuActionVO.roleId != null and roleMenuActionVO.roleId != ''" >
+                and role_id = #{roleMenuActionVO.roleId}
+            </if>
+            <if test="roleMenuActionVO.menuId != null and roleMenuActionVO.menuId != ''" >
+                and menu_id = #{roleMenuActionVO.menuId}
+            </if>
+            <if test="roleMenuActionVO.actionId != null and roleMenuActionVO.actionId != ''" >
+                and action_id = #{roleMenuActionVO.actionId}
+            </if>
+        </where>
+    </select>
+</mapper>
