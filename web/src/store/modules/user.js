@@ -39,7 +39,7 @@ const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password, verifyCode } = userInfo
-    var passwordMd5 = md5(password + 'anjitms')
+    var passwordMd5 = md5(password + 'gaea')
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: passwordMd5, verifyCode: verifyCode })
         .then((response) => {
