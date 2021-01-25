@@ -62,7 +62,7 @@
             <input v-model="rememberPsw" type="checkbox">
             <p>{{ $t('login.remPsw') }}</p>
           </div>
-          <p>{{ $t('login.forgetPsw') }}</p>
+          <!-- <p>{{ $t('login.forgetPsw') }}</p> -->
         </div>
         <el-button :loading="loading" type="primary" class="login_btn" @click.native.prevent="useVerify">{{ $t('login.logIn') }}</el-button>
       </el-form>
