@@ -1,71 +1,155 @@
+/*
+ * @Author: zyk
+ * @Date: 2020-07-22 10:57:57
+ * @Last Modified by: zyk
+ * @Last Modified time: 2020-07-22 16:08:19
+ */
 import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
-import store from '../store'
+import { Message, Loading } from 'element-ui'
+import store from '@/store'
 import { getToken } from '@/utils/auth'
+import i18n from '@/lang'
+import router from '@/router'
 
+// 防止重复请求(能解决极端情况)
+let pending = [] // 已发出未完成请求队列
+const cancelToken = axios.CancelToken
+// 移除队列方法
+const removePending = (config) => {
+  for (const p in pending) {
+    const url = config.url + '&' + config.method
+    if (url.endsWith(pending[p].u) && JSON.stringify(pending[p].par) == JSON.stringify(config.params) && config.timeParse == pending[p].t) {
+      pending[p].f()
+      pending.splice(p, 1)
+    }
+  }
+}
+// 移除全部请求的方法
+const abortPending = () => {
+  for (const p in pending) {
+    pending[p].f()
+  }
+  pending = []
+}
+let n = 0 // 附加标识
+
+// 定义全局loading;
+let loadingInstance
+// 定义国际化对象
+const lang = {
+  en: 'en-US;q=0.8',
+  zh: 'zh-CN;q=0.8',
+}
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.BASE_API, // api 的 base_url
-  timeout: 5000 // 请求超时时间
+  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  withCredentials: false, // send cookies when cross-domain requests
+  // timeout: 5000 // request timeout
 })
 
-// request拦截器
+// 请求拦截
 service.interceptors.request.use(
-  config => {
-    if (store.getters.token) {
-      config.headers['X-Token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+  (config) => {
+    // 请求发送之前做一系列操作
+    // 1、给每个请求加标识
+    config.timeParse = n++ // 防止两个同样的请求
+    removePending(config)
+    config.cancelToken = new cancelToken((c) => {
+      const url = config.url.replace(config.baseURL, '')
+      config.timeParse = n++
+      pending.push({
+        u: url + '&' + config.method,
+        par: config.params,
+        f: c,
+        t: config.timeParse,
+      })
+    })
+    // 2、给每个请求加上token和语言
+    config.headers['Accept-Language'] = lang[i18n.locale]
+    store.getters.token && (config.headers['Authorization'] = 'Bearer ' + getToken())
+    // 3、loading
+    if (!((config.data && config.data.loading == false) || (config.params && config.params.loading == false))) {
+      loadingInstance = Loading.service({
+        // 全局loading;
+        lock: true,
+        text: 'loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+        fullscreen: true,
+      })
     }
     return config
   },
-  error => {
-    // Do something with request error
-    console.log(error) // for debug
-    Promise.reject(error)
+  (error) => {
+    // do something with request error
+    loadingInstance && (loadingInstance.close(), (loadingInstance = null))
+    return Promise.reject(error)
   }
 )
 
-// response 拦截器
+// response 拦截
 service.interceptors.response.use(
-  response => {
-    /**
-     * code为非20000是抛错 可结合自己业务进行修改
-     */
+  (response) => {
+    loadingInstance && (loadingInstance.close(), (loadingInstance = null))
+    // (loadingInstance && !pending.length) ? (loadingInstance.close(), loadingInstance = null) : null;
+    removePending(response.config)
     const res = response.data
-    if (res.code !== 20000) {
-      Message({
-        message: res.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
-
-      // 50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        MessageBox.confirm(
-          '你已被登出，可以取消继续留在该页面，或者重新登录',
-          '确定登出',
-          {
-            confirmButtonText: '重新登录',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-        ).then(() => {
-          store.dispatch('FedLogOut').then(() => {
-            location.reload() // 为了重新实例化vue-router对象 避免bug
+    // http状态码
+    if (response.status == 200) {
+      response.headers.authorization && store.commit('user/SET_TOKEN', response.headers.authorization)
+      // 处理流文件类型
+      if (response.config.responseType === 'blob') {
+        if (res.type.indexOf('application/vnd.ms-excel') != -1) {
+          return response
+        } else {
+          Message({
+            message: i18n.t(`promptMessage.failed`),
+            type: 'error',
           })
+          return false
+        }
+      }
+      // token过期/失效
+      if (res.code == '4003' || res.code == '4001') {
+        abortPending()
+        Message({
+          message: i18n.t(`promptMessage.reload`),
+          type: 'error',
+        })
+        store.dispatch('user/logout').then(() => {
+          router.replace(`/login?redirect=${router.currentRoute.fullPath}`)
+        })
+        return res
+      }
+      // 不需要统一提示的情况判断
+      if (response.config.headers.noPrompt) {
+        return res
+      }
+      // 统一提示
+      if (res.code != '2000') {
+        Message({
+          message: res.msg || i18n.t(`promptMessage.reqFailed`),
+          type: 'error',
+        })
+      } else if (res.code == '2000' && res.msg && response.config.method != 'get') {
+        Message({
+          message: res.msg == 'success' ? i18n.t(`promptMessage.success`) : res.msg,
+          type: 'success',
         })
       }
-      return Promise.reject('error')
-    } else {
-      return response.data
+      return res
     }
   },
-  error => {
-    console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+  (error) => {
+    loadingInstance && (loadingInstance.close(), (loadingInstance = null))
+    // 错误信息类型为Error时统一提示，防止请求被取消后 一直弹出提示
+    if (Object.prototype.toString.call(error).slice(8, -1) === 'Error') {
+      abortPending()
+      Message({
+        message: i18n.t(`promptMessage.netErr`),
+        type: 'error',
+      })
+    }
     return Promise.reject(error)
   }
 )

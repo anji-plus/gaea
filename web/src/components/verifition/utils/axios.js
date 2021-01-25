@@ -1,30 +1,33 @@
-import axios from 'axios';
+import axios from 'axios'
 
-axios.defaults.baseURL = process.env.BASE_API;
+axios.defaults.baseURL = 'https://mirror.anji-plus.com/captcha-api'
+
+// 真实项目中改用动态获取
+// axios.defaults.baseURL = process.env.VUE_APP_BASE_API
+// console.log(axios.defaults.baseURL, process.env.VUE_APP_BASE_API)
 
 const service = axios.create({
   timeout: 40000,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
-    'Content-Type': 'application/json; charset=UTF-8'
+    'Content-Type': 'application/json; charset=UTF-8',
   },
 })
 service.interceptors.request.use(
-  config => {
+  (config) => {
     return config
   },
-  error => {
+  (error) => {
     Promise.reject(error)
   }
 )
 
 // response interceptor
 service.interceptors.response.use(
-  response => {
-    const res = response.data;
+  (response) => {
+    const res = response.data
     return res
   },
-  error => {
-  }
+  (error) => {}
 )
 export default service

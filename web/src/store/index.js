@@ -1,30 +1,25 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import actions from './actions'
 import getters from './getters'
-import mutations from './mutations'
-import app from './modules/app'
-import user from './modules/user'
-import cacheView from './modules/cachaView'
-import help from './modules/help'
 
 Vue.use(Vuex)
 
-const initPlugin = store => {
-}
+// https://webpack.js.org/guides/dependency-management/#requirecontext
+const modulesFiles = require.context('./modules', true, /\.js$/)
+
+// you do not need `import app from './modules/app'`
+// it will auto require all vuex module from modules file
+const modules = modulesFiles.keys().reduce((modules, modulePath) => {
+  // set './app.js' => 'app'
+  const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
+  const value = modulesFiles(modulePath)
+  modules[moduleName] = value.default
+  return modules
+}, {})
 
 const store = new Vuex.Store({
-  modules: {
-    app,
-    user,
-    cacheView,
-    help
-  },
-  state: { },
-  plugins: [initPlugin],
-  actions,
-  mutations,
-  getters
+  modules,
+  getters,
 })
 
 export default store
