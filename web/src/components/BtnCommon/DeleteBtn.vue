@@ -6,7 +6,8 @@
  */
 !-->
 <template>
-  <el-button type="danger" icon="el-icon-delete" :disabled="disabled" @click="deleteTips">
+  <permission-btn v-if="hasPermission" label="delete" icon="el-icon-delete" type="danger" />
+  <el-button v-else type="danger" icon="el-icon-delete" :disabled="disabled" @click="deleteTips">
     {{ $t('btn.delete') }}
   </el-button>
 </template>
@@ -14,8 +15,14 @@
 export default {
   name: 'DeleteBtn',
   props: {
+    // 是否禁用
     disabled: {
       default: true,
+      type: Boolean,
+    },
+    // 是否存在按钮权限
+    hasPermission: {
+      default: false,
       type: Boolean,
     },
   },
@@ -34,7 +41,7 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .delete_sure.el-button--primary {
   color: #1890ff;
   background: #e8f4ff;

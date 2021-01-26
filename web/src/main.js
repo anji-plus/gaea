@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:21:58
  * @Last Modified by: zyk
- * @Last Modified time: 2020-08-20 20:27:41
+ * @Last Modified time: 2021-01-26 16:26:57
  */
 import Vue from 'vue'
 
@@ -41,6 +41,10 @@ Vue.prototype.$pageSizeAll = [10, 50, 100, 200, 500] // 分页的全局size配�
 // 删除按钮组件
 import DeleteBtn from '@/components/BtnCommon/DeleteBtn'
 Vue.component('DeleteBtn', DeleteBtn)
+
+// 删除按钮组件
+import PermissionBtn from '@/components/PermissionBtn/index'
+Vue.component('PermissionBtn', PermissionBtn)
 
 import UploadExcel from '@/components/UploadExcel'
 Vue.component('UploadExcel', UploadExcel)

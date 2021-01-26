@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-10 14:23:29
  * @Last Modified by: zyk
- * @Last Modified time: 2020-12-15 15:17:11
+ * @Last Modified time: 2021-01-25 17:35:34
  */
 import Vue from 'vue'
 import Router from 'vue-router'
@@ -39,17 +39,6 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: '/redirect/:path*',
-        component: () => import('@/views/redirect/index'),
-      },
-    ],
-  },
-  {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true,
@@ -82,11 +71,11 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: '/user-management/change-password',
-        component: () => import('@/views/user-management/change-password'),
+        path: '/change-password',
+        component: () => import('@/views/system-set/change-password'),
         name: 'ChangePassword',
         hidden: 1,
-        meta: { title: '修改密码', icon: '', noCache: true, breadcrumb: false },
+        meta: { title: 'changePassword', icon: '', noCache: true, breadcrumb: false },
       },
     ],
   },

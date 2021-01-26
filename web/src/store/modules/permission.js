@@ -23,6 +23,7 @@ export function changeAsyncRoutes(routes) {
       tmp.children = changeAsyncRoutes(tmp.children)
     } else {
       // 没有子路由，直接处理当前路由的component组件
+      tmp.meta.permission = tmp.permission || []
       tmp.component = importMethod(tmp.component)
     }
     res.push(tmp)

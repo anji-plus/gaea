@@ -2,24 +2,60 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:34:51
  * @Last Modified by: zyk
- * @Last Modified time: 2020-12-15 15:48:59
+ * @Last Modified time: 2021-01-26 16:20:14
  */
 
 /** 脚手架基础页面路由 **/
 export const baseList = [
+  // 组织机构
   {
-    path: '/user-management',
-    redirect: '/user-management/role',
-    name: 'UserManagement',
+    menuId: '10',
+    parentMenuId: '',
+    path: '/organization',
+    redirect: '/organization/index',
+    alwaysShow: 0,
+    children: [
+      {
+        menuId: '1010',
+        parentMenuId: '10',
+        path: 'index',
+        component: 'organization/index',
+        name: 'Organization',
+        meta: {
+          title: 'organization',
+          icon: 'organization',
+        },
+        permission: [
+          {
+            btnId: '10-add',
+            btnName: 'add',
+          },
+          {
+            btnId: '10-edit',
+            btnName: 'edit',
+          },
+        ],
+      },
+    ],
+  },
+  // 权限管理
+  {
+    menuId: '20',
+    parentMenuId: '',
+    path: '/authority',
+    redirect: '/authority/role',
+    name: 'Authority',
     alwaysShow: true,
     meta: {
-      title: 'userManagement',
-      icon: 'UserManagement',
+      title: 'authority',
+      icon: 'authority',
     },
     children: [
       {
+        menuId: '2020',
+        parentMenuId: '20',
         path: 'role',
-        component: 'user-management/role',
+        component: 'authority/role',
         name: 'Role',
         meta: {
           title: 'role',
@@ -27,8 +63,10 @@ export const baseList = [
         },
       },
       {
+        menuId: '2030',
+        parentMenuId: '20',
         path: 'user',
-        component: 'user-management/user',
+        component: 'authority/user',
         name: 'User',
         meta: {
           title: 'user',
@@ -36,42 +74,149 @@ export const baseList = [
         },
       },
       {
+        menuId: '2040',
+        parentMenuId: '20',
         path: 'permission',
-        component: 'user-management/permission',
+        component: 'authority/permission',
         name: 'Permission',
         meta: {
           title: 'permission',
           icon: '',
         },
       },
+    ],
+  },
+  // 系统设置
+  {
+    menuId: '30',
+    parentMenuId: '',
+    path: '/system-set',
+    redirect: '/system-set/data-dictionary',
+    name: 'SystemSet',
+    alwaysShow: 1,
+    meta: {
+      title: 'systemSet',
+      icon: 'systemSet',
+    },
+    children: [
+      // 字典管理
       {
-        path: 'login-log',
-        component: 'user-management/login-log',
-        name: 'LoginLog',
+        menuId: '3010',
+        parentMenuId: '30',
+        path: 'data-dictionary',
+        component: 'system-set/data-dictionary',
+        name: 'DataDictionary',
         meta: {
-          title: 'loginLog',
+          title: 'dataDictionary',
+          icon: '',
+        },
+      },
+      // 参数管理
+      {
+        menuId: '3020',
+        parentMenuId: '30',
+        path: 'parameter',
+        component: 'system-set/parameter',
+        name: 'Parameter',
+        meta: {
+          title: 'parameter',
+          icon: '',
+        },
+      },
+      // 帮助中心
+      {
+        menuId: '3030',
+        parentMenuId: '30',
+        path: 'support',
+        component: 'system-set/support',
+        name: 'Support',
+        meta: {
+          title: 'support',
+          icon: '',
+        },
+      },
+      // 操作日志
+      {
+        menuId: '3040',
+        parentMenuId: '30',
+        path: 'operation-log',
+        component: 'system-set/operation-log',
+        name: 'OperationLog',
+        meta: {
+          title: 'operationLog',
           icon: '',
         },
       },
     ],
   },
+  // 消息管理
   {
-    path: '/system-conf',
-    redirect: '/system-conf/data-dictionary',
-    name: 'SystemConf',
+    menuId: '40',
+    parentMenuId: '',
+    path: '/push-notify',
+    redirect: '/push-notify/history',
+    name: 'PushNotify',
     alwaysShow: 1,
     meta: {
-      title: 'systemConf',
-      icon: 'SystemConf',
+      title: 'pushNotify',
+      icon: 'pushNotify',
     },
     children: [
+      // 首发概况
       {
-        path: 'data-dictionary',
-        component: 'system-conf/data-dictionary',
-        name: 'DataDictionary',
+        menuId: '4010',
+        parentMenuId: '40',
+        path: 'situation',
+        component: 'push-notify/situation',
+        name: 'Situation',
         meta: {
-          title: 'dataDictionary',
+          title: 'situation',
           icon: '',
+        },
+      },
+      // 推送模板
+      {
+        menuId: '4020',
+        parentMenuId: '40',
+        path: 'template',
+        component: 'push-notify/template',
+        name: 'Template',
+        meta: {
+          title: 'template',
+          icon: '',
+        },
+      },
+      // 推送历史
+      {
+        menuId: '4030',
+        parentMenuId: '40',
+        path: 'history',
+        component: 'push-notify/history',
+        name: 'History',
+        meta: {
+          title: 'history',
+          icon: '',
+        },
+      },
+    ],
+  },
+  // 导出中心
+  {
+    menuId: '50',
+    parentMenuId: '',
+    path: '/download',
+    redirect: '/download/index',
+    alwaysShow: 0,
+    children: [
+      {
+        menuId: '5010',
+        parentMenuId: '50',
+        path: 'index',
+        component: 'download/index',
+        name: 'Download',
+        meta: {
+          title: 'download',
+          icon: 'download',
         },
       },
     ],

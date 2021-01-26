@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 16:59:48
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-18 11:08:53
+ * @Last Modified time: 2021-01-26 12:45:55
  */
 export default {
   system: {
@@ -62,17 +62,24 @@ export default {
   },
   route: {
     dashboard: '首页',
-    userManagement: '用户管理',
+    organization: '组织机构',
+    authority: '权限管理',
     role: '角色管理',
     user: '用户管理',
     permission: '权限管理',
-    loginLog: '登录日志',
-    systemConf: '系统设置',
-    dataDictionary: '数据字典',
+    systemSet: '系统设置',
+    dataDictionary: '字典管理',
+    parameter: '参数管理',
+    support: '帮助中心',
+    operationLog: '操作日志',
     changePassword: '修改密码',
+    pushNotify: '推送管理',
+    situation: '收发概况',
+    history: '推送历史',
+    template: '推送模板',
+    download: '导出中心',
     list: '列表页',
     normal: '普通列表页',
-    error: '缺省页',
   },
   navbar: {
     dashboard: '首页',
@@ -83,7 +90,7 @@ export default {
     changePassword: '修改密码',
     personal: '个人中心',
     account: '账号',
-    organisation: '所属组织',
+    organisation: '组织',
   },
   settings: {
     title: '系统布局配置',

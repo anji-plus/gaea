@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 14:23:33
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-18 11:09:36
+ * @Last Modified time: 2021-01-26 12:46:00
  */
 export default {
   system: {
@@ -62,14 +62,22 @@ export default {
   },
   route: {
     dashboard: 'Dashboard',
-    userManagement: 'User management',
+    organization: 'Organization',
+    authority: 'Authority',
     role: 'Role',
     user: 'User',
     permission: 'Permission',
-    loginLog: 'Login log',
-    systemConf: 'System config',
+    systemSet: 'System Set',
     dataDictionary: 'Data dictionary',
+    parameter: 'Parameter',
+    support: 'Support',
+    operationLog: 'Operation Log',
     changePassword: 'Change Password',
+    pushNotify: 'Push Notify',
+    situation: 'Situation',
+    history: 'History',
+    template: 'Template',
+    download: 'Export Center',
     list: 'List',
     error: 'Error page',
   },

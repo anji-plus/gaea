@@ -34,10 +34,13 @@
               <!-- <div>
                 <p><i class="el-icon-help"/> {{ $t('navbar.organisation') }}</p>
                 <p> {{'组织名称'}} </p>
+                <el-select class="organisation" v-model="myOrgani" size="mini" :placeholder="$t('placeholder.select')">
+                  <el-option v-for='item in organisationList'  :key="item.id" :label="item.label" :value="item.value" />
+                </el-select>
               </div> -->
             </div>
             <div class="btn_group">
-              <router-link to="/user-management/change-password">
+              <router-link to="/change-password">
                 <el-dropdown-item>
                   <el-button type="primary" plain> {{ $t('navbar.changePassword') }} </el-button>
                 </el-dropdown-item>
@@ -47,7 +50,7 @@
               </el-dropdown-item>
             </div>
           </div>
-          <!-- <router-link to="/user-management/change-password">
+          <!-- <router-link to="/change-password">
             <el-dropdown-item>
               {{ $t('navbar.changePassword') }}
             </el-dropdown-item>
@@ -86,6 +89,8 @@ export default {
     return {
       displayName: Cookies.get('displayName'),
       infoShow: false,
+      organisationList: [{ id: 1, label: '组织1', value: '1' }],
+      myOrgani: '1',
     }
   },
   computed: {
@@ -205,7 +210,7 @@ export default {
 <style lang="scss">
 .drop_up {
   position: absolute;
-  width: 250px;
+  width: 300px;
   // height: 230px;
   background: #fff;
   padding-bottom: 10px;
@@ -253,6 +258,9 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-around;
+    }
+    .organisation {
+      width: 110px;
     }
   }
   .btn_group {
