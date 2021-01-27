@@ -20,6 +20,9 @@ public @interface GaeaAuditLog {
      * @return 标题
      */
     String pageTitle() default "";
-
+    /**
+     * 是否保存请求的参数和响应参数
+     */
+    boolean isSaveRequestData() default true;
 
 }
