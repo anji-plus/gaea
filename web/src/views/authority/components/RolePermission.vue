@@ -59,7 +59,7 @@
 </template>
 <script>
 import { getDictList } from '@/api/dict-data'
-import { getPermissionList } from '@/api/user-management'
+import { getPermissionList } from '@/api/authority'
 export default {
   props: {
     visib: {

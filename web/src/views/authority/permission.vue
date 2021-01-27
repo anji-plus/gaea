@@ -122,7 +122,7 @@
 </template>
 <script>
 import { getDictList } from '@/api/dict-data'
-import { permissionAdd, permissionEdit, permissionDelete, getPermissionList } from '@/api/user-management'
+import { permissionAdd, permissionEdit, permissionDelete, getPermissionList } from '@/api/authority'
 export default {
   data() {
     return {

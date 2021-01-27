@@ -161,7 +161,7 @@
   </div>
 </template>
 <script>
-import { userAdd, userEdit, resetPassword, userDelete, userQuery } from '@/api/user-management'
+import { userAdd, userEdit, resetPassword, userDelete, userQuery } from '@/api/authority'
 export default {
   name: 'Organization',
   data() {

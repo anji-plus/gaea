@@ -156,7 +156,7 @@
   </div>
 </template>
 <script>
-import { userAdd, userEdit, resetPassword, userDelete, userQuery } from '@/api/user-management'
+import { userAdd, userEdit, resetPassword, userDelete, userQuery } from '@/api/authority'
 export default {
   components: {
     UserRole: require('./components/UserRole.vue').default,

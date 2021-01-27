@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-import { roleList } from '@/api/user-management'
+import { roleList } from '@/api/authority'
 export default {
   props: {
     roles: {

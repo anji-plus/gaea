@@ -50,7 +50,7 @@
   </div>
 </template>
 <script>
-import { loginLog } from '@/api/user-management'
+import { log } from '@/api/system-set'
 export default {
   data() {
     return {
@@ -75,7 +75,7 @@ export default {
     },
     // 查询
     getData() {
-      loginLog(this.searchForm).then((res) => {
+      log(this.searchForm).then((res) => {
         if (res.code == '2000') {
           this.tableList = res.data.list
           this.total = res.data.total

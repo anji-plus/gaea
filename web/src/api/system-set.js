@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:13:34
  * @Last Modified by: zyk
- * @Last Modified time: 2020-12-15 15:33:27
+ * @Last Modified time: 2021-01-27 13:15:22
  */
 
 import request from '@/utils/request'
@@ -44,5 +44,24 @@ export function dictionaryAdd(data) {
     url: `/v1/dict/man/codes`,
     method: 'post',
     data,
+  })
+}
+
+// 修改用户密码
+export function changePassword(data) {
+  return request({
+    url: `/v1/user/password`,
+    // url: `/v1/user/${data.pkId}/password`,
+    method: 'put',
+    data,
+  })
+}
+
+// 操作日志
+export function log(params) {
+  return request({
+    url: `/v1/login/log`,
+    method: 'get',
+    params,
   })
 }

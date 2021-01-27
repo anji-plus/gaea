@@ -5,33 +5,21 @@
         <el-col :span="19">
           <el-row class="form_table">
             <el-col :span="6">
-              <el-form-item :label="$t('businessGlossary.fields1')" prop="fields1">
-                <el-input v-model="searchForm.fields1" />
+              <el-form-item label="按钮代码" prop="actionCode">
+                <el-input v-model="searchForm.actionCode" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item :label="$t('businessGlossary.fields2')" prop="fields2">
-                <el-input v-model="searchForm.fields2" />
+              <el-form-item label="按钮名称" prop="actionName">
+                <el-input v-model="searchForm.actionName" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item :label="$t('businessGlossary.fields3')" prop="fields3">
-                <el-input v-model="searchForm.fields3" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item :label="$t('businessGlossary.fields4')" prop="fields4">
-                <el-input v-model="searchForm.fields4" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item :label="$t('businessGlossary.fields5')" prop="fields5">
-                <el-input v-model="searchForm.fields5" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item :label="$t('businessGlossary.fields6')" prop="fields6">
-                <el-date-picker v-model="searchForm.fields6" type="date" value-format="yyyy-MM-dd" format="yyyy-MM-dd" :placeholder="$t('placeholder.select')" style="width: 100%" />
+              <el-form-item label="启用状态" prop="enableFlag">
+                <el-select v-model="searchForm.enableFlag" :placeholder="$t('placeholder.select')">
+                  <el-option key="1" label="启用" :value="1" />
+                  <el-option key="0" label="禁用" :value="0" />
+                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
@@ -40,7 +28,7 @@
           <el-button
             type="primary"
             @click="
-              searchForm.pageNum = 1
+              searchForm.currentPage = 1
               getData()
             "
           >{{ $t('btn.query') }}</el-button>
@@ -53,50 +41,49 @@
     <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" />
     <el-table :data="tableList" border @selection-change="handleSelectionChange">
       <el-table-column fixed type="selection" width="40" center />
-      <el-table-column :label="$t('businessGlossary.fields1')" align="center">
+      <el-table-column label="按钮代码" min-width="110" align="center">
         <template slot-scope="scope">
-          <span class="view" @click="editDetail('view', scope.row)">{{ scope.row.fields1 }}</span>
+          <span class="view" @click="editDetail('view', scope.row)">{{ scope.row.actionCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="fields2" :label="$t('businessGlossary.fields2')" align="center" />
-      <el-table-column prop="fields3" :label="$t('businessGlossary.fields3')" align="center" />
-      <el-table-column prop="fields4" :label="$t('businessGlossary.fields4')" align="center" />
-      <el-table-column prop="fields5" :label="$t('businessGlossary.fields5')" align="center" />
-      <el-table-column prop="fields6" :label="$t('businessGlossary.fields6')" align="center" width="200" :show-overflow-tooltip="true" />
-      <el-table-column prop="fields7" :label="$t('businessGlossary.fields7')" align="center" />
-      <el-table-column prop="fields8" :label="$t('businessGlossary.fields8')" align="center" />
+      <el-table-column prop="actionName" label="按钮名称" min-width="110" align="center" />
+      <el-table-column prop="sort" label="排序" min-width="110" align="center" />
+      <el-table-column prop="enableFlag" label="启用状态" min-width="90" align="center" />
       <el-table-column prop="createdTime" :label="$t('userManage.creationTime')" align="center" min-width="160" />
       <el-table-column prop="createdBy" :label="$t('userManage.creator')" align="center" min-width="160" />
       <el-table-column prop="updatedTime" :label="$t('userManage.modifyTime')" align="center" min-width="180" />
       <el-table-column prop="updatedBy" :label="$t('userManage.modifyUser')" align="center" min-width="140" />
     </el-table>
-    <el-pagination v-show="total > 0" background :current-page.sync="searchForm.pageNum" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="60%" :close-on-click-modal="false" center :visible.sync="basicDialog" @close="closeDialog">
-      <el-form ref="userForm" :model="dialogForm" :rules="formRules" label-width="100px" style="padding-right: 15px" :disabled="dialogTittle == 'view'">
+    <el-pagination v-show="total > 0" background :current-page.sync="searchForm.currentPage" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="40%" :close-on-click-modal="false" center :visible.sync="basicDialog" @close="closeDialog">
+      <el-form ref="userForm" :model="dialogForm" :rules="formRules" label-width="100px" :disabled="dialogTittle == 'view'">
         <el-row class="form_table">
-          <el-col :span="6">
-            <el-form-item :label="$t('businessGlossary.fields1')" prop="fields1">
-              <el-input v-model="dialogForm.fields1" />
+          <el-col :span="12">
+            <el-form-item label="按钮代码" prop="actionCode">
+              <el-input v-model.trim="dialogForm.actionCode" :disabled="dialogTittle != 'add'" />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item :label="$t('businessGlossary.fields2')" prop="fields2">
-              <el-input v-model="dialogForm.fields2" />
+          <el-col :span="12">
+            <el-form-item label="按钮名称" prop="actionName">
+              <el-input v-model.trim="dialogForm.actionName" />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item :label="$t('businessGlossary.fields3')" prop="fields3">
-              <el-input v-model="dialogForm.fields3" />
+          <!-- <el-col :span="12"> -->
+          <!-- <el-form-item label="排序" prop="sort">
+              <el-input v-model.trim="dialogForm.sort"/>
+            </el-form-item> -->
+          <!-- </el-col> -->
+          <el-col :span="12">
+            <el-form-item label="启用状态" prop="enableFlag">
+              <el-select v-model="searchForm.enableFlag" :placeholder="$t('placeholder.select')">
+                <el-option key="1" label="启用" :value="1" />
+                <el-option key="0" label="禁用" :value="0" />
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item :label="$t('businessGlossary.fields4')" prop="fields4">
-              <el-input v-model="dialogForm.fields4" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item :label="$t('businessGlossary.fields5')" prop="fields5">
-              <el-input v-model="dialogForm.fields5" />
+          <el-col :span="12">
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model.trim="dialogForm.remark" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -109,19 +96,16 @@
   </div>
 </template>
 <script>
-import { listData } from '@/api/list'
+import { getBtnList } from '@/api/authority'
 export default {
   data() {
     return {
       selectedList: [],
       searchForm: {
-        fields1: '',
-        fields2: '',
-        fields3: '',
-        fields4: '',
-        fields5: '',
-        fields6: '',
-        pageNum: 1,
+        actionName: null,
+        actionCode: null,
+        enableFlag: null,
+        currentPage: 1,
         pageSize: 10,
       },
       tableList: [],
@@ -129,16 +113,18 @@ export default {
       dialogTittle: 'view',
       basicDialog: false,
       dialogForm: {
-        fields1: '',
-        fields2: '',
-        fields3: '',
-        fields4: '',
-        fields5: '',
-        fields6: '',
+        actionId: null,
+        actionCode: null,
+        actionName: null,
+        remark: null,
+        // sort: null,
+        enableFlag: null,
       },
       formRules: {
-        fields1: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-        fields2: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        actionId: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        actionCode: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        actionName: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        enableFlag: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
       },
     }
   },
@@ -203,7 +189,7 @@ export default {
     },
     // 查询
     getData() {
-      listData(this.searchForm).then((res) => {
+      getBtnList(this.searchForm).then((res) => {
         if (res.code == '2000') {
           this.tableList = res.data.list
           this.total = res.data.total
@@ -216,13 +202,13 @@ export default {
       this.selectedList = val
     },
     // 页码改变
-    handleCurrentChange(pageNum) {
-      this.searchForm.pageNum = pageNum
+    handleCurrentChange(currentPage) {
+      this.searchForm.currentPage = currentPage
       this.getData()
     },
     // 每页size改变时
     handleSizeChange(val) {
-      this.searchForm.pageNum = 1
+      this.searchForm.currentPage = 1
       this.searchForm.pageSize = val
       this.getData()
     },

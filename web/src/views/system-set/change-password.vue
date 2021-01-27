@@ -31,7 +31,7 @@
 </template>
 <script>
 import Cookies from 'js-cookie'
-import { changePassword } from '@/api/user-management'
+import { changePassword } from '@/api/system-set'
 export default {
   data() {
     return {

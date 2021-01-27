@@ -111,7 +111,7 @@
   </div>
 </template>
 <script>
-import { allMenu, roleAdd, roleEdit, roleDelete, roleList } from '@/api/user-management'
+import { allMenu, roleAdd, roleEdit, roleDelete, roleList } from '@/api/authority'
 export default {
   components: {
     RolePermission: require('./components/RolePermission.vue').default,

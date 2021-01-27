@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 16:59:48
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-26 12:45:55
+ * @Last Modified time: 2021-01-27 10:14:02
  */
 export default {
   system: {
@@ -64,9 +64,11 @@ export default {
     dashboard: '首页',
     organization: '组织机构',
     authority: '权限管理',
+    btnConfig: '按钮配置',
+    menuConfig: '菜单配置',
     role: '角色管理',
     user: '用户管理',
-    permission: '权限管理',
+    permission: '接口权限',
     systemSet: '系统设置',
     dataDictionary: '字典管理',
     parameter: '参数管理',

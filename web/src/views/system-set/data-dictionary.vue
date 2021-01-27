@@ -73,7 +73,7 @@
   </div>
 </template>
 <script>
-import { dictionaryType, dictionaryCodesQuery, dictionaryDelete, dictionaryEdit, dictionaryAdd } from '@/api/system-conf'
+import { dictionaryType, dictionaryCodesQuery, dictionaryDelete, dictionaryEdit, dictionaryAdd } from '@/api/system-set'
 export default {
   name: 'DataDictionary',
   data() {

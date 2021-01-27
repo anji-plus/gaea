@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:34:51
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-26 16:20:14
+ * @Last Modified time: 2021-01-27 13:17:19
  */
 
 /** 脚手架基础页面路由 **/
@@ -52,38 +52,60 @@ export const baseList = [
     },
     children: [
       {
+        menuId: '2010',
+        parentMenuId: '20',
+        path: 'btn-config',
+        component: 'authority/btn-config',
+        name: 'BtnConfig',
+        meta: {
+          title: 'btnConfig',
+          icon: '',
+        },
+      },
+      {
         menuId: '2020',
         parentMenuId: '20',
-        path: 'role',
-        component: 'authority/role',
-        name: 'Role',
+        path: 'menu-config',
+        component: 'authority/menu-config',
+        name: 'MenuConfig',
         meta: {
-          title: 'role',
+          title: 'menuConfig',
           icon: '',
         },
       },
-      {
-        menuId: '2030',
-        parentMenuId: '20',
-        path: 'user',
-        component: 'authority/user',
-        name: 'User',
-        meta: {
-          title: 'user',
-          icon: '',
-        },
-      },
-      {
-        menuId: '2040',
-        parentMenuId: '20',
-        path: 'permission',
-        component: 'authority/permission',
-        name: 'Permission',
-        meta: {
-          title: 'permission',
-          icon: '',
-        },
-      },
+      // {
+      //   menuId: '2030',
+      //   parentMenuId: '20',
+      //   path: 'role',
+      //   component: 'authority/role',
+      //   name: 'Role',
+      //   meta: {
+      //     title: 'role',
+      //     icon: '',
+      //   },
+      // },
+      // {
+      //   menuId: '2040',
+      //   parentMenuId: '20',
+      //   path: 'user',
+      //   component: 'authority/user',
+      //   name: 'User',
+      //   meta: {
+      //     title: 'user',
+      //     icon: '',
+      //   },
+      // },
+      // {
+      //   menuId: '2050',
+      //   parentMenuId: '20',
+      //   path: 'permission',
+      //   component: 'authority/permission',
+      //   name: 'Permission',
+      //   meta: {
+      //     title: 'permission',
+      //     icon: '',
+      //   },
+      // },
     ],
   },
   // 系统设置

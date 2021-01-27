@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 14:23:33
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-26 12:46:00
+ * @Last Modified time: 2021-01-27 09:52:22
  */
 export default {
   system: {
@@ -64,6 +64,8 @@ export default {
     dashboard: 'Dashboard',
     organization: 'Organization',
     authority: 'Authority',
+    btnConfig: 'Button',
+    menuConfig: 'Menu',
     role: 'Role',
     user: 'User',
     permission: 'Permission',
