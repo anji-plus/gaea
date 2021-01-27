@@ -1,6 +1,6 @@
 package com.anjiplus.gaea.log;
 
-import com.anji.plus.starter.constant.GaeaConstant;
+import com.github.anji.plus.gaea.constant.GaeaConstant;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**

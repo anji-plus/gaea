@@ -1,7 +1,7 @@
 package com.anjiplus.gaea.log;
 
-import com.anji.plus.starter.annotation.condition.ConditionalOnGaeaComponent;
 import com.anjiplus.gaea.log.component.LogInterceptor;
+import com.github.anji.plus.gaea.annotation.condition.ConditionalOnGaeaComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

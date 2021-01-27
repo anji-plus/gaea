@@ -154,7 +154,7 @@ public class GaeaAutoConfiguration {
     @Configuration
     @ConditionalOnClass(LocaleResolver.class)
     @ConditionalOnMissingBean(MessageLocaleResolver.class)
-    @ComponentScan(value = {"com.anji.plus.starter.exception.advice", "com.anji.plus.starter.advice"})
+    @ComponentScan(value = {"com.github.anji.plus.gaea.advice", "com.github.anji.plus.gaea.exception.advice"})
     public class MessageI18AutoConfiguration {
 
         /**

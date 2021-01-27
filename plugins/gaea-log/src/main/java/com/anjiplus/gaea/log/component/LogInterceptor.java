@@ -1,9 +1,9 @@
 package com.anjiplus.gaea.log.component;
 
-import com.anji.plus.starter.utils.ApplicationContextUtils;
 import com.anjiplus.gaea.log.GaeaAuditLogProperties;
 import com.anjiplus.gaea.log.event.AuditLogApplicationEvent;
 import com.anjiplus.gaea.log.LogOperation;
+import com.github.anji.plus.gaea.utils.ApplicationContextUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
