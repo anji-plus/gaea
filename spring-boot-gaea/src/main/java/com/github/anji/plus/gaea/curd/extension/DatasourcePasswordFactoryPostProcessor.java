@@ -1,6 +1,7 @@
 package com.github.anji.plus.gaea.curd.extension;
 
 import com.github.anji.plus.gaea.utils.JasyptUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -42,6 +43,10 @@ public class DatasourcePasswordFactoryPostProcessor implements BeanFactoryPostPr
         String propertyUsername = environment.getProperty(username);
         //加密的密码
         String propertyPassword = environment.getProperty(password);
+
+        if (StringUtils.isBlank(propertyUsername) || StringUtils.isBlank(propertyPassword)) {
+            return;
+        }
 
         Properties properties = new Properties();
 
