@@ -1,1 +1,1 @@
-com.github.anji.plus.gaea.annotation.enabled.EnabledGaeaConfiguration=com.anjiplus.gaea.log.GaeaLogAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.anjiplus.gaea.log.GaeaLogAutoConfiguration

@@ -89,11 +89,11 @@ public class GaeaAutoConfiguration {
      * 数据库加密
      * @return
      */
-    @Bean
-    @ConditionalOnClass(DataSourceProperties.class)
-    public DatasourcePasswordFactoryPostProcessor datasourcePasswordFactoryPostProcessor() {
-        return new DatasourcePasswordFactoryPostProcessor();
-    }
+//    @Bean
+//    @ConditionalOnClass(DataSourceProperties.class)
+//    public DatasourcePasswordFactoryPostProcessor datasourcePasswordFactoryPostProcessor() {
+//        return new DatasourcePasswordFactoryPostProcessor();
+//    }
 
     /**
      * 持久层mybatis-plus自动装配
