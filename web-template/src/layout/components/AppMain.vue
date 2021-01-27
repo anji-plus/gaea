@@ -1,0 +1,63 @@
+<template>
+  <section class="app-main">
+    <transition name="fade-transform" mode="out-in">
+      <!-- <keep-alive> -->
+      <keep-alive :include="cachedViews">
+        <router-view :key="key" />
+      </keep-alive>
+    </transition>
+  </section>
+</template>
+
+<script>
+export default {
+  name: 'AppMain',
+  computed: {
+    cachedViews() {
+      return this.$store.state.tagsView.cachedViews
+    },
+    key() {
+      return this.$route.path
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.app-main {
+  /* 50= navbar  50  */
+  height: calc(100vh - 50px);
+  width: 100%;
+  position: relative;
+  background-color: #f2f2f2;
+  padding: 10px 20px 10px 20px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.fixed-header + .app-main {
+  height: 100vh;
+  padding-top: 60px;
+}
+
+.hasTagsView {
+  .app-main {
+    /* 84 = navbar + tags-view = 50 + 34 */
+    height: calc(100vh - 84px);
+  }
+
+  .fixed-header + .app-main {
+    height: 100vh;
+    padding-top: 94px;
+  }
+}
+</style>
+
+<style lang="scss">
+// fix css style bug in open el-dialog
+.el-popup-parent--hidden {
+  .fixed-header {
+    padding-right: 15px;
+  }
+}
+</style>
