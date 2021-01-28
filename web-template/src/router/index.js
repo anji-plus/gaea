@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-10 14:23:29
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-25 17:35:34
+ * @Last Modified time: 2021-01-28 11:01:06
  */
 import Vue from 'vue'
 import Router from 'vue-router'
@@ -38,6 +38,17 @@ import Layout from '@/layout'
  * 不需要任何权限控制的页面
  */
 export const constantRoutes = [
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path*',
+        component: () => import('@/views/redirect/index'),
+      },
+    ],
+  },
   {
     path: '/login',
     component: () => import('@/views/login/index'),
