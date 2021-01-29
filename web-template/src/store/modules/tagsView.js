@@ -1,6 +1,7 @@
 const state = {
   visitedViews: [],
-  cachedViews: [],
+  // cachedViews: [],
+  cachedViews: ['RenderView'], // 解决三级路由无法被keep-alive缓存问题
 }
 
 const mutations = {
@@ -41,9 +42,10 @@ const mutations = {
     const index = state.cachedViews.indexOf(view.name)
     if (index > -1) {
       state.cachedViews = state.cachedViews.slice(index, index + 1)
+      state.cachedViews.push('RenderView')
     } else {
       // if index = -1, there is no cached tags
-      state.cachedViews = []
+      state.cachedViews = ['RenderView']
     }
   },
 
@@ -53,7 +55,7 @@ const mutations = {
     state.visitedViews = affixTags
   },
   DEL_ALL_CACHED_VIEWS: (state) => {
-    state.cachedViews = []
+    state.cachedViews = ['RenderView']
   },
 
   UPDATE_VISITED_VIEW: (state, view) => {

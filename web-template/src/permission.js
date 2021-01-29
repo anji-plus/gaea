@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:34:51
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-26 16:36:55
+ * @Last Modified time: 2021-01-29 16:28:34
  */
 import router from './router'
 import store from './store'
@@ -15,7 +15,7 @@ import { cloneDeep } from 'loadsh'
 
 NProgress.configure({ showSpinner: false }) // 进度条 Configuration
 
-const whiteList = ['/login'] // 白名单
+const whiteList = ['/login', '/help'] // 白名单
 
 router.beforeEach(async(to, from, next) => {
   NProgress.start()

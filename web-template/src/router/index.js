@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-10 14:23:29
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-28 11:01:06
+ * @Last Modified time: 2021-01-29 16:28:03
  */
 import Vue from 'vue'
 import Router from 'vue-router'
@@ -62,6 +62,11 @@ export const constantRoutes = [
   {
     path: '/401',
     component: () => import('@/views/error-page/401'),
+    hidden: true,
+  },
+  {
+    path: '/help',
+    component: () => import('@/views/help-center/index'),
     hidden: true,
   },
   {

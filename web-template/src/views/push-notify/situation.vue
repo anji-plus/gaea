@@ -1,8 +1,6 @@
 <template>
-  <div>收发概况</div>
+  <div class="app-container">收发概况</div>
 </template>
 <script>
-export default {
-  name: 'Situation',
-}
+export default {}
 </script>
