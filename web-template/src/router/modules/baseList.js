@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:34:51
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-27 13:17:19
+ * @Last Modified time: 2021-01-29 15:41:10
  */
 
 /** 脚手架基础页面路由 **/
@@ -96,7 +96,7 @@ export const baseList = [
       //   },
       // },
       // {
-      //   menuId: '2050',
+      //   menuId: '2060',
       //   parentMenuId: '20',
       //   path: 'permission',
       //   component: 'authority/permission',
@@ -222,17 +222,53 @@ export const baseList = [
       },
     ],
   },
-  // 导出中心
+  // 权限管理
   {
     menuId: '50',
+    parentMenuId: '',
+    path: '/component-center',
+    redirect: '/component-center/advanced-list',
+    meta: {
+      title: 'componentCenter',
+      icon: 'componentCenter',
+    },
+    alwaysShow: true,
+    children: [
+      {
+        menuId: '5010',
+        parentMenuId: '50',
+        path: 'advanced-list',
+        component: 'component-center/advanced-list',
+        name: 'AdvancedList',
+        meta: {
+          title: 'advancedList',
+          icon: '',
+        },
+      },
+      {
+        menuId: '5020',
+        parentMenuId: '50',
+        path: 'demo',
+        component: 'component-center/demo',
+        name: 'Demo',
+        meta: {
+          title: 'demo',
+          icon: '',
+        },
+      },
+    ],
+  },
+  // 导出中心
+  {
+    menuId: '60',
     parentMenuId: '',
     path: '/download',
     redirect: '/download/index',
     alwaysShow: 0,
     children: [
       {
-        menuId: '5010',
-        parentMenuId: '50',
+        menuId: '6010',
+        parentMenuId: '60',
         path: 'index',
         component: 'download/index',
         name: 'Download',

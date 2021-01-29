@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">推送历史</div>
+  <div>帮助中心</div>
 </template>
 <script>
 export default {}

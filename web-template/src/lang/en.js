@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 14:23:33
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-27 09:52:22
+ * @Last Modified time: 2021-01-29 15:50:42
  */
 export default {
   system: {
@@ -82,6 +82,9 @@ export default {
     download: 'Export Center',
     list: 'List',
     error: 'Error page',
+    componentCenter: 'Component Center',
+    advancedList: 'Advanced List',
+    demo: 'CRUD Demo',
   },
   navbar: {
     dashboard: 'Dashboard',
