@@ -1,5 +1,6 @@
 import { constantRoutes } from '@/router'
 import Layout from '@/layout'
+import RenderView from '@/layout/RenderView'
 
 // 加载页面组件
 export function importMethod(file) {
@@ -16,10 +17,16 @@ export function changeAsyncRoutes(routes) {
   routes.forEach((route) => {
     const tmp = { ...route }
     if (tmp.children && tmp.children.length !== 0) {
-      // 有子路由的情况 动态创建router-view
-      tmp.component = {
-        render: (c) => c('router-view'),
-      }
+      // // 有子路由的情况 动态创建router-view
+      // tmp.component = {
+      //   render: (c) => c('router-view'),
+      // }
+
+      // 没有三级路由或者不用keep-alive组件的时候可以用上边的方法
+
+      // 解决三级及以上级别路由无法被keep-alive组件缓存的问题
+      tmp.component = RenderView
+
       tmp.children = changeAsyncRoutes(tmp.children)
     } else {
       // 没有子路由，直接处理当前路由的component组件
