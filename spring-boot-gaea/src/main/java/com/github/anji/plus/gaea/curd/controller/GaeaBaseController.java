@@ -31,7 +31,7 @@ import static com.github.anji.plus.gaea.utils.GaeaUtils.toJSONString;
  * 基础controller
  *
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBaseEntity, D extends GaeaBaseDTO> {
 
@@ -81,7 +81,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
         pageDto.setPages(iPage.getPages());
         pageDto.setTotal(iPage.getTotal());
         pageDto.setSize(iPage.getSize());
-        return successBean(pageDto);
+        return responseSuccessWithData(pageDto);
     }
 
     /**
@@ -98,7 +98,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
 
         D dto = getDTO();
         GaeaBeanUtils.copyAndFormatter(result, dto);
-        ResponseBean responseBean = successBean(resultDtoHandle(dto));
+        ResponseBean responseBean = responseSuccessWithData(resultDtoHandle(dto));
         logger.info("{}根据ID查询结束，结果：{}", this.getClass().getSimpleName(), toJSONString(responseBean));
         return responseBean;
     }
@@ -123,7 +123,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
     public ResponseBean insert(@Validated @RequestBody D dto) {
         logger.info("{}新增服务开始，参数：{}", this.getClass().getSimpleName(), toJSONString(dto));
 
-        ResponseBean responseBean = successBean();
+        ResponseBean responseBean = responseSuccess();
         T entity = getEntity();
         //dto转为数据库实体
         BeanUtils.copyProperties(dto, entity);
@@ -154,7 +154,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
 
         logger.info("{}更新服务结束，结果：{}", this.getClass().getSimpleName(), toJSONString(entity));
 
-        return successBean();
+        return responseSuccess();
     }
 
 
@@ -169,7 +169,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
         logger.info("{}删除服务开始，参数ID：{}", this.getClass().getSimpleName(), id);
         getService().deleteById(id);
         logger.info("{}删除服务结束", this.getClass().getSimpleName());
-        return successBean();
+        return responseSuccess();
     }
 
     /**
@@ -184,7 +184,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
         logger.info("{}批量删除服务开始，批量参数Ids：{}", this.getClass().getSimpleName(), toJSONString(ids));
         boolean deleteCount = getService().deleteByIds(ids);
 
-        ResponseBean responseBean = successBean(deleteCount);
+        ResponseBean responseBean = responseSuccessWithData(deleteCount);
 
         logger.info("{}批量删除服务结束，结果：{}", this.getClass().getSimpleName(), toJSONString(responseBean));
         return responseBean;
@@ -196,26 +196,19 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
      *
      * @return
      */
-    public ResponseBean successBean() {
+    public ResponseBean responseSuccess() {
         return builder().build();
     }
 
-    /**
-     * 构建成功响应实例
-     *
-     * @return
-     */
-    public ResponseBean successBeanContent(String code, Object content, Object... args) {
-        return builder().code(code).content(content).args(args).build();
-    }
-
 
     /**
      * 构建成功响应实例
      *
+     * @param code 响应编码
+     * @param args 响应参数
      * @return
      */
-    public ResponseBean successBean(String code, Object... args) {
+    public ResponseBean responseSuccess(String code, Object... args) {
         return builder().code(code).args(args).build();
     }
 
@@ -225,8 +218,19 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
      * @param data
      * @return
      */
-    public ResponseBean successBean(Object data) {
-        return builder().content(data).build();
+    public ResponseBean responseSuccessWithData(Object data) {
+        return builder().data(data).build();
+    }
+
+    /**
+     * 构建成功响应实例
+     * @param code 响应编码
+     * @param data 响应数据
+     * @param args 响应参数
+     * @return
+     */
+    public ResponseBean responseSuccessWithData(String code, Object data, Object... args) {
+        return builder().code(code).data(data).args(args).build();
     }
 
     /**
@@ -234,25 +238,29 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
      *
      * @return
      */
-    public ResponseBean failureBean() {
+    public ResponseBean failure() {
         return builder().code(ResponseCode.FAIL_CODE).build();
     }
 
     /**
      * 构建失败响应实例
      *
+     * @param code 响应编码
+     * @param args 响应参数
      * @return
      */
-    public ResponseBean failureBean(String code, Object... args) {
+    public ResponseBean failure(String code, Object... args) {
         return builder().code(code).args(args).build();
     }
 
     /**
-     * 构建失败响应实例
-     *
+     * 构建失败响应实例,包含响应数据
+     * @param code 响应编码
+     * @param data 响应数据
+     * @param args 响应参数
      * @return
      */
-    public ResponseBean failureBeanContent(String code, Object content, Object... args) {
-        return builder().code(code).args(args).content(content).build();
+    public ResponseBean failureWithData(String code, Object data, Object... args) {
+        return builder().code(code).args(args).data(data).build();
     }
 }

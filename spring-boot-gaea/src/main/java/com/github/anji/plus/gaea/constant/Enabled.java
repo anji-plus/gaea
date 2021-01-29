@@ -2,7 +2,7 @@ package com.github.anji.plus.gaea.constant;
 
 /**
  * @author lr
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public enum Enabled {
     YES(1),NO(0);

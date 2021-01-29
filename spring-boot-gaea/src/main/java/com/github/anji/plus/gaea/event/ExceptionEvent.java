@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationEvent;
 /**
  * 异常事件
  * @author lr
- * @since 2020-12-23
+ * @since 2021-01-25
  */
 public class ExceptionEvent extends ApplicationEvent {
 

@@ -13,7 +13,7 @@ import java.util.Locale;
  * 国际化解析器
  * bean的名字必须为localeResolver
  * @author lr
- * @since 2020-11-24
+ * @since 2021-01-24
  * @see DispatcherServlet#LOCALE_RESOLVER_BEAN_NAME
  * @see DispatcherServlet#initLocaleResolver(org.springframework.context.ApplicationContext)
  * @see Request#getLocale()

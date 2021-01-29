@@ -7,7 +7,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 /**
  * 获取国际化信息
  * @author lr
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public class MessageSourceHolder {
 

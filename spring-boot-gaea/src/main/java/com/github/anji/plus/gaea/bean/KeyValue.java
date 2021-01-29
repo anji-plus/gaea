@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 前端下拉键值对
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  *
  **/
 public class KeyValue implements Serializable {

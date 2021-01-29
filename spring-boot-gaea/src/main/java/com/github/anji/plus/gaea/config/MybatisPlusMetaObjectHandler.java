@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * 自动补充插入或更新时的值
  * @author lr
- * @since 2020-11-24 18:26
+ * @since 2021-01-24 18:26
  */
 public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
 

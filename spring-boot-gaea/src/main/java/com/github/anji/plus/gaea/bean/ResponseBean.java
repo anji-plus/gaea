@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
- * 响应实体
+ * 响应体封装
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public final class ResponseBean implements Serializable {
 
@@ -24,17 +24,31 @@ public final class ResponseBean implements Serializable {
             0L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<>(1),
             r -> new Thread(r,"ResponseBean.then.executor"));
-
+    /**
+     * 响应编码
+     */
     private String code;
+
+    /**
+     * 响应信息
+     */
     private String message;
+
+    /**
+     * 响应参数
+     */
     private Object[] args;
-    private Object content;
+
+    /**
+     * 响应数据
+     */
+    private Object data;
 
     private ResponseBean(Builder builder) {
         this.code = builder.code;
         this.args = builder.args;
         this.message = builder.message;
-        this.content = builder.content;
+        this.data = builder.data;
     }
 
     /**
@@ -76,7 +90,7 @@ public final class ResponseBean implements Serializable {
 
     public static class Builder {
         private String code = ResponseCode.SUCCESS_CODE;
-        private Object content;
+        private Object data;
         private String message;
         private Object[] args;
 
@@ -99,8 +113,8 @@ public final class ResponseBean implements Serializable {
             return this;
         }
 
-        public Builder content(Object content) {
-            this.content = content;
+        public Builder data(Object data) {
+            this.data = data;
             return this;
         }
 
@@ -121,8 +135,8 @@ public final class ResponseBean implements Serializable {
         this.message = message;
     }
 
-    public Object getContent() {
-        return content;
+    public Object getData() {
+        return data;
     }
 
 	public String getMessage() {

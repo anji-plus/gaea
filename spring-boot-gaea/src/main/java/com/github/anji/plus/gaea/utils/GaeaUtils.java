@@ -17,7 +17,7 @@ import static com.github.anji.plus.gaea.constant.GaeaConstant.DATE_PATTERN;
 /**
  * 工具类
  * @author lr
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public class GaeaUtils {
 

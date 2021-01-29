@@ -3,7 +3,7 @@ package com.github.anji.plus.gaea.constant;
 /**
  * 全局变量
  * @author lr
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public interface GaeaConstant {
 

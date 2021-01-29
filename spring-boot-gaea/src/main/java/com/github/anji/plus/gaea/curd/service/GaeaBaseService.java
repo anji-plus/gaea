@@ -45,7 +45,7 @@ import static com.github.anji.plus.gaea.code.ResponseCode.*;
  * 基础service
  *
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public interface GaeaBaseService<P extends PageParam, T extends GaeaBaseEntity> {
     /**

@@ -3,7 +3,7 @@ package com.github.anji.plus.gaea.exception;
 /**
  * 业务异常封装类
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 
 public class BusinessException extends RuntimeException{

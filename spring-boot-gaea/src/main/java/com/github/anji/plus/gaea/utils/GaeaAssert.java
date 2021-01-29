@@ -8,7 +8,7 @@ import java.util.Collection;
 /**
  * 系统断言
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public final class GaeaAssert {
 

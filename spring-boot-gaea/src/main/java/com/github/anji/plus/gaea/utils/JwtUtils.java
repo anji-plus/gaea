@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * JWT工具类
  * @author lirui
- * @since 2020-06-14
+ * @since 2021-01-09
  */
 public class JwtUtils {
 
@@ -22,8 +22,8 @@ public class JwtUtils {
     private static String SECRET = "anji_plus_bms_p@ss1234";
 
     /**
-     * 秘钥
-     * @param username 用户账号
+     * 秘钥8
+     * @param username 7
      * @return
      */
     public static String createToken(String username) {

@@ -12,7 +12,7 @@ import java.util.function.Function;
 /**
  * 加减乘除
  * @author lr
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public class Maths {
 

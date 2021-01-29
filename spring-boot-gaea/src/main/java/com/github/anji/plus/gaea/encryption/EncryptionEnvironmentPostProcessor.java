@@ -1,22 +1,34 @@
-package com.github.anji.plus.gaea.curd.extension;
+package com.github.anji.plus.gaea.encryption;
 
+import com.github.anji.plus.gaea.config.GaeaProperties;
 import com.github.anji.plus.gaea.utils.JasyptUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
+import org.springframework.core.env.PropertySource;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
+import java.util.Iterator;
 import java.util.Properties;
 
 /**
  * 配置文件关键字段加密
  * @author lr
- * @since 2020-12-21
+ * @since 2021-01-06
  */
-public class DatasourcePasswordFactoryPostProcessor implements BeanFactoryPostProcessor {
+public class EncryptionEnvironmentPostProcessor implements EnvironmentPostProcessor {
+
+//    private GaeaProperties gaeaProperties;
+//
+//    public EncryptionFactoryPostProcessor(GaeaProperties gaeaProperties) {
+//        this.gaeaProperties = gaeaProperties;
+//    }
 
     /**
      * dataSourceProperties对应的用户名
@@ -29,15 +41,15 @@ public class DatasourcePasswordFactoryPostProcessor implements BeanFactoryPostPr
     private String password = "spring.datasource.password";
 
     /**
-     * 对数据库用户名进行加解密
-     *
-     * @param configurableListableBeanFactory
-     * @throws BeansException
+     * 加密方法
+     * @param environment
+     * @param application
      */
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-
-        ConfigurableEnvironment environment = (StandardServletEnvironment) configurableListableBeanFactory.getBean("environment");
+    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+        //加密私钥
+//        String secret = gaeaPropertiesties.getSecret();
+        String secret = "anji-plus";
 
         //加密的用户名
         String propertyUsername = environment.getProperty(username);
@@ -50,12 +62,10 @@ public class DatasourcePasswordFactoryPostProcessor implements BeanFactoryPostPr
 
         Properties properties = new Properties();
 
-        properties.put(username, JasyptUtils.decrypt(propertyUsername));
-        properties.put(password,JasyptUtils.decrypt(propertyPassword));
+        properties.put(username, JasyptUtils.decrypt(propertyUsername, secret));
+        properties.put(password,JasyptUtils.decrypt(propertyPassword, secret));
 
         //放在最前面
-        environment.getPropertySources().addFirst(new PropertiesPropertySource("defaultProperties",properties));
-
-
+        environment.getPropertySources().addFirst(new PropertiesPropertySource("gaeaProperties",properties));
     }
 }

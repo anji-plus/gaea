@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 /**
  * 返回结果统一封装
  * @author lr
- * @since 2020-06-24
+ * @since 2021-01-02
  */
 @RestControllerAdvice
 public class ResponseBeanAdvice implements ResponseBodyAdvice<ResponseBean> {

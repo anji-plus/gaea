@@ -11,6 +11,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class GaeaProperties {
 
     /**
+     * 加密私钥，用于加密信息
+     */
+    private String secret = "anji-plus";
+
+    /**
      * 激活配置
      */
     private Enabled enabled;
@@ -19,6 +24,14 @@ public class GaeaProperties {
      * 订阅了哪些组件
      */
     private String subscribes;
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
 
     public String getSubscribes() {
         return subscribes;

@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * 基础传输对象
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public class GaeaBaseDTO {
     private Long id;
