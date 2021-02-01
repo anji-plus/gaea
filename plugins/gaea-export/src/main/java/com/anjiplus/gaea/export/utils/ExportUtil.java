@@ -20,19 +20,21 @@ public class ExportUtil {
 
     private static Logger logger = LoggerFactory.getLogger(ExportUtil.class);
 
-    private static ExportUtil exportUtil;
+    private static ExportUtil exportUtil=null;
 
     private ExportUtil(){
 
     }
 
     public static synchronized ExportUtil getInstance(){
-        synchronized (ExportUtil.class) {
-            if (null == exportUtil) {
-                return new ExportUtil();
+        if(null==exportUtil){
+            synchronized (ExportUtil.class) {
+                if (null == exportUtil) {
+                    exportUtil= new ExportUtil();
+                }
             }
-            return exportUtil;
         }
+        return exportUtil;
     }
 
     public  String getFileIdUUID() {
