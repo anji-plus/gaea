@@ -20,8 +20,22 @@ public class ExportUtil {
 
     private static Logger logger = LoggerFactory.getLogger(ExportUtil.class);
 
+    private static ExportUtil exportUtil;
 
-    public static String getFileIdUUID() {
+    private ExportUtil(){
+
+    }
+
+    public static synchronized ExportUtil getInstance(){
+        synchronized (ExportUtil.class) {
+            if (null == exportUtil) {
+                return new ExportUtil();
+            }
+            return exportUtil;
+        }
+    }
+
+    public  String getFileIdUUID() {
         return UUID.randomUUID().toString();
     }
 
@@ -30,7 +44,7 @@ public class ExportUtil {
      *
      * @param exportOperation
      */
-    public static void exportByFilePathJasper(ExportOperation exportOperation) {
+    public  void exportByFilePathJasper(ExportOperation exportOperation) {
         exportByFilePath(exportOperation, null);
     }
 
@@ -40,7 +54,7 @@ public class ExportUtil {
      * @param exportOperation
      * @return
      */
-    public static byte[] exportByteInfoJasper(ExportOperation exportOperation) {
+    public  byte[] exportByteInfoJasper(ExportOperation exportOperation) {
         return exportByteInfo(exportOperation, null);
     }
 
@@ -50,7 +64,7 @@ public class ExportUtil {
      * @param exportOperation 参数
      * @param clazz           excel中list中的类型
      */
-    public static void exportByFilePathSimple(ExportOperation exportOperation, Class clazz) {
+    public  void exportByFilePathSimple(ExportOperation exportOperation, Class clazz) {
         exportByFilePath(exportOperation, clazz);
     }
 
@@ -61,7 +75,7 @@ public class ExportUtil {
      * @param clazz           excel中list中的类型
      * @return
      */
-    public static byte[] exportByteInfoSimple(ExportOperation exportOperation, Class clazz) {
+    public  byte[] exportByteInfoSimple(ExportOperation exportOperation, Class clazz) {
         return exportByteInfo(exportOperation, clazz);
     }
 
@@ -71,7 +85,7 @@ public class ExportUtil {
      * @param exportOperation 参数
      * @param clazz           excel中list中的类型
      */
-    private static void exportByFilePath(ExportOperation exportOperation, Class clazz) {
+    private  void exportByFilePath(ExportOperation exportOperation, Class clazz) {
         String fileId = getFileIdUUID();
         String dictPath = exportOperation.getFilePath();
         exportOperation.setFileId(fileId);
@@ -114,7 +128,7 @@ public class ExportUtil {
      * @param clazz           excel中list中的类型
      * @return
      */
-    private static byte[] exportByteInfo(ExportOperation exportOperation, Class clazz) {
+    private  byte[] exportByteInfo(ExportOperation exportOperation, Class clazz) {
         String fileId = getFileIdUUID();
         exportOperation.setFileId(fileId);
         exportOperation.setFileCreateTime(LocalDateTime.now());
