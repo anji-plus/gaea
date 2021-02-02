@@ -1,11 +1,11 @@
-package com.github.anji.plus.module.user;
+package com.github.anji.plus.modules.user;
 
 import com.anjiplus.gaea.security.security.extension.UserDetailsServiceHelper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.anji.plus.gaea.constant.Enabled;
-import com.github.anji.plus.module.user.entity.GaeaUser;
-import com.github.anji.plus.module.user.service.GaeaUserService;
+import com.github.anji.plus.modules.user.dao.entity.GaeaUser;
+import com.github.anji.plus.modules.user.service.GaeaUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
