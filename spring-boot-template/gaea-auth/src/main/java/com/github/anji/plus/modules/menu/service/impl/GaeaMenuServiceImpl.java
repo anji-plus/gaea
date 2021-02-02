@@ -1,0 +1,241 @@
+package com.github.anji.plus.modules.menu.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.anji.plus.gaea.bean.TreeNode;
+import com.github.anji.plus.gaea.constant.Enabled;
+import com.github.anji.plus.modules.menu.controller.dto.GaeaLeftMenuDTO;
+import com.github.anji.plus.modules.menu.controller.dto.GaeaMenuDTO;
+import com.github.anji.plus.modules.menu.dao.GaeaMenuActionMapper;
+import com.github.anji.plus.modules.menu.dao.entity.GaeaMenu;
+import com.github.anji.plus.modules.menu.dao.GaeaMenuMapper;
+import com.github.anji.plus.modules.menu.dao.entity.GaeaMenuAction;
+import com.github.anji.plus.modules.menu.service.GaeaMenuService;
+import com.github.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
+import com.github.anji.plus.modules.role.dao.GaeaRoleMenuActionMapper;
+import com.github.anji.plus.modules.role.dao.entity.GaeaRoleMenuAction;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * 菜单表(GaeaMenu)ServiceImpl
+ *
+ * @author lirui
+ * @since 2021-02-02 13:36:43
+ */
+@Service
+public class GaeaMenuServiceImpl implements GaeaMenuService {
+
+    @Autowired
+    private GaeaMenuMapper  gaeaMenuMapper;
+
+    @Autowired
+    private GaeaRoleMenuActionMapper gaeaRoleMenuActionMapper;
+
+    @Autowired
+    private GaeaMenuActionMapper gaeaMenuActionMapper;
+
+    @Override
+    public GaeaBaseMapper<GaeaMenu> getMapper() {
+        return  gaeaMenuMapper;
+    }
+
+
+    /**
+     * 获取角色对应的菜单
+     *
+     * @param roles
+     * @return
+     */
+    @Override
+    public List<GaeaLeftMenuDTO> getMenus(List<String> roles) {
+
+        if(CollectionUtils.isEmpty(roles)) {
+            return new ArrayList<>();
+        }
+
+        //查询指定角色对应的菜单按钮
+        LambdaQueryWrapper<GaeaRoleMenuAction> queryWrapper = Wrappers.<GaeaRoleMenuAction>lambdaQuery()
+                .in(GaeaRoleMenuAction::getRoleCode, roles);
+
+
+        //菜单编码与其下的按钮
+        Map<String, Set<String>> menuActionMap = gaeaRoleMenuActionMapper.selectList(queryWrapper)
+                .stream()
+                .collect(Collectors.groupingBy(GaeaRoleMenuAction::getMenuCode,
+                        Collectors.mapping(GaeaRoleMenuAction::getActionCode, Collectors.toSet())));
+
+        //获取当前用户所有菜单
+        LambdaQueryWrapper<GaeaMenu> resourceQueryWrapper = Wrappers.<GaeaMenu>lambdaQuery()
+                .eq(GaeaMenu::getEnabled, Enabled.YES.getValue())
+                .in(GaeaMenu::getMenuCode, menuActionMap.keySet())
+                .orderByAsc(GaeaMenu::getSort);
+
+        //当前用户所有的叶子菜单
+        List<GaeaMenu> leafMenuList = gaeaMenuMapper.selectList(resourceQueryWrapper);
+
+
+
+        //查询所有菜单
+        List<GaeaMenu> allMenus = gaeaMenuMapper.selectList(Wrappers.emptyWrapper());
+
+        //菜单编码与菜单的对应关系
+        Map<String, GaeaMenu> menuMap = allMenus.stream().collect(Collectors.toMap(GaeaMenu::getMenuCode, gaeaMenu -> gaeaMenu));
+
+        //转换
+        List<GaeaLeftMenuDTO> leafMenus = leafMenuList.stream().map(gaeaMenu -> {
+            GaeaLeftMenuDTO gaeaMenuDTO = new GaeaLeftMenuDTO();
+            BeanUtils.copyProperties(gaeaMenu, gaeaMenuDTO);
+            Map<String, String> meta = new HashMap<>(2);
+            meta.put("title", gaeaMenuDTO.getMenuCode());
+            meta.put("icon", gaeaMenuDTO.getMenuIcon());
+            gaeaMenuDTO.setMeta(meta);
+
+            gaeaMenuDTO.setPermission(menuActionMap.get(gaeaMenuDTO.getMenuCode()));
+            return gaeaMenuDTO;
+        }).collect(Collectors.toList());
+
+
+        //按父菜单Code分组
+        Map<String, List<GaeaLeftMenuDTO>> leafParentMap = leafMenus.stream().collect(Collectors.groupingBy(GaeaLeftMenuDTO::getParentCode));
+
+        List<GaeaLeftMenuDTO> menuResult = leafParentMap.entrySet().stream().map(entry -> {
+            GaeaMenu gaeaMenu = menuMap.get(entry.getKey());
+            GaeaLeftMenuDTO gaeaLeftMenuDTO = new GaeaLeftMenuDTO();
+            BeanUtils.copyProperties(gaeaMenu, gaeaLeftMenuDTO);
+            gaeaLeftMenuDTO.setChildren(entry.getValue());
+            return setChild(gaeaLeftMenuDTO, menuMap);
+
+        }).collect(Collectors.toList());
+
+        return menuResult;
+    }
+
+
+    /**
+     * 递归寻找父菜单
+     * @param gaeaMenuDTO
+     * @param menuMap
+     * @return
+     */
+    public GaeaLeftMenuDTO setChild(GaeaLeftMenuDTO gaeaMenuDTO, Map<String, GaeaMenu> menuMap) {
+
+        //当没有父菜单code时，递归结束
+        if(gaeaMenuDTO.getParentCode() == null) {
+            return gaeaMenuDTO;
+        }
+        GaeaMenu gaeaMenu = menuMap.get(gaeaMenuDTO.getMenuCode());
+        GaeaLeftMenuDTO dto = new GaeaLeftMenuDTO();
+        BeanUtils.copyProperties(gaeaMenu, dto);
+        return setChild(dto, menuMap);
+    }
+
+    /**
+     * 获取所有菜单按钮树
+     *
+     * @return
+     */
+    @Override
+    public List<TreeNode> getTree() {
+
+        //获取所有菜单
+        LambdaQueryWrapper<GaeaMenu> resourceQueryWrapper = Wrappers.<GaeaMenu>lambdaQuery()
+                .eq(GaeaMenu::getEnabled, Enabled.YES.getValue())
+                .orderByAsc(GaeaMenu::getSort);
+
+
+        List<GaeaMenu> allResources = gaeaMenuMapper.selectList(resourceQueryWrapper);
+
+        //查询菜单与按钮的对应关系
+        List<GaeaMenuAction> gaeaMenuActions = gaeaMenuActionMapper.selectList(Wrappers.emptyWrapper());
+
+        //给菜单分组
+        Map<String, List<TreeNode>> menuActionMap = gaeaMenuActions.stream()
+                .collect(Collectors.groupingBy(GaeaMenuAction::getMenuCode,Collectors.mapping(action -> {
+                    TreeNode treeNode = new TreeNode();
+                    treeNode.setId(action.getActionCode());
+                    treeNode.setLabel(action.getActionCode());
+                    return treeNode;
+                }, Collectors.toList())));
+
+        //转换DTO,用于返回
+        List<GaeaMenuDTO> gaeaAuthMenuDTOS = allResources.stream().map(gaeaMenu -> {
+            GaeaMenuDTO dto = new GaeaMenuDTO();
+            BeanUtils.copyProperties(gaeaMenu, dto);
+            return dto;
+        }).collect(Collectors.toList());
+
+        //一级菜单（没有父菜单）
+        List<GaeaMenuDTO> rootResources = gaeaAuthMenuDTOS.stream().filter(resource -> StringUtils.isBlank(resource.getParentCode())).collect(Collectors.toList());
+
+        //遍及一级菜单，找出它的下级菜单
+        List<TreeNode> result = setTreeNode(menuActionMap, gaeaAuthMenuDTOS, rootResources);
+
+        return result;
+    }
+
+    /**
+     * 设置子节点
+     * @param menuActionMap
+     * @param gaeaAuthMenuDTOS
+     * @param rootResources
+     * @return
+     */
+    private List<TreeNode> setTreeNode(Map<String, List<TreeNode>> menuActionMap, List<GaeaMenuDTO> gaeaAuthMenuDTOS, List<GaeaMenuDTO> rootResources) {
+        return rootResources.stream().map(resource -> {
+            TreeNode node = new TreeNode();
+            node.setId(resource.getMenuCode());
+            node.setLabel(resource.getMenuCode());
+            //树子集合
+            List<TreeNode> treeResult = new ArrayList<>();
+            //菜单对应的actions
+            List<TreeNode> actionTreeNodes = menuActionMap.get(resource.getMenuCode());
+            if (!CollectionUtils.isEmpty(actionTreeNodes)) {
+                treeResult.addAll(actionTreeNodes);
+            }
+
+            //菜单子菜单
+            List<TreeNode> subResourcesTemp = getSubResources(resource.getMenuCode(), gaeaAuthMenuDTOS, menuActionMap);
+            if (!CollectionUtils.isEmpty(subResourcesTemp)) {
+                treeResult.addAll(subResourcesTemp);
+            }
+
+            if (!CollectionUtils.isEmpty(treeResult)) {
+                node.setChildren(treeResult);
+            }
+            return node;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 递归
+     *
+     * @param menuCode
+     * @param resources
+     * @return
+     */
+    public List<TreeNode> getSubResources(String menuCode, List<GaeaMenuDTO> resources,Map<String, List<TreeNode>> menuActionMap) {
+        List<GaeaMenuDTO> subResources = new ArrayList<>();
+        resources.stream().forEach(resource -> {
+            //当前code的下级菜单
+            if (StringUtils.equals(menuCode, resource.getParentCode())) {
+                subResources.add(resource);
+            }
+        });
+
+        if (subResources.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        //子菜单
+        List<TreeNode> result = setTreeNode(menuActionMap, resources, subResources);
+        return result;
+    }
+
+}
