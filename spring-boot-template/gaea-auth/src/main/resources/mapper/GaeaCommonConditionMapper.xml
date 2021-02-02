@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.anji.plus.menuextension.dao.GaeaCommonConditionMapper">
+
+    <resultMap type="com.github.anji.plus.menuextension.entity.GaeaCommonCondition" id="GaeaCommonConditionMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="menuId" column="menu_id" jdbcType="INTEGER"/>
+        <result property="sql" column="sql" jdbcType="VARCHAR"/>
+        <result property="lable" column="lable" jdbcType="VARCHAR"/>
+        <result property="isDisabled" column="is_disabled" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="tableCode" column="table_code" jdbcType="VARCHAR"/>
+        <result property="searchName" column="search_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, menu_id, sql, lable, is_disabled, create_by, create_time, update_by, update_time, table_code, search_name
+    </sql>
+
+
+</mapper>
