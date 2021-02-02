@@ -56,7 +56,7 @@ public class ExceptionHandlerAdvice {
         } catch (NoSuchMessageException exception) {
             message = code;
         }
-        return ResponseBean.builder().code(code).message(message).build();
+        return ResponseBean.builder().code(FAIL_CODE).message(message).build();
     }
 
     /**

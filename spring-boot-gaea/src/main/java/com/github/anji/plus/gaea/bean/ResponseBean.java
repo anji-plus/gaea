@@ -142,4 +142,8 @@ public final class ResponseBean implements Serializable {
 	public String getMessage() {
 		return message;
 	}
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }
