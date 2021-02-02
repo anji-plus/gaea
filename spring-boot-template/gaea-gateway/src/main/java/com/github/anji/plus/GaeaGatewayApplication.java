@@ -1,13 +1,19 @@
 package com.github.anji.plus;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
 /**
- * Hello world!
+ * 网关启动类
+ * @author lirui
+ * @since 2021-02-01
  *
  */
-public class GaeaGatewayApplication
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+@SpringBootApplication
+@EnableDiscoveryClient
+public class GaeaGatewayApplication {
+    public static void main( String[] args ) {
+        SpringApplication.run(GaeaGatewayApplication.class);
     }
 }
