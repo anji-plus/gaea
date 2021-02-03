@@ -10,19 +10,30 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.*;
-
+/**
+ * 数据库操作实现类
+ *
+ * @author 木子李·De
+ * @since 2021/2/3 14:16
+ */
 @Service
 public class DBOperatorService implements IDBOperatorService {
+
+    private static DBType dbType;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     private DBType getDBType() throws SQLException {
+        if(dbType != null){
+            return dbType;
+        }
         String databaseProductName=jdbcTemplate.getDataSource().getConnection().getMetaData().getDatabaseProductName();
         if(databaseProductName == null || databaseProductName.trim().length() == 0){
             throw new RuntimeException(String.format("%s database not supported", databaseProductName));
         }
-        return Optional.ofNullable(DBType.getDbType(databaseProductName)).orElseThrow(()->
+        dbType=DBType.getDbType(databaseProductName);
+        return Optional.ofNullable(dbType).orElseThrow(()->
             new RuntimeException(String.format("%s database not supported", databaseProductName))
         );
     }

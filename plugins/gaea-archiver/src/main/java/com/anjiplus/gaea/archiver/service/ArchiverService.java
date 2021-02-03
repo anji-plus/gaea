@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 /**
- * 归档测试示例
+ * 归档业务实现类
  *
  * @author 木子李·De
  * @since 2021/2/3 14:16
@@ -122,7 +122,7 @@ public class ArchiverService implements IArchiverService{
             }
             dataSourceTransactionManager.commit(status);
 
-            logger.info("archive table {} success, row count={}", archiveTableName, archivecount);
+            logger.info("archive table {} -> {} success, row count={}", tablename, archiveTableName, archivecount);
         }
 
     }
@@ -134,7 +134,15 @@ public class ArchiverService implements IArchiverService{
         Integer maxDaysBeforeArchive = archiverTable.getMaxDaysBeforeArchive();
         Integer maxDaysBeforeDelete = archiverTable.getMaxDaysBeforeDelete();
 
-        logger.info("drop old archive table {} success", tablename);
+        //根据tablename，扫描所有归档表
+
+        //根据maxDaysBeforeDelete判断归档表是否已经可以删除
+
+        //如果已过期，删除前，先dump到服务器
+
+        //dump完成后drop table
+        
+        //logger.info("drop old archive table {} success", tablename);
     }
 
     @Override
@@ -158,8 +166,8 @@ public class ArchiverService implements IArchiverService{
 
         //结束时间
         LocalDateTime endTime = LocalDateTime.now();
-        long millis = Duration.between(startTime, endTime).toMillis();
-        logger.info("gaea archiver finish table count {}, time cost {}", archiverTableList.size(), millis);
+        long second = Duration.between(startTime, endTime).toMillis()/1000;
+        logger.info("gaea archiver finish table count {}, time cost {} second", archiverTableList.size(), second);
     }
 
 }
