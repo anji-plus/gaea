@@ -89,4 +89,14 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
         List<TreeNode> tree = gaeaMenuService.getTree();
         return responseSuccessWithData(tree);
     }
+
+    /**
+     * 获取当前用户拥有的权限按钮
+     * @return
+     */
+    @GetMapping("/tree/actions")
+    public ResponseBean userActions() {
+        String username = UserContentHolder.getContext().getUsername();
+        return responseSuccessWithData(gaeaMenuService.getSelectActions(username));
+    }
 }

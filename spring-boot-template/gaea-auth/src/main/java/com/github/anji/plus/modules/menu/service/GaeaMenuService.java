@@ -30,4 +30,12 @@ public interface GaeaMenuService extends GaeaBaseService<GaeaMenuParam, GaeaMenu
      */
     List<TreeNode> getTree();
 
+
+    /**
+     * 获取用户拥有的权限
+     * @param username
+     * @return
+     */
+    List<String> getSelectActions(String username);
+
 }

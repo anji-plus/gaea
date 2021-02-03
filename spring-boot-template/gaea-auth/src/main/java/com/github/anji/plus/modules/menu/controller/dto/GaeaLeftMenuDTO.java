@@ -35,7 +35,7 @@ public class GaeaLeftMenuDTO {
      * 菜单路径
      */
     @ApiModelProperty(value = "菜单路径")
-    private String menuUrl;
+    private String path;
     /**
      * base64图标或者iconfont字体
      */
@@ -99,12 +99,12 @@ public class GaeaLeftMenuDTO {
         this.parentCode = parentCode;
     }
 
-    public String getMenuUrl() {
-        return menuUrl;
+    public String getPath() {
+        return path;
     }
 
-    public void setMenuUrl(String menuUrl) {
-        this.menuUrl = menuUrl;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getMenuIcon() {

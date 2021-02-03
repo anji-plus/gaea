@@ -14,9 +14,11 @@ import com.github.anji.plus.modules.menu.service.GaeaMenuService;
 import com.github.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
 import com.github.anji.plus.modules.role.dao.GaeaRoleMenuActionMapper;
 import com.github.anji.plus.modules.role.dao.entity.GaeaRoleMenuAction;
+import com.github.anji.plus.modules.role.service.GaeaRoleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -41,6 +43,9 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
     @Autowired
     private GaeaMenuActionMapper gaeaMenuActionMapper;
 
+    @Autowired
+    private GaeaRoleService gaeaRoleService;
+
     @Override
     public GaeaBaseMapper<GaeaMenu> getMapper() {
         return  gaeaMenuMapper;
@@ -55,7 +60,6 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
      */
     @Override
     public List<GaeaLeftMenuDTO> getMenus(List<String> roles) {
-
         if(CollectionUtils.isEmpty(roles)) {
             return new ArrayList<>();
         }
@@ -92,10 +96,7 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
         List<GaeaLeftMenuDTO> leafMenus = leafMenuList.stream().map(gaeaMenu -> {
             GaeaLeftMenuDTO gaeaMenuDTO = new GaeaLeftMenuDTO();
             BeanUtils.copyProperties(gaeaMenu, gaeaMenuDTO);
-            Map<String, String> meta = new HashMap<>(2);
-            meta.put("title", gaeaMenuDTO.getMenuCode());
-            meta.put("icon", gaeaMenuDTO.getMenuIcon());
-            gaeaMenuDTO.setMeta(meta);
+            setDtoMeta(gaeaMenuDTO);
 
             gaeaMenuDTO.setPermission(menuActionMap.get(gaeaMenuDTO.getMenuCode()));
             return gaeaMenuDTO;
@@ -117,6 +118,13 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
         return menuResult;
     }
 
+    private void setDtoMeta(GaeaLeftMenuDTO gaeaMenuDTO) {
+        Map<String, String> meta = new HashMap<>(2);
+        meta.put("title", gaeaMenuDTO.getMenuCode());
+        meta.put("icon", gaeaMenuDTO.getMenuIcon());
+        gaeaMenuDTO.setMeta(meta);
+    }
+
 
     /**
      * 递归寻找父菜单
@@ -125,6 +133,8 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
      * @return
      */
     public GaeaLeftMenuDTO setChild(GaeaLeftMenuDTO gaeaMenuDTO, Map<String, GaeaMenu> menuMap) {
+        //设置元数据
+        setDtoMeta(gaeaMenuDTO);
 
         //当没有父菜单code时，递归结束
         if(gaeaMenuDTO.getParentCode() == null) {
@@ -159,8 +169,9 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
         Map<String, List<TreeNode>> menuActionMap = gaeaMenuActions.stream()
                 .collect(Collectors.groupingBy(GaeaMenuAction::getMenuCode,Collectors.mapping(action -> {
                     TreeNode treeNode = new TreeNode();
-                    treeNode.setId(action.getActionCode());
-                    treeNode.setLabel(action.getActionCode());
+                    String key = action.getMenuCode() + ":"+ action.getActionCode();
+                    treeNode.setId(key);
+                    treeNode.setLabel(key);
                     return treeNode;
                 }, Collectors.toList())));
 
@@ -236,6 +247,25 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
         //子菜单
         List<TreeNode> result = setTreeNode(menuActionMap, resources, subResources);
         return result;
+    }
+
+    /**
+     * 获取当前用户拥有的按钮权限
+     * @param username
+     * @return
+     */
+    @Override
+    public List<String> getSelectActions(String username) {
+        //获取用户角色
+        List<String> userRoleCodes = gaeaRoleService.getUserRoleCodes(username);
+
+        LambdaQueryWrapper<GaeaRoleMenuAction> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(GaeaRoleMenuAction::getRoleCode, userRoleCodes);
+        List<GaeaRoleMenuAction> gaeaRoleMenuActions = gaeaRoleMenuActionMapper.selectList(queryWrapper);
+
+        return gaeaRoleMenuActions.stream()
+                .map(action -> action.getMenuCode() + ":" + action.getActionCode())
+                .collect(Collectors.toList());
     }
 
 }
