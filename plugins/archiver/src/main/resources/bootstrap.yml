@@ -1,0 +1,18 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: syslog-service
+  cloud:
+    nacos:
+      config:
+        server-addr: 10.108.6.131:8848
+        group: DEFAULT_GROUP
+        namespace: fc104265-c9b7-47c1-aa65-4636071e40db
+        file-extension: yaml
+      discovery:
+        server-addr: 10.108.6.131:8848
+        group: DEFAULT_GROUP
+        namespace: fc104265-c9b7-47c1-aa65-4636071e40db
+  profiles:
+    active: dev

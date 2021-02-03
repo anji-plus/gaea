@@ -1,0 +1,13 @@
+spring:
+  anjiplus:
+    gaea:
+      archiver:
+        enabled: false
+        archive-scheduled-cron: 0 0 3 2 */1 ? #归档触发的定时器默认每月2号，凌晨3:0:0执行归档
+        max-days-before-archive: 30  #归档多久之前的数据，将n天前的数据，移动到归档表，tables配置项中策略优先加载
+        max-days-before-delete: 720  #删除多久之前的历史数据，归档表中，已归档的数据保留期限，超过期限的数据将删除。tables配置项中策略优先加载
+        tables:
+          - tablename:
+            timefield:
+            max-days-before-archive:
+            max-days-before-delete:
