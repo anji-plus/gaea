@@ -15,7 +15,7 @@ import java.util.Map;
  * @author lirui
  * @since 2021-01-09
  */
-public class JwtUtils {
+public abstract class JwtUtils {
 
     public static final String Authorization = "Authorization";
 

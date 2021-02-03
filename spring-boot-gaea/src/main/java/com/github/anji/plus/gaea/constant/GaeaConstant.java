@@ -17,6 +17,12 @@ public interface GaeaConstant {
      */
     String SPLIT = ",";
 
+
+    /**
+     * redis分割
+     */
+    String REDIS_SPLIT = ":";
+
     /**
      * 国际化
      */

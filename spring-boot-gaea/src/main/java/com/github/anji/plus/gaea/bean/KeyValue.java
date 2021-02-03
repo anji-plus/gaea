@@ -12,22 +12,22 @@ import java.util.List;
  **/
 public class KeyValue implements Serializable {
 
-    private String id;
+    private Object id;
     private String text;
     private List<KeyValue> children = new ArrayList<>();
 
     public KeyValue() {}
 
-    public KeyValue(String id, String text) {
+    public KeyValue(Object id, String text) {
         this.id = id;
         this.text = text;
     }
 
-    public String getId() {
+    public Object getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Object id) {
         this.id = id;
     }
 

@@ -22,7 +22,7 @@ import java.util.List;
  * @author lr
  * @since 2021-01-12
  */
-public class GaeaBeanUtils {
+public abstract class GaeaBeanUtils {
 
     /**
      * 字段类型转换

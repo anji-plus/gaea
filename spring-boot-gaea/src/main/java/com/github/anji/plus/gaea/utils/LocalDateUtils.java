@@ -11,7 +11,7 @@ import java.util.Date;
  * @author lirui
  * @since 2021-01-12
  */
-public class LocalDateUtils {
+public abstract class LocalDateUtils {
 
     /**
      * LocalDate 转换为Date

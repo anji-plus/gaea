@@ -11,7 +11,7 @@ public enum RedisKeyEnum {
     /**
      * 数据字典
      */
-    DICT_PREFIX("base:dict:prefix:", "数据字典");
+    DICT_PREFIX("gaea:dict:prefix:", "数据字典");
 
     public String key;
     public String message;
