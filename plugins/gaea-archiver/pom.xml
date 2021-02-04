@@ -9,13 +9,16 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.anjiplus.gaea</groupId>
-	<artifactId>archiver</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>com.anjiplus</groupId>
+	<artifactId>spring-boot-starter-gaea-archiver</artifactId>
+	<version>0.0.1</version>
 
-	<name>archiver</name>
-	<description>database archiver project for Spring Boot</description>
+	<name>gaea-archiver</name>
+	<description>database archiver</description>
+	<url>https://github.com/anji-plus/gaea</url>
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 	</properties>
 
@@ -38,6 +41,37 @@
 		</dependency>
 	</dependencies>
 
+	<!--中央仓库上传配置开始-->
+	<licenses>
+		<!-- Apache许可证 -->
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<scm>
+		<url>https://github.com/anji-plus/gaea.git</url>
+		<connection>https://github.com/anji-plus/captcha.git</connection>
+	</scm>
+
+	<developers>
+		<developer>
+			<name>develop.anji-plus.com</name>
+			<email>MS@anji-plus.com</email>
+			<url>https://github.com/anji-plus</url>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>releases</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>releases</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+	</distributionManagement>
 	<build>
 		<plugins>
 			<plugin>
