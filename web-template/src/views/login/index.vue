@@ -12,7 +12,7 @@
     </div>
     <div class="login_contant">
       <img src="@/assets/images/login.png" alt="image" class="login_img">
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login_form" autocomplete="on" label-position="left" @keyup.enter.native="useVerify">
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login_form" autocomplete="on" label-position="left" @keyup.enter.native="handleLogin">
         <div class="title_container">
           <h3 class="title">
             HELLO,
@@ -64,11 +64,11 @@
           </div>
           <!-- <p>{{ $t('login.forgetPsw') }}</p> -->
         </div>
-        <el-button :loading="loading" type="primary" class="login_btn" @click.native.prevent="useVerify">{{ $t('login.logIn') }}</el-button>
+        <el-button :loading="loading" type="primary" class="login_btn" @click.native.prevent="handleLogin">{{ $t('login.logIn') }}</el-button>
       </el-form>
     </div>
     <!--  验证码  -->
-    <Verify ref="verify" :captcha-type="'blockPuzzle'" :img-size="{ width: '400px', height: '200px' }" @success="verifylogin" />
+    <Verify v-if="needCaptcha" ref="verify" :captcha-type="'blockPuzzle'" :img-size="{ width: '400px', height: '200px' }" @success="verifylogin" />
   </div>
 </template>
 
@@ -101,6 +101,7 @@ export default {
       loading: false, // 登录loding
       redirect: undefined, // 记录重定向地址
       otherQuery: {}, // 记录重定向地址中的参数
+      needCaptcha: false,
     }
   },
   watch: {
@@ -165,7 +166,7 @@ export default {
     verifylogin(params) {
       this.loginForm.verifyCode = params.captchaVerification
       if (this.loginForm.verifyCode) {
-        this.handleLogin()
+        this.loginApi()
       }
     },
     // 登录操作
@@ -173,33 +174,48 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true
-          this.$store
-            .dispatch('user/login', this.loginForm)
-            .then((res) => {
-              this.loading = false
-              // 选中记住密码时 把密码存到cookie里
-              this.rememberPsw && cookies.set(`u_${this.loginForm.username}`, Encrypt(this.loginForm.password))
-              // 若是第一次登录则提示其修改密码
-              if (res && res.firstLogin) {
-                this.$confirm(this.$t('login.firstLogin'), this.$t('promptMessage.deleteTipTitle'), {})
-                  .then(() => {
-                    this.$router.push({ name: 'ChangePassword', params: { firstLogin: true }})
-                  })
-                  .catch(() => {
-                    this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-                  })
-                return
-              }
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-            })
-            .catch(() => {
-              this.loading = false
-            })
+          // 登录失败次数过多需要展示滑动验证码
+          if (this.needCaptcha) {
+            this.useVerify()
+            return
+          }
+          this.loginApi()
         } else {
           console.log('error submit!!')
           return false
         }
       })
+    },
+    loginApi() {
+      this.$store
+        .dispatch('user/login', this.loginForm)
+        .then((res) => {
+          this.loading = false
+          // 选中记住密码时 把密码存到cookie里
+          this.rememberPsw && cookies.set(`u_${this.loginForm.username}`, Encrypt(this.loginForm.password))
+          // 若是第一次登录则提示其修改密码
+          // if (res && res.firstLogin) {
+          //   this.$confirm(this.$t('login.firstLogin'), this.$t('promptMessage.deleteTipTitle'), {})
+          //     .then(() => {
+          //       this.$router.push({ name: 'ChangePassword', params: { firstLogin: true }})
+          //     })
+          //     .catch(() => {
+          //       this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+          //     })
+          //   return
+          // }
+          // 返回了captcha字段，证明需要展示验证码
+          if (res && res.captcha) {
+            this.needCaptcha = true
+          } else {
+            this.needCaptcha = false
+            console.log(res)
+            this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+          }
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {

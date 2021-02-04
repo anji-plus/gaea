@@ -15,8 +15,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="启用状态" prop="enableFlag">
-                <el-select v-model="searchForm.enableFlag" :placeholder="$t('placeholder.select')">
+              <el-form-item label="启用状态" prop="enabled">
+                <el-select v-model="searchForm.enabled" :placeholder="$t('placeholder.select')">
                   <el-option key="1" label="启用" :value="1" />
                   <el-option key="0" label="禁用" :value="0" />
                 </el-select>
@@ -28,7 +28,7 @@
           <el-button
             type="primary"
             @click="
-              searchForm.currentPage = 1
+              searchForm.pageNumber = 1
               getData()
             "
           >{{ $t('btn.query') }}</el-button>
@@ -48,14 +48,18 @@
       </el-table-column>
       <el-table-column prop="actionName" label="按钮名称" min-width="110" align="center" />
       <el-table-column prop="sort" label="排序" min-width="110" align="center" />
-      <el-table-column prop="enableFlag" label="启用状态" min-width="90" align="center" />
-      <el-table-column prop="createdTime" :label="$t('userManage.creationTime')" align="center" min-width="160" />
-      <el-table-column prop="createdBy" :label="$t('userManage.creator')" align="center" min-width="160" />
-      <el-table-column prop="updatedTime" :label="$t('userManage.modifyTime')" align="center" min-width="180" />
-      <el-table-column prop="updatedBy" :label="$t('userManage.modifyUser')" align="center" min-width="140" />
+      <el-table-column prop="enabled" label="启用状态" min-width="90" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.enabled ? '启用' : '禁用' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="createTime" :label="$t('userManage.creationTime')" align="center" min-width="160" />
+      <el-table-column prop="createBy" :label="$t('userManage.creator')" align="center" min-width="160" />
+      <el-table-column prop="updateTime" :label="$t('userManage.modifyTime')" align="center" min-width="180" />
+      <el-table-column prop="updateBy" :label="$t('userManage.modifyUser')" align="center" min-width="140" />
     </el-table>
-    <el-pagination v-show="total > 0" background :current-page.sync="searchForm.currentPage" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="40%" :close-on-click-modal="false" center :visible.sync="basicDialog" @close="closeDialog">
+    <el-pagination v-show="total > 0" background :current-page.sync="searchForm.pageNumber" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="50%" :close-on-click-modal="false" center :visible.sync="basicDialog" @close="closeDialog">
       <el-form ref="userForm" :model="dialogForm" :rules="formRules" label-width="100px" :disabled="dialogTittle == 'view'">
         <el-row class="form_table">
           <el-col :span="12">
@@ -68,22 +72,12 @@
               <el-input v-model.trim="dialogForm.actionName" />
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="12"> -->
-          <!-- <el-form-item label="排序" prop="sort">
-              <el-input v-model.trim="dialogForm.sort"/>
-            </el-form-item> -->
-          <!-- </el-col> -->
           <el-col :span="12">
-            <el-form-item label="启用状态" prop="enableFlag">
-              <el-select v-model="searchForm.enableFlag" :placeholder="$t('placeholder.select')">
+            <el-form-item label="启用状态" prop="enabled">
+              <el-select v-model="dialogForm.enabled" :placeholder="$t('placeholder.select')">
                 <el-option key="1" label="启用" :value="1" />
                 <el-option key="0" label="禁用" :value="0" />
               </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="备注" prop="remark">
-              <el-input v-model.trim="dialogForm.remark" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -96,7 +90,7 @@
   </div>
 </template>
 <script>
-import { getBtnList } from '@/api/authority'
+import { getBtnList, addBtn, editBtn, deleteBtn } from '@/api/authority'
 export default {
   data() {
     return {
@@ -104,8 +98,8 @@ export default {
       searchForm: {
         actionName: null,
         actionCode: null,
-        enableFlag: null,
-        currentPage: 1,
+        enabled: null,
+        pageNumber: 1,
         pageSize: 10,
       },
       tableList: [],
@@ -113,40 +107,34 @@ export default {
       dialogTittle: 'view',
       basicDialog: false,
       dialogForm: {
-        actionId: null,
+        // actionId: null,
         actionCode: null,
         actionName: null,
-        remark: null,
+        // remark: null,
         // sort: null,
-        enableFlag: null,
+        enabled: 1,
       },
       formRules: {
-        actionId: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        // actionId: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
         actionCode: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
         actionName: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-        enableFlag: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        // enabled: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
       },
     }
   },
   methods: {
     // 提交按钮
     confirm() {
-      this.$refs.userForm.validate((valid, obj) => {
+      this.$refs.userForm.validate(async(valid, obj) => {
         if (valid) {
           if (this.dialogTittle == 'add') {
-            // userAdd(this.dialogForm).then(res => {
-            //   if (res.code === '2000') {
+            const { code } = await addBtn(this.dialogForm)
+            if (code != '200') return
             this.closeDialog(true)
-            //     return
-            //   }
-            // })
           } else {
-            // userEdit(this.dialogForm).then(res => {
-            //   if (res.code === '2000') {
+            const { code } = await editBtn(this.dialogForm)
+            if (code != '200') return
             this.closeDialog(true)
-            //     return
-            //   }
-            // })
           }
         } else {
           return
@@ -160,13 +148,10 @@ export default {
       this.basicDialog = false
     },
     // 删除操作
-    handleDelete() {
-      // userDelete(this.selectedList[0].pkId).then(res => {
-      //   if (res.code === '2000') {
+    async handleDelete() {
+      const { code } = await deleteBtn(this.selectedList[0].id)
+      if (code != '200') return
       this.getData()
-      return
-      //   }
-      // })
     },
     // 新建操作
     openCreateUser() {
@@ -188,27 +173,24 @@ export default {
       this.total = 0
     },
     // 查询
-    getData() {
-      getBtnList(this.searchForm).then((res) => {
-        if (res.code == '2000') {
-          this.tableList = res.data.list
-          this.total = res.data.total
-          return
-        }
-      })
+    async getData() {
+      const { data, code } = await getBtnList(this.searchForm)
+      if (code != '200') return
+      this.tableList = data.records
+      this.total = data.total
     },
     // 选择项改变时
     handleSelectionChange(val) {
       this.selectedList = val
     },
     // 页码改变
-    handleCurrentChange(currentPage) {
-      this.searchForm.currentPage = currentPage
+    handleCurrentChange(pageNumber) {
+      this.searchForm.pageNumber = pageNumber
       this.getData()
     },
     // 每页size改变时
     handleSizeChange(val) {
-      this.searchForm.currentPage = 1
+      this.searchForm.pageNumber = 1
       this.searchForm.pageSize = val
       this.getData()
     },

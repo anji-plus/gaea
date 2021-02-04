@@ -43,16 +43,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: passwordMd5, verifyCode: verifyCode })
         .then((response) => {
-          if (response.code != '2000') {
-            reject()
+          if (response.code != '200') {
+            resolve(response.data) // 将 captcha 传递出去
           } else {
             // 设置token
-            commit('SET_TOKEN', response.data.jwt)
-            // 将用户名存储到cookie
-            Cookies.set('displayName', response.data.userdetail.displayName)
-            // 将用户id存储到cookie
-            Cookies.set('pkId', response.data.userdetail.userId)
-            resolve(response.data.userdetail)
+            commit('SET_TOKEN', response.data)
+            // // 将用户名存储到cookie
+            // Cookies.set('displayName', response.data.userdetail.displayName)
+            // // 将用户id存储到cookie
+            // Cookies.set('pkId', response.data.userdetail.userId)
+            // resolve(response.data.userdetail)
+            resolve()
           }
         })
         .catch((error) => {
@@ -68,12 +69,16 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token)
         .then((response) => {
-          commit('SET_HASMENU', true) // 是否获取过菜单标识
           // 此处需要将菜单返回出去
-          if (response.code != '2000') {
+          if (response.code != '200') {
             reject()
           } else {
-            resolve(response.data)
+            commit('SET_HASMENU', true) // 是否获取过菜单标识
+            Cookies.set('displayName', response.data.nickname)
+            // 将用户id存储到cookie
+            // Cookies.set('pkId', response.data.userdetail.userId)
+            resolve(response.data.userdetail)
+            resolve()
           }
         })
         .catch((error) => {

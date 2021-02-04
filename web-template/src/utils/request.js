@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 10:57:57
  * @Last Modified by: zyk
- * @Last Modified time: 2020-07-22 16:08:19
+ * @Last Modified time: 2021-02-04 14:25:27
  */
 import axios from 'axios'
 import { Message, Loading } from 'element-ui'
@@ -66,7 +66,7 @@ service.interceptors.request.use(
     })
     // 2、给每个请求加上token和语言
     config.headers['Accept-Language'] = lang[i18n.locale]
-    store.getters.token && (config.headers['Authorization'] = 'Bearer ' + getToken())
+    store.getters.token && (config.headers['Authorization'] = getToken())
     // 3、loading
     if (!((config.data && config.data.loading == false) || (config.params && config.params.loading == false))) {
       loadingInstance = Loading.service({
@@ -110,7 +110,7 @@ service.interceptors.response.use(
         }
       }
       // token过期/失效
-      if (res.code == '4003' || res.code == '4001') {
+      if (res.code == '500-02-0004') {
         abortPending()
         Message({
           message: i18n.t(`promptMessage.reload`),
@@ -126,17 +126,27 @@ service.interceptors.response.use(
         return res
       }
       // 统一提示
-      if (res.code != '2000') {
+      if (res.code != '200') {
         Message({
-          message: res.msg || i18n.t(`promptMessage.reqFailed`),
+          message: res.message || i18n.t(`promptMessage.reqFailed`),
           type: 'error',
         })
-      } else if (res.code == '2000' && res.msg && response.config.method != 'get') {
+      } else if (res.code == '200' && res.message && response.config.method != 'get') {
         Message({
-          message: res.msg == 'success' ? i18n.t(`promptMessage.success`) : res.msg,
+          message: res.message == 'success' ? i18n.t(`promptMessage.success`) : res.message,
           type: 'success',
         })
       }
+      return res
+    } else if (response.status == 500) {
+      abortPending()
+      Message({
+        message: i18n.t(`promptMessage.reload`),
+        type: 'error',
+      })
+      store.dispatch('user/logout').then(() => {
+        router.replace(`/login?redirect=${router.currentRoute.fullPath}`)
+      })
       return res
     }
   },

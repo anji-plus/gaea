@@ -2,14 +2,14 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:13:37
  * @Last Modified by: zyk
- * @Last Modified time: 2020-12-14 17:53:53
+ * @Last Modified time: 2021-02-04 14:48:29
  */
 import request from '@/utils/request'
 // 登录、登出、获取菜单信息模块 独立存在于其他模块的请求之外
 
 export function login(data) {
   return request({
-    url: '/v1/login',
+    url: '/auth/login',
     method: 'post',
     // headers: {
     //   'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -26,8 +26,7 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: `/v1/menu/token/${token}`,
-    // url: `/v1/menu/all`,
+    url: `/auth/menu/userInfo`,
     method: 'get',
   })
 }

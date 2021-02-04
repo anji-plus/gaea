@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:21:58
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-26 16:26:57
+ * @Last Modified time: 2021-02-02 10:41:58
  */
 import Vue from 'vue'
 
@@ -31,8 +31,8 @@ import './permission' // 权限控制
  * 请在上线前删除!!!
  */
 // if (process.env.NODE_ENV === 'development') {
-const { mockXHR } = require('../mock')
-mockXHR()
+// const { mockXHR } = require('../mock')
+// mockXHR()
 // }
 /**
  * 后续自行添加的模块
