@@ -3,7 +3,7 @@ package com.github.anji.plus.gaea.curd.dto;
 /**
  * 查询条件
  * @author lr
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public enum QueryEnum {
     /**

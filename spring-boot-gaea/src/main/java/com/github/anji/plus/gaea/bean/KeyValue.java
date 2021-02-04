@@ -7,27 +7,27 @@ import java.util.List;
 /**
  * 前端下拉键值对
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  *
  **/
 public class KeyValue implements Serializable {
 
-    private String id;
+    private Object id;
     private String text;
     private List<KeyValue> children = new ArrayList<>();
 
     public KeyValue() {}
 
-    public KeyValue(String id, String text) {
+    public KeyValue(Object id, String text) {
         this.id = id;
         this.text = text;
     }
 
-    public String getId() {
+    public Object getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Object id) {
         this.id = id;
     }
 

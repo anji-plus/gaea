@@ -1,0 +1,18 @@
+spring:
+  anjiplus:
+    gaea:
+      archiver:
+        archive-scheduled-cron: 0 0 3 2 */1 ? #归档触发的定时器默认每月2号，凌晨3:0:0执行归档
+        enabled: true
+        max-days-before-archive: 30  #归档多久之前的数据，将n天前的数据，移动到归档表，tables配置项中策略优先加载
+        max-days-before-delete: 720  #删除多久之前的历史数据，归档表中，已归档的数据保留期限，超过期限的数据将删除。tables配置项中策略优先加载
+        tables:
+          - tablename: t_log
+            timefield: request_time
+            max-days-before-archive: 30
+            max-days-before-delete: 720
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: appuser@anji
+    url: jdbc:mysql://10.108.26.197:3306/gaea_auth?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
+    username: root

@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * 查询条件注解
  * @author lr
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

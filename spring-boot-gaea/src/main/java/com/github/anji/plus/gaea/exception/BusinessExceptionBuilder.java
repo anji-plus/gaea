@@ -3,7 +3,7 @@ package com.github.anji.plus.gaea.exception;
 /**
  * 异常构建类
  * @author lirui
- * @since 2020-11-26 10:29
+ * @since 2021-01-08 10:29
  */
 public class BusinessExceptionBuilder {
 

@@ -3,7 +3,7 @@ package com.github.anji.plus.gaea.cache;
 /**
  * 基础信息Key
  * @author lr
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public interface FormatterKey {
 

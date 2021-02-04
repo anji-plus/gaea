@@ -8,9 +8,9 @@ import java.util.Collection;
 /**
  * 系统断言
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
-public final class GaeaAssert {
+public abstract class GaeaAssert {
 
     /**
      * 目标对象判断非空，如果为空，抛出异常

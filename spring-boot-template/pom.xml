@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <modules>
+        <module>gaea-gateway</module>
+        <module>gaea-auth</module>
+        <module>gaea-business</module>
+    </modules>
+
+    <parent>
+        <groupId>com.github.anji-plus</groupId>
+        <artifactId>spring-boot-gaea-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.github.anji-plus</groupId>
+    <artifactId>spring-boot-template</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>spring-boot-template</name>
+
+    <properties>
+        <gaea.version>1.0-SNAPSHOT</gaea.version>
+        <gaea.security.version>1.0-SNAPSHOT</gaea.security.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.anji-plus</groupId>
+                <artifactId>spring-boot-gaea</artifactId>
+                <version>${gaea.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.anjiplus.gaea</groupId>
+                <artifactId>security</artifactId>
+                <version>${gaea.security.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <spring.profiles.active>dev</spring.profiles.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

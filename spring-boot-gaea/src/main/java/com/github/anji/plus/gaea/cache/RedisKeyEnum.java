@@ -4,14 +4,14 @@ package com.github.anji.plus.gaea.cache;
  * redis中的key
  *
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public enum RedisKeyEnum {
 
     /**
      * 数据字典
      */
-    DICT_PREFIX("base:dict:prefix:", "数据字典");
+    DICT_PREFIX("gaea:dict:prefix:", "数据字典");
 
     public String key;
     public String message;

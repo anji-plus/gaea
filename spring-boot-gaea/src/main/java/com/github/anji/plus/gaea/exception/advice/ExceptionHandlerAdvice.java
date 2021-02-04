@@ -13,8 +13,9 @@ import static com.github.anji.plus.gaea.code.ResponseCode.FAIL_CODE;
 
 
 /**
+ * 全局异常处理
  * @author lr
- * @since 2020-12-02
+ * @since 2021-01-02
  */
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
@@ -55,7 +56,7 @@ public class ExceptionHandlerAdvice {
         } catch (NoSuchMessageException exception) {
             message = code;
         }
-        return ResponseBean.builder().code(code).message(message).build();
+        return ResponseBean.builder().code(FAIL_CODE).message(message).build();
     }
 
     /**

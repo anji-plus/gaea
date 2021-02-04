@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationListener;
 /**
  * 登录监听
  * @author lr
- * @since 2020-12-23
+ * @since 2021-01-25
  */
 public class LoginApplicationListener implements ApplicationListener<LoginEvent<String>> {
 

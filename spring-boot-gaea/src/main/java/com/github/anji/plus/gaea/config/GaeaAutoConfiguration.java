@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.github.anji.plus.gaea.cache.CacheHelper;
-import com.github.anji.plus.gaea.curd.extension.DatasourcePasswordFactoryPostProcessor;
 import com.github.anji.plus.gaea.curd.mapper.injected.CustomSqlInjector;
 import com.github.anji.plus.gaea.event.listener.ExceptionApplicationListener;
 import com.github.anji.plus.gaea.event.listener.LoginApplicationListener;
@@ -14,7 +13,6 @@ import com.github.anji.plus.gaea.intercept.AccessKeyInterceptor;
 import com.github.anji.plus.gaea.utils.ApplicationContextUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -32,25 +30,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableConfigurationProperties(GaeaProperties.class)
 public class GaeaAutoConfiguration {
-
-    /**
-     * Web配置
-     */
-    @Configuration
-    public static class GaeaWebMvcConfigurer implements WebMvcConfigurer{
-
-        /**
-         * 拦截器
-         * @param registry
-         */
-        @Override
-        public void addInterceptors(InterceptorRegistry registry) {
-            InterceptorRegistration interceptorRegistration = registry.addInterceptor(new AccessKeyInterceptor());
-            interceptorRegistration.addPathPatterns("/**");
-        }
-
-    }
-
 
     /**
      * spring上下文工具类
@@ -86,20 +65,39 @@ public class GaeaAutoConfiguration {
     }
 
     /**
-     * 数据库加密
+     * 配置信息加密
      * @return
      */
 //    @Bean
 //    @ConditionalOnClass(DataSourceProperties.class)
-//    public DatasourcePasswordFactoryPostProcessor datasourcePasswordFactoryPostProcessor() {
-//        return new DatasourcePasswordFactoryPostProcessor();
+//    public EncryptionFactoryPostProcessor datasourcePasswordFactoryPostProcessor(GaeaProperties gaeaProperties) {
+//        return new EncryptionFactoryPostProcessor(gaeaProperties);
 //    }
+
+    /**
+     * Web配置
+     */
+    @Configuration
+    @ConditionalOnClass(WebMvcConfigurer.class)
+    public static class GaeaWebMvcConfigurer implements WebMvcConfigurer{
+
+        /**
+         * 拦截器
+         * @param registry
+         */
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            InterceptorRegistration interceptorRegistration = registry.addInterceptor(new AccessKeyInterceptor());
+            interceptorRegistration.addPathPatterns("/**");
+        }
+
+    }
 
     /**
      * 持久层mybatis-plus自动装配
      *
      * @author lr
-     * @since 2020-12-09
+     * @since 2021-01-01
      */
     @Configuration
     @ConditionalOnClass(MybatisPlusAutoConfiguration.class)
@@ -149,7 +147,7 @@ public class GaeaAutoConfiguration {
      * 国际化
      *
      * @author lr
-     * @since 2020-12-09
+     * @since 2021-01-01
      */
     @Configuration
     @ConditionalOnClass(LocaleResolver.class)

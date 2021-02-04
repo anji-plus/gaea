@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: @spring.profiles.active@
+  gaea:
+    subscribes:
+      security:
+        enabled: true
+logging:
+  level:
+    com.alibaba.cloud.nacos.client.NacosPropertySourceBuilder: debug

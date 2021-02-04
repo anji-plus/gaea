@@ -3,7 +3,7 @@ package com.github.anji.plus.gaea.curd.params;
 /**
  * 分页参数
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public class PageParam {
 

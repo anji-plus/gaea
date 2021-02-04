@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: @spring.profiles.active@
+logging:
+  level:
+    com.alibaba.cloud.nacos.client.NacosPropertySourceBuilder: debug

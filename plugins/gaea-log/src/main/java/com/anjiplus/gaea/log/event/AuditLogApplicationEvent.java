@@ -21,11 +21,6 @@ public class AuditLogApplicationEvent extends ApplicationEvent {
         setLogOperation(logOperation);
     }
 
-    /**
-     * 获取事件源
-     *
-     * @return
-     */
     public LogOperation getLogOperation() {
         return this.logOperation;
     }

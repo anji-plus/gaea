@@ -9,7 +9,7 @@ import org.apache.ibatis.mapping.SqlSource;
 /**
  * 添加批量新增
  * @author lr
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public class CustomInsertBatch extends AbstractMethod {
 

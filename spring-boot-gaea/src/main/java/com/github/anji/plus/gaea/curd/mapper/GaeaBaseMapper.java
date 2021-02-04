@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * mybatis基础接口
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public interface GaeaBaseMapper<T extends GaeaBaseEntity> extends BaseMapper<T> {
 

@@ -3,7 +3,7 @@ package com.github.anji.plus.gaea.constant;
 /**
  * 全局变量
  * @author lr
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 public interface GaeaConstant {
 
@@ -16,6 +16,12 @@ public interface GaeaConstant {
      * 系统分隔符
      */
     String SPLIT = ",";
+
+
+    /**
+     * redis分割
+     */
+    String REDIS_SPLIT = ":";
 
     /**
      * 国际化

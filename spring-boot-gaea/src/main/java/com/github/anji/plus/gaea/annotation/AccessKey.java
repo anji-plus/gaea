@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * 验证数据的唯一性
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 
 @Target(ElementType.METHOD)

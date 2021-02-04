@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * 聚合索引错误提示
  * @author lirui
- * @since 2020-11-23
+ * @since 2021-01-12
  */
 
 @Target({ElementType.FIELD, ElementType.TYPE})
