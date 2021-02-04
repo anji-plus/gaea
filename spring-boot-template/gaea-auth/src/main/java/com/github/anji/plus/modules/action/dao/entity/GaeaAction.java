@@ -8,8 +8,8 @@ import java.io.Serializable;
 /**
  * 按钮权限(GaeaAction)实体类
  *
- * @author lirui
- * @since 2021-02-02 13:37:04
+ * @author makejava
+ * @since 2021-02-04 14:59:44
  */
 @TableName("gaea_action")
 public class GaeaAction extends GaeaBaseEntity implements Serializable {

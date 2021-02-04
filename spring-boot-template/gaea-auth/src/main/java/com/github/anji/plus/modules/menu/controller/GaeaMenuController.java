@@ -7,6 +7,8 @@ import com.github.anji.plus.gaea.bean.TreeNode;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.github.anji.plus.gaea.holder.UserContentHolder;
 import com.github.anji.plus.modules.menu.controller.dto.GaeaLeftMenuDTO;
+import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
+import com.github.anji.plus.modules.menu.controller.param.MenuActionReqParam;
 import com.github.anji.plus.modules.menu.dao.entity.GaeaMenu;
 import com.github.anji.plus.modules.menu.controller.dto.GaeaMenuDTO;
 import com.github.anji.plus.modules.menu.controller.param.GaeaMenuParam;
@@ -17,6 +19,9 @@ import com.github.anji.plus.modules.user.dao.entity.GaeaUser;
 import com.github.anji.plus.modules.user.service.GaeaUserService;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @since 2021-02-02 13:36:43
  */
 @RestController
-@RequestMapping("/gaeaMenu")
-@Api(value = "/gaeaMenu", tags = "菜单表")
+@RequestMapping("/menu")
+@Api(value = "/menu", tags = "菜单表")
 public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMenu, GaeaMenuDTO> {
     @Autowired
     private GaeaMenuService gaeaMenuService;
@@ -99,4 +104,30 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
         String username = UserContentHolder.getContext().getUsername();
         return responseSuccessWithData(gaeaMenuService.getSelectActions(username));
     }
+
+    /**
+     * 获取菜单按钮树
+     * @param menuCode
+     * @return
+     */
+    @GetMapping("/queryActionTreeForMenu/{code}")
+    public ResponseBean queryActionTreeForMenu(@PathVariable("code")String menuCode){
+        TreeDTO data=gaeaMenuService.queryActionTreeForMenu(menuCode);
+        return responseSuccessWithData(data);
+    }
+
+    /**
+     * 保存菜单按钮树
+     * @param reqParam
+     * @return
+     */
+    @PostMapping("/saveActionTreeForMenu")
+    public ResponseBean saveActionTreeForMenu(@RequestBody MenuActionReqParam reqParam){
+        Boolean data=gaeaMenuService.saveActionTreeForMenu(reqParam);
+        return responseSuccessWithData(data);
+    }
+
+
+
+
 }

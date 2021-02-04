@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @since 2021-02-02 13:37:33
  */
 @RestController
-@RequestMapping("/gaeaOrg")
-@Api(value = "/gaeaOrg", tags = "组织")
+@RequestMapping("/org")
+@Api(value = "/org", tags = "组织")
 public class GaeaOrgController extends GaeaBaseController<GaeaOrgParam, GaeaOrg, GaeaOrgDTO> {
     @Autowired
     private GaeaOrgService gaeaOrgService;

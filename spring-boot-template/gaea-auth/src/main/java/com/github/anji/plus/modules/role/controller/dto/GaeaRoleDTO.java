@@ -17,7 +17,6 @@ public class GaeaRoleDTO extends GaeaBaseDTO {
     @ApiModelProperty(value = "角色编码")
     private String roleCode;
 
-    @ApiModelProperty(value = "${column.comment}")
     private String roleName;
         /**
     * 1：可用 0：禁用

@@ -1,11 +1,16 @@
 package com.github.anji.plus.modules.menu.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.anji.plus.gaea.bean.TreeNode;
 import com.github.anji.plus.gaea.constant.Enabled;
+import com.github.anji.plus.modules.action.dao.GaeaActionMapper;
+import com.github.anji.plus.modules.action.dao.entity.GaeaAction;
 import com.github.anji.plus.modules.menu.controller.dto.GaeaLeftMenuDTO;
 import com.github.anji.plus.modules.menu.controller.dto.GaeaMenuDTO;
+import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
+import com.github.anji.plus.modules.menu.controller.param.MenuActionReqParam;
 import com.github.anji.plus.modules.menu.dao.GaeaMenuActionMapper;
 import com.github.anji.plus.modules.menu.dao.entity.GaeaMenu;
 import com.github.anji.plus.modules.menu.dao.GaeaMenuMapper;
@@ -18,8 +23,8 @@ import com.github.anji.plus.modules.role.service.GaeaRoleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -45,6 +50,9 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
 
     @Autowired
     private GaeaRoleService gaeaRoleService;
+
+    @Autowired
+    private GaeaActionMapper gaeaActionMapper;
 
     @Override
     public GaeaBaseMapper<GaeaMenu> getMapper() {
@@ -266,6 +274,62 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
         return gaeaRoleMenuActions.stream()
                 .map(action -> action.getMenuCode() + ":" + action.getActionCode())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public TreeDTO queryActionTreeForMenu(String menuCode) {
+        //该菜单已经关联的按钮
+        QueryWrapper<GaeaMenuAction> menuQueryWrapper = new QueryWrapper<GaeaMenuAction>();
+        menuQueryWrapper.lambda().select(GaeaMenuAction::getActionCode).eq(GaeaMenuAction::getMenuCode,menuCode);
+        List<GaeaMenuAction> menuActionList = gaeaMenuActionMapper.selectList(menuQueryWrapper);
+        List<String> actionCodeOfMenu = new ArrayList<>();
+        menuActionList.stream().forEach(menuAction -> {
+            actionCodeOfMenu.add(menuAction.getActionCode());
+        });
+        //所有的按钮
+        QueryWrapper<GaeaAction> queryWrapper = new QueryWrapper<GaeaAction>();
+        queryWrapper.lambda().select(GaeaAction::getActionCode,GaeaAction::getActionName)
+                .eq(GaeaAction::getEnabled,Enabled.YES.getValue());
+        List<GaeaAction> actionList = gaeaActionMapper.selectList(queryWrapper);
+        List<TreeNode> tree=new ArrayList<TreeNode>();
+        actionList.stream().forEach(action ->{
+            TreeNode treeVO = new TreeNode();
+            treeVO.setId(action.getActionCode());
+            treeVO.setLabel(action.getActionName());
+            tree.add(treeVO);
+        });
+        TreeDTO result=new TreeDTO();
+        result.setCheckedCodes(actionCodeOfMenu);
+        result.setTreeDatas(tree);
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public Boolean saveActionTreeForMenu(MenuActionReqParam requestModel) {
+        //清除菜单的旧关联按钮
+        QueryWrapper<GaeaMenuAction> menuQueryWrapper = new QueryWrapper<>();
+        menuQueryWrapper.lambda().eq(GaeaMenuAction::getMenuCode,requestModel.getMenuCode());
+        gaeaMenuActionMapper.delete(menuQueryWrapper);
+        //保存新关联
+        List<String> actionCodeList=requestModel.getActionCodes();
+        List<GaeaMenuAction> gaeaMenuActionList= actionCodeList.stream().map(e->{
+            GaeaMenuAction menuAction = new GaeaMenuAction();
+            menuAction.setActionCode(e);
+            menuAction.setMenuCode(requestModel.getMenuCode());
+            return menuAction;
+        }).collect(Collectors.toList());
+
+        gaeaMenuActionMapper.insertBatch(gaeaMenuActionList);
+        //根据menuId清除t_role_menu_action的已勾选的actionIds
+        QueryWrapper<GaeaRoleMenuAction> roleMenuActionQueryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<GaeaRoleMenuAction> lambdaQueryWrapper= roleMenuActionQueryWrapper.lambda();
+        lambdaQueryWrapper.eq(GaeaRoleMenuAction::getMenuCode,requestModel.getMenuCode());
+        if (actionCodeList.size() > 0) {
+            lambdaQueryWrapper.notIn(GaeaRoleMenuAction::getActionCode,actionCodeList);
+        }
+        gaeaRoleMenuActionMapper.delete(lambdaQueryWrapper);
+        return true;
     }
 
 }
