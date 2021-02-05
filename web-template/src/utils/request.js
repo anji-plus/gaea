@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 10:57:57
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-04 14:25:27
+ * @Last Modified time: 2021-02-05 17:33:51
  */
 import axios from 'axios'
 import { Message, Loading } from 'element-ui'
@@ -40,6 +40,19 @@ const lang = {
   en: 'en-US;q=0.8',
   zh: 'zh-CN;q=0.8',
 }
+
+// token过期失效方法
+const tokenLose = () => {
+  abortPending()
+  Message({
+    message: i18n.t(`promptMessage.reload`),
+    type: 'error',
+  })
+  store.dispatch('user/logout').then(() => {
+    router.replace(`/login?redirect=${router.currentRoute.fullPath}`)
+  })
+}
+
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -111,14 +124,7 @@ service.interceptors.response.use(
       }
       // token过期/失效
       if (res.code == '500-02-0004') {
-        abortPending()
-        Message({
-          message: i18n.t(`promptMessage.reload`),
-          type: 'error',
-        })
-        store.dispatch('user/logout').then(() => {
-          router.replace(`/login?redirect=${router.currentRoute.fullPath}`)
-        })
+        tokenLose()
         return res
       }
       // 不需要统一提示的情况判断
@@ -138,23 +144,18 @@ service.interceptors.response.use(
         })
       }
       return res
-    } else if (response.status == 500) {
-      abortPending()
-      Message({
-        message: i18n.t(`promptMessage.reload`),
-        type: 'error',
-      })
-      store.dispatch('user/logout').then(() => {
-        router.replace(`/login?redirect=${router.currentRoute.fullPath}`)
-      })
-      return res
     }
   },
   (error) => {
     loadingInstance && (loadingInstance.close(), (loadingInstance = null))
+
     // 错误信息类型为Error时统一提示，防止请求被取消后 一直弹出提示
     if (Object.prototype.toString.call(error).slice(8, -1) === 'Error') {
       abortPending()
+      // if (error.response && error.response.status === 500) {
+      //   tokenLose()
+      //   return
+      // }
       Message({
         message: i18n.t(`promptMessage.netErr`),
         type: 'error',

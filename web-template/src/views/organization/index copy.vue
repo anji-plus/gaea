@@ -1,39 +1,51 @@
 <template>
   <div class="app-container">
-    <el-form ref="formSearch" :model="searchForm" label-width="100px">
+    <el-form ref="formSearch" :model="searchForm" label-width="130px">
       <el-row>
         <el-col :span="19">
           <el-row class="form_table">
-            <el-col :span="8">
-              <el-form-item :label="$t('userManage.userId')" prop="account">
-                <el-input v-model="searchForm.account" />
+            <el-col :span="6">
+              <el-form-item label="机构代码" prop="orgCode">
+                <el-input v-model="searchForm.orgCode" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$t('userManage.userName')" prop="name">
-                <el-input v-model="searchForm.name" />
+            <el-col :span="6">
+              <el-form-item label="机构名称" prop="orgName">
+                <el-input v-model="searchForm.orgName" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$t('userManage.email')" prop="email">
-                <el-input v-model="searchForm.email" />
+            <el-col :span="6">
+              <el-form-item label="外部机构代码" prop="outOrgCode">
+                <el-input v-model="searchForm.outOrgCode" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$t('userManage.mobile')" prop="mobile">
-                <el-input v-model="searchForm.mobile" />
+            <el-col :span="6">
+              <el-form-item label="外部上级机构代码" prop="outOrgParentCode">
+                <el-input v-model="searchForm.outOrgParentCode" />
               </el-form-item>
             </el-col>
-            <!-- <el-col :span="8">
-              <el-form-item :label="$t('userManage.idCard')" prop="idCard">
-                <el-input v-model="searchForm.idCard"   />
+            <el-col :span="6">
+              <el-form-item label="机构类型" prop="orgType">
+                <el-input v-model="searchForm.orgType" />
               </el-form-item>
-            </el-col> -->
-            <el-col :span="8">
-              <el-form-item :label="$t('userManage.status')" prop="isDel">
-                <el-select v-model="searchForm.isDel" :placeholder="$t('placeholder.select')">
-                  <el-option key="1" :label="$t('userManage.isDelete')" :value="1" />
-                  <el-option key="0" :label="$t('userManage.noDelete')" :value="0" />
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="联系人" prop="linkman">
+                <el-input v-model="searchForm.linkman" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="启用状态" prop="enableFlag">
+                <el-select v-model="searchForm.enableFlag" :placeholder="$t('placeholder.select')">
+                  <el-option key="1" label="启用" :value="1" />
+                  <el-option key="0" label="禁用" :value="0" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="上级组织" prop="orgParentCode">
+                <el-select v-model="searchForm.orgParentCode" :placeholder="$t('placeholder.select')">
+                  <el-option v-for="item in orgParentList" :key="item.bizCode" :label="item.bizText" :value="item.bizCode" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -43,7 +55,7 @@
           <el-button
             type="primary"
             @click="
-              searchForm.pageNum = 1
+              searchForm.currentPage = 1
               getData()
             "
           >{{ $t('btn.query') }}</el-button>
@@ -51,34 +63,27 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button>
+    <permission-btn label="add" icon="el-icon-plus" disabled type="primary" />
     <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
     <el-button type="warning" icon="el-icon-load" :disabled="selectedList.length != 1" @click="resetPassword">{{ '重置密码' }}</el-button>
     <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" />
+
     <el-table :data="tableList" border @selection-change="handleSelectionChange">
       <el-table-column fixed type="selection" width="40" center />
-      <el-table-column :label="$t('userManage.userId')" align="center" min-width="180">
+      <el-table-column label="机构代码" align="center" min-width="180">
         <template slot-scope="scope">
-          <span class="view" @click="editDetail('view', scope.row)">{{ scope.row.account }}</span>
+          <span class="view" @click="editDetail('view', scope.row)">{{ scope.row.orgCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="name" :label="$t('userManage.userName')" align="center" min-width="160" />
-      <el-table-column prop="mobile" :label="$t('userManage.mobile')" align="center" min-width="160" />
-      <el-table-column prop="email" :label="$t('userManage.email')" align="center" min-width="160" />
-      <el-table-column prop="rolesText" :label="$t('userManage.userRoles')" align="center" min-width="180" />
-      <!-- <el-table-column prop="idCard" :label="$t('userManage.idCard')" align="center" min-width="160" /> -->
-      <el-table-column prop="isDelText" :label="$t('userManage.status')" align="center" min-width="160" />
-      <el-table-column prop="tel" :label="$t('userManage.tel')" align="center" min-width="150" />
-      <el-table-column prop="lastLoginTime" :label="$t('userManage.lastLoginTime')" align="center" min-width="160" />
-      <el-table-column prop="frozenTime" :label="$t('userManage.frozenTime')" align="center" min-width="160" />
-      <!-- <el-table-column prop="password" :label="$t('userManage.password')" align="center" min-width="180" /> -->
-      <el-table-column prop="remark" :label="$t('userManage.remark')" align="center" min-width="160" />
-      <el-table-column prop="createDate" :label="$t('userManage.creationTime')" align="center" min-width="160" />
-      <el-table-column prop="createUser" :label="$t('userManage.creator')" align="center" min-width="160" />
-      <el-table-column prop="updateDate" :label="$t('userManage.modifyTime')" align="center" min-width="180" />
-      <el-table-column prop="updateUser" :label="$t('userManage.modifyUser')" align="center" min-width="140" />
+      <el-table-column prop="orgName" label="机构名称" min-width="140" align="center" />
+      <el-table-column prop="orgParentCode" label="上级机构代码" min-width="200" align="center" />
+      <el-table-column prop="orgParentName" label="上级机构名称" min-width="200" align="center" />
+      <el-table-column prop="enableFlag" label="启用状态" min-width="90" align="center" />
+      <el-table-column prop="remark" label="备注" :show-overflow-tooltip="true" max-width="220" align="center" />
+      <el-table-column prop="createdTime" :label="$t('userManage.creationTime')" align="center" min-width="160" />
+      <el-table-column prop="createdBy" :label="$t('userManage.creator')" align="center" min-width="160" />
     </el-table>
-    <el-pagination v-show="total > 0" background :current-page.sync="searchForm.pageNum" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+    <el-pagination v-show="total > 0" background :current-page.sync="searchForm.currentPage" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     <el-dialog :title="$t(`btn.${dialogTittle}`)" width="60%" :close-on-click-modal="false" center :visible.sync="userDialog" @close="closeDialog">
       <el-card>
         <div slot="header" class="clearfix">
@@ -138,7 +143,7 @@
         </el-form>
       </el-card>
       <!-- 角色信息关联 -->
-      <user-role v-if="userDialog" ref="userRole" :roles="dialogForm.roles" :disabled="dialogTittle" />
+      <!-- <user-role v-if="userDialog" ref="userRole" :roles="dialogForm.roles" :disabled="dialogTittle" /> -->
       <!-- <el-card v-if="roleList.length" style="margin-top:10px">
         <div slot="header" class="clearfix">
           <span>{{ $t('userManage.roleInfo') }}</span>
@@ -158,23 +163,20 @@
 <script>
 import { userAdd, userEdit, resetPassword, userDelete, userQuery } from '@/api/authority'
 export default {
-  components: {
-    UserRole: require('./components/UserRole.vue').default,
-  },
+  name: 'Organization',
   data() {
     return {
-      userStatus: [],
       selectedList: [],
+      orgParentList: [], // 上级 组织下拉列表
       searchForm: {
-        account: '', // 用户名
-        name: '', // 用户姓名
-        email: '', // 邮箱
-        idCard: '', // 身份证
-        isDel: '', // 是否有效 0有效 1，无效
-        mobile: '', // 手机
-        tel: '', // 电话
-        pageNum: 1,
         pageSize: 10,
+        orgName: null,
+        outOrgCode: null,
+        outOrgParentCode: null,
+        orgType: null,
+        linkman: null,
+        enableFlag: null,
+        currentPage: 1,
       },
       tableList: [],
       total: 0,
@@ -205,7 +207,6 @@ export default {
       },
     }
   },
-  created() {},
   methods: {
     UserConfirm() {
       this.$refs.userForm.validate((valid, obj) => {
@@ -297,13 +298,13 @@ export default {
       this.selectedList = val
     },
     // 页码改变
-    handleCurrentChange(pageNum) {
-      this.searchForm.pageNum = pageNum
+    handleCurrentChange(currentPage) {
+      this.searchForm.currentPage = currentPage
       this.getData()
     },
     // 每页size改变时
     handleSizeChange(val) {
-      this.searchForm.pageNum = 1
+      this.searchForm.currentPage = 1
       this.searchForm.pageSize = val
       this.getData()
     },
