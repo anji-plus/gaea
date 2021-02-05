@@ -1,8 +1,10 @@
 package com.anjiplus.gaea.security.security;
 
-import com.anjiplus.gaea.security.handler.GaeaFilterExceptionHandler;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.anjiplus.gaea.security.cache.CacheKeyEnum;
+import com.anjiplus.gaea.security.handler.GaeaFilterExceptionHandler;
+import com.auth0.jwt.exceptions.SignatureGenerationException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.github.anji.plus.gaea.cache.CacheHelper;
 import com.github.anji.plus.gaea.holder.UserContentHolder;
 import com.github.anji.plus.gaea.holder.UserContext;
@@ -64,7 +66,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             String token = request.getHeader(JwtUtils.Authorization);
 
             //当token为空或过期时，未登录
-            if(StringUtils.isBlank(token) || cacheHelper.exist(CacheKeyEnum.TOKEN_JWT_EXPIRE.getKey() + token)) {
+            if (StringUtils.isBlank(token)) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -74,30 +76,25 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                 throw new TokenExpiredException(String.format("The Token has expired on %s.", new Date()));
             }
 
-            try {
+            //从token中解析出用户名
+            String username = JwtUtils.getUsername(token);
 
-                //从token中解析出用户名
-                String username = JwtUtils.getUsername(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(createSuccessfulAuthentication(request, userDetails));
+            SecurityContextHolder.setContext(context);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                SecurityContext context = SecurityContextHolder.createEmptyContext();
-                context.setAuthentication(createSuccessfulAuthentication(request, userDetails));
-                SecurityContextHolder.setContext(context);
-
-                UserContext userContext = new UserContext();
-                userContext.setUsername(username);
-                userContext.setAuthorities(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()));
-                UserContentHolder.setContext(userContext);
-                filterChain.doFilter(request, response);
-            } catch (TokenExpiredException tokenExpiredException) {
-                gaeaFilterExceptionHandler.handler(request, response, tokenExpiredException);
-                return;
-            } catch (Exception e) {
-                gaeaFilterExceptionHandler.handler(request, response, e);
-                return;
-            }
-
-
+            UserContext userContext = new UserContext();
+            userContext.setUsername(username);
+            userContext.setAuthorities(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()));
+            UserContentHolder.setContext(userContext);
+            filterChain.doFilter(request, response);
+        } catch (TokenExpiredException | SignatureGenerationException | SignatureVerificationException exception) {
+            gaeaFilterExceptionHandler.handler(request, response, exception);
+            return;
+        } catch (Exception e) {
+            gaeaFilterExceptionHandler.handler(request, response, e);
+            return;
         } finally {
             UserContentHolder.clearContext();
         }
@@ -106,6 +103,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
     /**
      * 构建成功的AuthenticationToken
+     *
      * @param request
      * @param user
      * @return
