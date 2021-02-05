@@ -35,5 +35,13 @@ public final class MagicValueConstants {
     //魔法值 10
     public static final int TEN = 10;
 
-    public static final String ADMIN="admin";
+    public static final String ADMIN = "admin";
+    //高级查询相关
+    public static final String COMMONID = "commonId";
+    public static final String DYNAMICQUERYBOS = "dynamicQueryBos";
+    public static final String SORTCOLUMNS = "sortColumns";
+    public static final String QUERYWRAPPER = "queryWrapper";
+
+
+
 }

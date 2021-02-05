@@ -126,7 +126,7 @@ export const baseList = [
         menuId: '3010',
         parentMenuId: '30',
         path: 'data-dictionary',
-        component: 'system-set/data-dictionary',
+        component: 'system-set/data-dictionary/index',
         name: 'DataDictionary',
         meta: {
           title: 'dataDictionary',
@@ -138,7 +138,7 @@ export const baseList = [
         menuId: '3020',
         parentMenuId: '30',
         path: 'parameter',
-        component: 'system-set/parameter',
+        component: 'system-set/parameter/index',
         name: 'Parameter',
         meta: {
           title: 'parameter',
@@ -150,7 +150,7 @@ export const baseList = [
         menuId: '3030',
         parentMenuId: '30',
         path: 'support',
-        component: 'system-set/support',
+        component: 'system-set/support/index',
         name: 'Support',
         meta: {
           title: 'support',
@@ -184,7 +184,7 @@ export const baseList = [
       icon: 'pushNotify',
     },
     children: [
-      // 首发概况
+      // 收发概况
       {
         menuId: '4010',
         parentMenuId: '40',

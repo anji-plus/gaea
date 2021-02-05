@@ -1,17 +1,19 @@
 package com.anjiplus.gaea.security.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.anjiplus.gaea.security.cache.CacheKeyEnum;
+import com.anjiplus.gaea.security.code.UserResponseCode;
+import com.auth0.jwt.exceptions.SignatureGenerationException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.cache.CacheHelper;
 import com.github.anji.plus.gaea.code.ResponseCode;
-import com.github.anji.plus.gaea.constant.GaeaConstant;
 import com.github.anji.plus.gaea.constant.Enabled;
+import com.github.anji.plus.gaea.constant.GaeaConstant;
 import com.github.anji.plus.gaea.exception.BusinessException;
 import com.github.anji.plus.gaea.i18.MessageSourceHolder;
 import com.github.anji.plus.gaea.utils.JwtUtils;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.anjiplus.gaea.security.cache.CacheKeyEnum;
-import com.anjiplus.gaea.security.code.UserResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,7 @@ public class GaeaFilterExceptionHandler {
         ResponseBean.Builder builder = ResponseBean.builder();
         ResponseBean responseBean;
         String code = ResponseCode.FAIL_CODE;
-        if(e instanceof TokenExpiredException) {
+        if(e instanceof TokenExpiredException || e instanceof SignatureGenerationException || e instanceof SignatureVerificationException) {
             code = UserResponseCode.USER_TOKEN_EXPIRED;
             String token = request.getHeader(JwtUtils.Authorization);
             //删除缓存中的私钥，让登录失效
