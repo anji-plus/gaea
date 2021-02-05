@@ -50,9 +50,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:git:git://github.com/anji-plus/OSSRH-56732.git</connection>
-		<developerConnection>scm:git:ssh://github.com/anji-plus/OSSRH-56732.git</developerConnection>
-		<url>https://github.com/anji-plus/OSSRH-56732/tree/master</url>
+		<connection>scm:git:git://github.com/anji-plus/gaea.git</connection>
+		<developerConnection>scm:git:ssh://github.com/anji-plus/gaea.git</developerConnection>
+		<url>https://github.com/anji-plus/gaea/tree/master</url>
 	</scm>
 
 	<developers>
