@@ -50,11 +50,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>https://github.com/anji-plus/gaea.git</url>
-		<connection>https://github.com/anji-plus/gaea.git</connection>
-<!--		<connection>scm:git:git://github.com/anji-plus/OSSRH-56732.git</connection>-->
-<!--		<developerConnection>scm:git:ssh://github.com/anji-plus/OSSRH-56732.git</developerConnection>-->
-<!--		<url>https://github.com/anji-plus/OSSRH-56732/tree/master</url>-->
+		<connection>scm:git:git://github.com/anji-plus/OSSRH-56732.git</connection>
+		<developerConnection>scm:git:ssh://github.com/anji-plus/OSSRH-56732.git</developerConnection>
+		<url>https://github.com/anji-plus/OSSRH-56732/tree/master</url>
 	</scm>
 
 	<developers>
@@ -151,5 +149,4 @@
 		</profile>
 	</profiles>
 	<!--中央仓库上传配置结束-->
-
 </project>
