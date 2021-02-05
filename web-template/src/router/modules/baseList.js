@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:34:51
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-29 15:41:10
+ * @Last Modified time: 2021-02-04 15:17:34
  */
 
 /** 脚手架基础页面路由 **/
@@ -73,28 +73,28 @@ export const baseList = [
           icon: '',
         },
       },
-      // {
-      //   menuId: '2030',
-      //   parentMenuId: '20',
-      //   path: 'role',
-      //   component: 'authority/role',
-      //   name: 'Role',
-      //   meta: {
-      //     title: 'role',
-      //     icon: '',
-      //   },
-      // },
-      // {
-      //   menuId: '2040',
-      //   parentMenuId: '20',
-      //   path: 'user',
-      //   component: 'authority/user',
-      //   name: 'User',
-      //   meta: {
-      //     title: 'user',
-      //     icon: '',
-      //   },
-      // },
+      {
+        menuId: '2030',
+        parentMenuId: '20',
+        path: 'role',
+        component: 'authority/role',
+        name: 'Role',
+        meta: {
+          title: 'role',
+          icon: '',
+        },
+      },
+      {
+        menuId: '2040',
+        parentMenuId: '20',
+        path: 'user',
+        component: 'authority/user',
+        name: 'User',
+        meta: {
+          title: 'user',
+          icon: '',
+        },
+      },
       // {
       //   menuId: '2060',
       //   parentMenuId: '20',

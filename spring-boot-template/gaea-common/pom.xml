@@ -14,10 +14,18 @@
 	<name>gaea-common</name>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>com.github.anji-plus</groupId>
+			<artifactId>spring-boot-gaea</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
 		</dependency>
 	</dependencies>
 

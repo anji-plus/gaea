@@ -2,6 +2,8 @@ package com.github.anji.plus.modules.menu.service;
 
 import com.github.anji.plus.gaea.bean.TreeNode;
 import com.github.anji.plus.modules.menu.controller.dto.GaeaLeftMenuDTO;
+import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
+import com.github.anji.plus.modules.menu.controller.param.MenuActionReqParam;
 import com.github.anji.plus.modules.menu.dao.entity.GaeaMenu;
 import com.github.anji.plus.modules.menu.controller.param.GaeaMenuParam;
 import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
@@ -37,5 +39,19 @@ public interface GaeaMenuService extends GaeaBaseService<GaeaMenuParam, GaeaMenu
      * @return
      */
     List<String> getSelectActions(String username);
+
+    /**
+     * 获取菜单所分批的按钮树
+     * @param menuCode
+     * @return
+     */
+    TreeDTO queryActionTreeForMenu(String menuCode);
+
+    /**
+     * 保存菜单按钮信息
+     * @param requestModel
+     * @return
+     */
+    Boolean saveActionTreeForMenu(MenuActionReqParam requestModel);
 
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.anji.plus.modules.role.dao.GaeaRoleOrgMapper">
+
+    <resultMap type="com.github.anji.plus.modules.role.dao.entity.GaeaRoleOrg" id="GaeaRoleOrgMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="roleCode" column="role_code" jdbcType="VARCHAR"/>
+        <result property="orgCode" column="org_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <!-- 自定义查询映射结果 -->
+    <resultMap id="ResultMapWithVO" type="com.github.anji.plus.modules.role.controller.dto.RoleOrgDto" extends="GaeaRoleOrgMap">
+        <result column="org_name" property="orgName" />
+        <result column="role_name" property="roleName" />
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        id, role_code, org_code
+    </sql>
+
+    <select id="queryAllRoleOrg" resultMap="ResultMapWithVO">
+        SELECT
+        a.id,
+        b.org_code,
+        b.org_name,
+        c.role_code,
+        c.role_name
+        FROM
+        gaea_role_org a
+        LEFT JOIN gaea_org b ON a.org_code = b.org_code
+        LEFT JOIN gaea_role c ON a.role_code = c.role_code
+        WHERE
+        b.enable_flag = 1
+        AND b.delete_flag = 0
+        AND c.enabled = 1
+    </select>
+
+
+</mapper>

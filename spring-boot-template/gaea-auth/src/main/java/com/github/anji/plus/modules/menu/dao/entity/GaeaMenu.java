@@ -1,6 +1,7 @@
 package com.github.anji.plus.modules.menu.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.github.anji.plus.gaea.annotation.Unique;
 import com.github.anji.plus.gaea.curd.entity.GaeaBaseEntity;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ public class GaeaMenu extends GaeaBaseEntity implements Serializable {
     /**
      * 菜单代码
      */
+    @Unique
     private String menuCode;
     /**
      * 菜单名称
