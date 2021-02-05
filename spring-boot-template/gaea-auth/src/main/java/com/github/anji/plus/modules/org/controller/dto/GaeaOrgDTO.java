@@ -12,11 +12,6 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "组织")
 public class GaeaOrgDTO extends GaeaBaseDTO {
         /**
-    * 主键
-    */
-    @ApiModelProperty(value = "主键")
-    private Long orgId;
-        /**
     * 机构代码
     */
     @ApiModelProperty(value = "机构代码")
@@ -75,7 +70,7 @@ public class GaeaOrgDTO extends GaeaBaseDTO {
     * 0--已禁用 1--已启用  DIC_NAME=ENABLE_FLAG
     */
     @ApiModelProperty(value = "0--已禁用 1--已启用  DIC_NAME=ENABLE_FLAG")
-    private Integer enableFlag;
+    private Integer enabled;
         /**
     *  0--未删除 1--已删除 DIC_NAME=DEL_FLAG
     */
@@ -86,14 +81,6 @@ public class GaeaOrgDTO extends GaeaBaseDTO {
     */
     @ApiModelProperty(value = "描述信息")
     private String remark;
-
-    public Long getOrgId() {
-        return orgId;
-    }
-
-    public void setOrgId(Long orgId) {
-        this.orgId = orgId;
-    }
 
     public String getOrgCode() {
         return orgCode;
@@ -183,12 +170,12 @@ public class GaeaOrgDTO extends GaeaBaseDTO {
         this.telephone = telephone;
     }
 
-    public Integer getEnableFlag() {
-        return enableFlag;
+    public Integer getEnabled() {
+        return enabled;
     }
 
-    public void setEnableFlag(Integer enableFlag) {
-        this.enableFlag = enableFlag;
+    public void setEnabled(Integer enabled) {
+        this.enabled = enabled;
     }
 
     public Integer getDeleteFlag() {

@@ -78,7 +78,7 @@ public class GaeaUserServiceImpl implements GaeaUserService {
         LambdaQueryWrapper<GaeaOrg> queryOrgWrapper = Wrappers.lambdaQuery();
         queryOrgWrapper.select(GaeaOrg::getId, GaeaOrg::getOrgCode, GaeaOrg::getOrgName, GaeaOrg::getOrgParentCode)
                 .eq(GaeaOrg::getDeleteFlag, Enabled.NO.getValue())
-                .and(e -> e.eq(GaeaOrg::getEnableFlag, Enabled.YES.getValue()));
+                .and(e -> e.eq(GaeaOrg::getEnabled, Enabled.YES.getValue()));
         List<GaeaOrg> orgList = gaeaOrgMapper.selectList(queryOrgWrapper);
         List<TreeNode> tree = buildOrgRoleTree(orgList, roleOrgDtos, "0");
         TreeDTO resultData = new TreeDTO();
@@ -131,7 +131,7 @@ public class GaeaUserServiceImpl implements GaeaUserService {
         });
         childList.forEach(treeVO -> {
             List<TreeNode> treeList = buildOrgRoleTree(orgList, roleOrgVOS, treeVO.getId());
-            List<TreeNode> collect = roleOrgVOS.stream().filter(roleOrgVO -> roleOrgVO.getOrgCode().equals(Long.valueOf(treeVO.getId())))
+            List<TreeNode> collect = roleOrgVOS.stream().filter(roleOrgVO -> roleOrgVO.getOrgCode().equals(treeVO.getId()))
                     .map(roleOrgVO -> {
                         TreeNode treeEntity = new TreeNode();
                         String roleOrgTreeId = String.format("%s_%s", treeVO.getId(), roleOrgVO.getRoleCode());

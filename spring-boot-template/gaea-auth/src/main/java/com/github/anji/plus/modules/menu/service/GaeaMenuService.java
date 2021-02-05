@@ -35,10 +35,10 @@ public interface GaeaMenuService extends GaeaBaseService<GaeaMenuParam, GaeaMenu
 
     /**
      * 获取用户拥有的权限
-     * @param username
+     * @param roleCode
      * @return
      */
-    List<String> getSelectActions(String username);
+    List<String> getSelectActions(String roleCode);
 
     /**
      * 获取菜单所分批的按钮树

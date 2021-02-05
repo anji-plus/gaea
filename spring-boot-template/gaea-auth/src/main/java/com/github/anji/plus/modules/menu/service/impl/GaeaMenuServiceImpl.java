@@ -82,7 +82,9 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
                 .stream()
                 .collect(Collectors.groupingBy(GaeaRoleMenuAction::getMenuCode,
                         Collectors.mapping(GaeaRoleMenuAction::getActionCode, Collectors.toSet())));
-
+        if(null==menuActionMap||menuActionMap.size()<=0){
+            return new ArrayList<>();
+        }
         //获取当前用户所有菜单
         LambdaQueryWrapper<GaeaMenu> resourceQueryWrapper = Wrappers.<GaeaMenu>lambdaQuery()
                 .eq(GaeaMenu::getEnabled, Enabled.YES.getValue())
@@ -91,9 +93,9 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
 
         //当前用户所有的叶子菜单
         List<GaeaMenu> leafMenuList = gaeaMenuMapper.selectList(resourceQueryWrapper);
-
-
-
+        if(CollectionUtils.isEmpty(leafMenuList)){
+            return new ArrayList<>();
+        }
         //查询所有菜单
         List<GaeaMenu> allMenus = gaeaMenuMapper.selectList(Wrappers.emptyWrapper());
 
@@ -259,16 +261,13 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
 
     /**
      * 获取当前用户拥有的按钮权限
-     * @param username
+     * @param roleCode
      * @return
      */
     @Override
-    public List<String> getSelectActions(String username) {
-        //获取用户角色
-        List<String> userRoleCodes = gaeaRoleService.getUserRoleCodes(username);
-
+    public List<String> getSelectActions(String roleCode) {
         LambdaQueryWrapper<GaeaRoleMenuAction> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.in(GaeaRoleMenuAction::getRoleCode, userRoleCodes);
+        queryWrapper.eq(GaeaRoleMenuAction::getRoleCode, roleCode);
         List<GaeaRoleMenuAction> gaeaRoleMenuActions = gaeaRoleMenuActionMapper.selectList(queryWrapper);
 
         return gaeaRoleMenuActions.stream()

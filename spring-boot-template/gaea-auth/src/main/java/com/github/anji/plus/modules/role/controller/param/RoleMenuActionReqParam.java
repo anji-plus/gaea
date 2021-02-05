@@ -8,13 +8,13 @@ import java.util.List;
 
 /**
  * 功能描述：
- * 角色 机构关联
+ * 角色，菜单权限
  * @Author: peiyanni
  * @Date: 2021/2/3 17:46
  */
 @Getter
 @Setter
-public class RoleOrgReqParam implements Serializable {
+public class RoleMenuActionReqParam implements Serializable {
     private String roleCode;
-    private List<String> orgCodes;
+    private List<String> codes;
 }

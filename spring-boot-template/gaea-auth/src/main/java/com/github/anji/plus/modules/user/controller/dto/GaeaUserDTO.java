@@ -12,10 +12,10 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "用户表")
 public class GaeaUserDTO extends GaeaBaseDTO {
 
-    @ApiModelProperty(value = "${column.comment}")
+    @ApiModelProperty(value = "用户登录名")
     private String username;
 
-    @ApiModelProperty(value = "${column.comment}")
+    @ApiModelProperty(value = "用户密码")
     private String password;
         /**
     * 真实姓名
@@ -23,10 +23,10 @@ public class GaeaUserDTO extends GaeaBaseDTO {
     @ApiModelProperty(value = "真实姓名")
     private String nickname;
 
-    @ApiModelProperty(value = "${column.comment}")
+    @ApiModelProperty(value = "邮箱")
     private String email;
 
-    @ApiModelProperty(value = "${column.comment}")
+    @ApiModelProperty(value = "手机号")
     private String phone;
         /**
     * 1：可用 0：禁用

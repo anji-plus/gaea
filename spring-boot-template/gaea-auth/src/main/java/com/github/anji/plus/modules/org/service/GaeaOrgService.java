@@ -1,8 +1,11 @@
 package com.github.anji.plus.modules.org.service;
 
+import com.github.anji.plus.modules.org.controller.dto.GaeaOrgDTO;
 import com.github.anji.plus.modules.org.dao.entity.GaeaOrg;
 import com.github.anji.plus.modules.org.controller.param.GaeaOrgParam;
 import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
+
+import java.util.List;
 
 /**
  * 组织(GaeaOrg)Service
@@ -12,4 +15,11 @@ import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
  */
 public interface GaeaOrgService extends GaeaBaseService<GaeaOrgParam, GaeaOrg> {
 
+    /**
+     * 查询所有可用机构信息
+     * @return
+     */
+    List<GaeaOrg> queryAllOrg();
+
+    Boolean saveOrUpdateOrg(GaeaOrgDTO gaeaOrgDTO);
 }

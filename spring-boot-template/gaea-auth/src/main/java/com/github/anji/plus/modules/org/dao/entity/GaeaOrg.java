@@ -1,6 +1,7 @@
 package com.github.anji.plus.modules.org.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.github.anji.plus.gaea.annotation.Unique;
 import com.github.anji.plus.gaea.curd.entity.GaeaBaseEntity;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ public class GaeaOrg extends GaeaBaseEntity implements Serializable {
     /**
      * 机构代码
      */
+    @Unique
     private String orgCode;
     /**
      * 机构名称
@@ -60,7 +62,7 @@ public class GaeaOrg extends GaeaBaseEntity implements Serializable {
     /**
      * 0--已禁用 1--已启用  DIC_NAME=ENABLE_FLAG
      */
-    private Integer enableFlag;
+    private Integer enabled;
     /**
      * 0--未删除 1--已删除 DIC_NAME=DEL_FLAG
      */
@@ -158,12 +160,12 @@ public class GaeaOrg extends GaeaBaseEntity implements Serializable {
         this.telephone = telephone;
     }
 
-    public Integer getEnableFlag() {
-        return enableFlag;
+    public Integer getEnabled() {
+        return enabled;
     }
 
-    public void setEnableFlag(Integer enableFlag) {
-        this.enableFlag = enableFlag;
+    public void setEnabled(Integer enabled) {
+        this.enabled = enabled;
     }
 
     public Integer getDeleteFlag() {
