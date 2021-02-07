@@ -48,11 +48,6 @@ const actions = {
           } else {
             // 设置token
             commit('SET_TOKEN', response.data)
-            // // 将用户名存储到cookie
-            // Cookies.set('displayName', response.data.userdetail.displayName)
-            // // 将用户id存储到cookie
-            // Cookies.set('pkId', response.data.userdetail.userId)
-            // resolve(response.data.userdetail)
             resolve()
           }
         })
@@ -78,7 +73,7 @@ const actions = {
             // 将用户id存储到cookie
             // Cookies.set('pkId', response.data.userdetail.userId)
             resolve(response.data.userdetail)
-            resolve()
+            // resolve()
           }
         })
         .catch((error) => {
@@ -94,7 +89,7 @@ const actions = {
     return new Promise((resolve) => {
       commit('SET_TOKEN', '')
       commit('SET_HASMENU', false)
-      Cookies.remove('pkId')
+      // Cookies.remove('pkId')
       removeToken()
       resetRouter()
       resolve()

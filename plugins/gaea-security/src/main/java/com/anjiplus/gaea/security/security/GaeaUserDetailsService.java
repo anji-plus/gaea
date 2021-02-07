@@ -27,7 +27,18 @@ public class GaeaUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //根据用户名查询用户
-        UserDetails user = userDetailsServiceHelper.findByUsername(username);
+        UserDetails userDetails;
+        try {
+            userDetails = userDetailsServiceHelper.findByUsername(username);
+        } catch (Exception e) {
+            throw new UsernameNotFoundException(username);
+        }
+
+        //当用户不存在时
+        if (userDetails == null) {
+            throw new UsernameNotFoundException(username);
+        }
+
         //获取当前用户所拥有的角色
         List<String> userRoles = userDetailsServiceHelper.getUserRoles(username);
         //获取当前用户的权限
@@ -38,13 +49,13 @@ public class GaeaUserDetailsService implements UserDetailsService {
                 }).collect(Collectors.toList());
 
         return User.builder().username(username)
-                .password(user.getPassword())
+                .password(userDetails.getPassword())
                 .roles(userRoles.toArray(new String[0]))
                 .authorities(authorities)
-                .disabled(!user.isEnabled())
-                .accountLocked(user.isAccountNonLocked())
-                .accountExpired(!user.isAccountNonExpired())
-                .accountLocked(!user.isAccountNonLocked())
-                .credentialsExpired(!user.isCredentialsNonExpired()).build();
+                .disabled(!userDetails.isEnabled())
+                .accountLocked(userDetails.isAccountNonLocked())
+                .accountExpired(!userDetails.isAccountNonExpired())
+                .accountLocked(!userDetails.isAccountNonLocked())
+                .credentialsExpired(!userDetails.isCredentialsNonExpired()).build();
     }
 }

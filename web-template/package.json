@@ -65,6 +65,7 @@
     "pretty-quick": "2.0.1",
     "screenfull": "4.2.0",
     "vue": "2.6.10",
+    "vue-codemirror": "^4.0.6",
     "vue-count-to": "1.0.13",
     "vue-i18n": "7.3.2",
     "vue-router": "3.0.2",

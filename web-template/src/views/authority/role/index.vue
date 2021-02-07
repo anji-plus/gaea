@@ -39,7 +39,7 @@
     <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button>
     <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
     <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="openMenu">设定菜单</el-button>
-    <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">设定组织</el-button>
+    <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="setOrg">设定组织</el-button>
     <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" />
     <el-table :data="tableList" border @selection-change="handleSelectionChange">
       <el-table-column fixed type="selection" width="40" center />
@@ -88,16 +88,13 @@
           </el-col>
         </el-row>
       </el-form>
-      <!-- <el-card>
-        <div slot="header">{{ $t('userManage.menuManage') }}</div>
-        <el-tree ref="roleTree" :data="menuData" show-checkbox node-key="id" default-expand-all :default-checked-keys="checkedKeys" :props="defaultProps" />
-      </el-card> -->
       <div slot="footer" style="text-align: center">
         <el-button v-if="dialogTittle != 'view'" type="primary" plain @click="UserConfirm">{{ $t('btn.confirm') }}</el-button>
         <el-button type="danger" plain @click="userDialog = false">{{ $t('btn.close') }}</el-button>
       </div>
     </el-dialog>
-    <role-menu :visib="menuDialog" @handleClose="menuDialog = false" />
+    <role-org :id="id" :visib="orgDialog" @handleClose="orgDialog = false" />
+    <role-menu :id="id" :visib="menuDialog" @handleClose="menuDialog = false" />
   </div>
 </template>
 <script>
@@ -105,9 +102,13 @@ import { getRoleList, addRole, editRole, deleteRole } from '@/api/authority'
 export default {
   components: {
     RoleMenu: require('./components/RoleMenu').default,
+    RoleOrg: require('./components/RoleOrg').default,
   },
   data() {
     return {
+      orgDialog: false,
+      menuDialog: false,
+      id: null,
       selectedList: [],
       searchForm: {
         // roleCode: '',
@@ -136,11 +137,16 @@ export default {
         ],
         roleName: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
       },
-      menuDialog: false,
     }
   },
   methods: {
+    // 分配组织
+    setOrg() {
+      this.id = this.selectedList[0].roleCode
+      this.orgDialog = true
+    },
     openMenu() {
+      this.id = this.selectedList[0].roleCode
       this.menuDialog = true
     },
     // 提交

@@ -24,6 +24,8 @@ import java.util.List;
  */
 public abstract class GaeaBeanUtils {
 
+
+
     /**
      * 字段类型转换
      *
@@ -38,7 +40,8 @@ public abstract class GaeaBeanUtils {
         List<Field> fields = new ArrayList<>(declaredFields.length);
 
         List<String> skipFields = new ArrayList<>();
-        ;
+
+        //过滤掉DtoSkip注解的字段
         for (Field field : declaredFields) {
             if (field.isAnnotationPresent(DtoSkip.class)) {
                 skipFields.add(field.getName());
@@ -52,14 +55,30 @@ public abstract class GaeaBeanUtils {
 
         Field[] superDeclaredFields = target.getClass().getSuperclass().getDeclaredFields();
         fields.addAll(Arrays.asList(superDeclaredFields));
+
+        //遍历字段，找出 Formatter注解注释的字段,并翻译
+        formatterHandler(target, fields);
+
+        //脱敏
+
+        return target;
+    }
+
+    /**
+     * 翻译被Formatter注解的字段
+     * @param target
+     * @param fields
+     * @param <T>
+     */
+    private static <T> void formatterHandler(T target, List<Field> fields) {
         //遍历字段，找出 Formatter注解注释的字段
         fields.stream().parallel().filter(field -> field.isAnnotationPresent(Formatter.class)).forEach(field -> {
             try {
                 //判断是否有注解Formatter
-                PropertyDescriptor descriptor = new PropertyDescriptor(field.getName(), source.getClass());
+                PropertyDescriptor descriptor = new PropertyDescriptor(field.getName(), target.getClass());
                 Method readMethod = descriptor.getReadMethod();
                 //读取属性值
-                Object result = readMethod.invoke(source);
+                Object result = readMethod.invoke(target);
                 if (result instanceof Boolean) {
                     result = (Boolean) result ? Enabled.YES.getValue() : Enabled.NO.getValue();
                 }
@@ -97,7 +116,5 @@ public abstract class GaeaBeanUtils {
                 e.printStackTrace();
             }
         });
-
-        return target;
     }
 }
