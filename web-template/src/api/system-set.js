@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:13:34
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-27 13:15:22
+ * @Last Modified time: 2021-02-07 13:18:25
  */
 
 import request from '@/utils/request'
@@ -50,9 +50,8 @@ export function dictionaryAdd(data) {
 // 修改用户密码
 export function changePassword(data) {
   return request({
-    url: `/v1/user/password`,
-    // url: `/v1/user/${data.pkId}/password`,
-    method: 'put',
+    url: '/auth/user/updatePassword',
+    method: 'POST',
     data,
   })
 }

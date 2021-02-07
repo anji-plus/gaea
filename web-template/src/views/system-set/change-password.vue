@@ -30,7 +30,8 @@
   </div>
 </template>
 <script>
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
+import { transPsw } from '@/utils/encrypted'
 import { changePassword } from '@/api/system-set'
 export default {
   data() {
@@ -39,13 +40,13 @@ export default {
         newPassword1: '',
         oldPassword: '',
         newPassword2: '',
-        pkId: Cookies.get('pkId'),
+        // pkId: Cookies.get('pkId'),
       },
       rules: {
         oldPassword: [{ required: true, message: this.$t('userManage.oldPlace'), trigger: 'blur' }],
         newPassword1: [
           { required: true, message: this.$t('placeholder.input'), trigger: 'blur' },
-          { pattern: /(?!.*\s)(?!^[\u4e00-\u9fa5]+$)(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{8,16}$/, message: this.$t('userManage.newPlace') },
+          // { pattern: /^(?![\\d]+$)(?![a-zA-Z]+$)(?![^\\da-zA-Z]+$).{8,30}$/, message: this.$t('userManage.newPlace') },
         ],
         newPassword2: [{ required: true, message: this.$t('userManage.confirmPlace'), trigger: 'blur' }],
       },
@@ -54,7 +55,6 @@ export default {
   },
   methods: {
     submitPassword(dialogForm) {
-      var md5 = require('js-md5')
       this.$refs[dialogForm].validate((valid) => {
         if (valid) {
           // 密码输入不一致
@@ -63,10 +63,10 @@ export default {
             return
           }
           var passwordObj = {
-            newPassword1: md5(this.searchForm.newPassword1 + 'anjitms'),
-            oldPassword: md5(this.searchForm.oldPassword + 'anjitms'),
-            newPassword2: md5(this.searchForm.newPassword2 + 'anjitms'),
-            pkId: Cookies.get('pkId'),
+            password: transPsw(this.searchForm.newPassword1),
+            oldPassword: transPsw(this.searchForm.oldPassword),
+            confirmPassword: transPsw(this.searchForm.newPassword2),
+            // pkId: Cookies.get('pkId'),
           }
           // 发送请求
           changePassword(passwordObj).then((res) => {

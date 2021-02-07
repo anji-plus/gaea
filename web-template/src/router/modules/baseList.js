@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:34:51
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-05 10:34:50
+ * @Last Modified time: 2021-02-07 16:34:08
  */
 
 /** 脚手架基础页面路由 **/
@@ -56,7 +56,7 @@ export const baseList = [
         parentMenuId: '20',
         path: 'btn-config',
         component: 'authority/btn-config',
-        name: 'BtnConfig',
+        name: 'btnConfig',
         meta: {
           title: 'btnConfig',
           icon: '',

@@ -76,18 +76,42 @@
         <el-row class="form_table">
           <el-col :span="12">
             <el-form-item label="菜单代码" prop="menuCode">
-              <el-input v-model="dialogForm.menuCode" :disabled="dialogTittle != 'add'" />
+              <el-input v-model="dialogForm.menuCode" :disabled="dialogTittle != 'add'" placeholder="方便关联,唯一值" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sort">
+              <el-input v-model="dialogForm.sort" type="Number" placeholder="决定顺序" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="父菜单代码" prop="parentCode">
+              <el-input v-model="dialogForm.parentCode" placeholder="父菜单代码" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="菜单名称" prop="menuName">
-              <el-input v-model="dialogForm.menuName" />
+              <el-input v-model="dialogForm.menuName" placeholder="title和name字段" />
             </el-form-item>
           </el-col>
-
           <el-col :span="12">
-            <el-form-item label="父菜单代码" prop="parentCode">
-              <el-input v-model="dialogForm.parentCode" />
+            <el-form-item label="路由地址" prop="path">
+              <el-input v-model="dialogForm.path" placeholder="path" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="图标" prop="menuIcon">
+              <el-input v-model="dialogForm.menuIcon" placeholder="icon" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="文件路径" prop="component">
+              <el-input v-model="dialogForm.component" placeholder="component" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="重定向地址" prop="redirectUrl">
+              <el-input v-model="dialogForm.redirectUrl" placeholder="redirect" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -98,31 +122,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="路由地址" prop="path">
-              <el-input v-model="dialogForm.path" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="图标" prop="menuIcon">
-              <el-input v-model="dialogForm.menuIcon" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="文件路径" prop="component">
-              <el-input v-model="dialogForm.component" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="排序" prop="sort">
-              <el-input v-model="dialogForm.sort" type="Number" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="重定向地址" prop="redirectUrl">
-              <el-input v-model="dialogForm.redirectUrl" />
-            </el-form-item>
-          </el-col>
+
           <el-col :span="12">
             <el-form-item label="隐藏菜单" prop="hidden">
               <el-select v-model="dialogForm.hidden" :placeholder="$t('placeholder.select')">
@@ -197,7 +197,7 @@ export default {
       dialogForm: {
         menuCode: '', // 菜单代码
         menuName: '', // 菜单名称
-        sysCode: '', // 系统代码
+        sysCode: 'PC', // 系统代码
         parentCode: '',
         path: '',
         menuIcon: '',

@@ -46,8 +46,8 @@
                   name="password"
                   tabindex="2"
                   autocomplete="on"
-                  @focus="setTop('50')"
-@blur="capsTooltip = false"
+                  @blur="capsTooltip = false"
+@focus="setTop('50')"
                   @keyup.native="checkCapslock"
                 />
                 <span class="show_pwd" @click="showPwd">
@@ -209,7 +209,6 @@ export default {
             this.needCaptcha = true
           } else {
             this.needCaptcha = false
-            console.log(res)
             this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
           }
         })

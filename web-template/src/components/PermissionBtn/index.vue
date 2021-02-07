@@ -34,7 +34,7 @@ export default {
   created() {
     // 判断是否存在该按钮的 权限
     this.permission = this.$route.meta.permission.some((item) => {
-      return item.btnName == this.label
+      return item == this.label
     })
   },
 }

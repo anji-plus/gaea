@@ -44,6 +44,7 @@
     <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button>
     <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
     <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="setRole">设定角色</el-button>
+    <el-button type="warning" icon="el-icon-warning" :disabled="selectedList.length != 1" @click="resetPsw">重置密码</el-button>
     <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" />
     <el-table :data="tableList" border @selection-change="handleSelectionChange">
       <el-table-column fixed type="selection" width="40" center />
@@ -89,11 +90,11 @@
               <el-input v-model="dialogForm.email" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item :label="$t('userManage.password')" prop="password">
               <el-input v-model="dialogForm.password" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="12">
             <el-form-item label="启用状态" prop="enabled">
               <el-select v-model="dialogForm.enabled" :placeholder="$t('placeholder.select')">
@@ -113,7 +114,7 @@
   </div>
 </template>
 <script>
-import { getUserList, addUser, editUser, deleteUser } from '@/api/authority'
+import { getUserList, addUser, editUser, deleteUser, resetPwd } from '@/api/authority'
 export default {
   name: 'User',
   components: {
@@ -156,6 +157,11 @@ export default {
     }
   },
   methods: {
+    // 重置密码
+    async resetPsw() {
+      const { code } = await resetPwd({ username: this.selectedList[0].username })
+      if (code != '200') return
+    },
     // 分配角色
     setRole() {
       this.id = this.selectedList[0].username

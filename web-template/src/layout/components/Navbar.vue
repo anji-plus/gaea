@@ -31,13 +31,13 @@
                 <p><i class="el-icon-user" /> {{ $t('navbar.account') }}</p>
                 <p>{{ displayName }}</p>
               </div>
-              <!-- <div>
-                <p><i class="el-icon-help"/> {{ $t('navbar.organisation') }}</p>
-                <p> {{'组织名称'}} </p>
-                <el-select class="organisation" v-model="myOrgani" size="mini" :placeholder="$t('placeholder.select')">
-                  <el-option v-for='item in organisationList'  :key="item.id" :label="item.label" :value="item.value" />
+              <div>
+                <p><i class="el-icon-help" /> {{ $t('navbar.organisation') }}</p>
+                <!-- <p> {{'组织名称'}} </p> -->
+                <el-select v-model="myOrgani" class="organisation" size="mini" :placeholder="$t('placeholder.select')" @change="changeOrg(val)">
+                  <el-option v-for="item in orgList" :key="item.id" :label="item.orgName" :value="item.orgCode" />
                 </el-select>
-              </div> -->
+              </div>
             </div>
             <div class="btn_group">
               <router-link to="/change-password">
@@ -89,12 +89,11 @@ export default {
     return {
       displayName: Cookies.get('displayName'),
       infoShow: false,
-      organisationList: [{ id: 1, label: '组织1', value: '1' }],
-      myOrgani: '1',
+      myOrgani: Cookies.get('orgCode'),
     }
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'device']),
+    ...mapGetters(['sidebar', 'avatar', 'device', 'orgList']),
   },
   methods: {
     toggleSideBar() {
@@ -106,6 +105,11 @@ export default {
     },
     displayInfo() {
       this.infoShow = !this.infoShow
+    },
+    changeOrg(val) {
+      Cookies.set('orgCode', val)
+      location.reload()
+      // this.$store.dispatch('')
     },
   },
 }

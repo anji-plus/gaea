@@ -36,7 +36,8 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button>
+    <!-- <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button> -->
+    <permission-btn label="add" icon="el-icon-plus" type="primary" @click.native="openCreateUser" />
     <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
     <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" />
     <el-table :data="tableList" border @selection-change="handleSelectionChange">

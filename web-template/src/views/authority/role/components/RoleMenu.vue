@@ -18,7 +18,10 @@ export default {
     },
     id: {
       required: true,
-      type: Number,
+      type: String,
+      default: () => {
+        return ''
+      },
     },
   },
   data() {
@@ -68,6 +71,8 @@ export default {
     async getAllMenus() {
       const { code, data } = await allMenu()
       if (code != '200') return
+      // const hasChildren = data
+      // data.forEach()
       this.menuData = data
     },
     async getCheckedId() {

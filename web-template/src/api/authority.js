@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:14:13
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-05 13:44:31
+ * @Last Modified time: 2021-02-07 14:49:08
  */
 import request from '@/utils/request'
 // 权限菜单中几个页面的接口
@@ -103,7 +103,7 @@ export function getUserList(params) {
 // 新增接口
 export function addUser(data) {
   return request({
-    url: '/auth/user',
+    url: '/auth/user/insertUser',
     method: 'post',
     data,
   })
@@ -136,6 +136,15 @@ export function saveRoleTree(data) {
   return request({
     url: '/auth/user/saveRoleTree',
     method: 'post',
+    data,
+  })
+}
+
+// 提交选中的菜单节点
+export function resetPwd(data) {
+  return request({
+    url: '/auth/user/resetPwd',
+    method: 'POST',
     data,
   })
 }

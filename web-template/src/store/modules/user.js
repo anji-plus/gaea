@@ -1,8 +1,8 @@
-import { login, getInfo } from '@/api/user'
+import { login } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import Cookies from 'js-cookie'
 import router, { resetRouter } from '@/router'
-var md5 = require('js-md5')
+import { transPsw } from '@/utils/encrypted'
 
 const state = {
   token: getToken(),
@@ -11,6 +11,7 @@ const state = {
   introduction: '', // 介绍信息，备用
   roles: [], // 如果不需要前端通过role来判断显示哪些菜单，可无视此变量
   hasMenu: false, // 是否已经获取过菜单
+  orgList: [], // 用户组织列表
 }
 
 const mutations = {
@@ -33,15 +34,17 @@ const mutations = {
   SET_HASMENU: (state, hasMenu) => {
     state.hasMenu = hasMenu
   },
+  SET_ORGLIST: (state, orgs) => {
+    state.orgList = orgs
+  },
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password, verifyCode } = userInfo
-    var passwordMd5 = md5(password + 'gaea')
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: passwordMd5, verifyCode: verifyCode })
+      login({ username: username.trim(), password: transPsw(password), verifyCode: verifyCode })
         .then((response) => {
           if (response.code != '200') {
             resolve(response.data) // 将 captcha 传递出去
@@ -62,23 +65,26 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token)
-        .then((response) => {
-          // 此处需要将菜单返回出去
-          if (response.code != '200') {
-            reject()
-          } else {
-            commit('SET_HASMENU', true) // 是否获取过菜单标识
-            Cookies.set('displayName', response.data.nickname)
-            // 将用户id存储到cookie
-            // Cookies.set('pkId', response.data.userdetail.userId)
-            resolve(response.data.userdetail)
-            // resolve()
-          }
-        })
-        .catch((error) => {
-          reject(error)
-        })
+      // getInfo(state)
+      //   .then((response) => {
+      //     // 此处需要将菜单返回出去
+      //     if (response.code != '200') {
+      //       reject()
+      //     } else {
+      commit('SET_HASMENU', true) // 是否获取过菜单标识
+      Cookies.set('displayName', '开发')
+      resolve()
+      // Cookies.set('displayName', response.data.nickname)
+      //     // 将用户的组织code存入cookie
+      //     Cookies.set('orgCode', response.data.currentOrgCode || '')
+      //     // 将用户的组织列表存入store
+      //     commit('SET_ORGLIST', response.data.orgs || [])
+      //     resolve(response.data.menus || [])
+      //   }
+      // })
+      // .catch((error) => {
+      //   reject(error)
+      // })
     }).catch((e) => {
       console.log(e)
     })
@@ -89,7 +95,7 @@ const actions = {
     return new Promise((resolve) => {
       commit('SET_TOKEN', '')
       commit('SET_HASMENU', false)
-      // Cookies.remove('pkId')
+      Cookies.remove('orgCode')
       removeToken()
       resetRouter()
       resolve()
