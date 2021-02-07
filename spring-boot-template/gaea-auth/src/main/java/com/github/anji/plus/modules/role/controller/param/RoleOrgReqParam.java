@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * 功能描述：
- *
+ * 角色 机构关联
  * @Author: peiyanni
  * @Date: 2021/2/3 17:46
  */

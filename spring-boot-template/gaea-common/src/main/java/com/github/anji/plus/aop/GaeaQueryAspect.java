@@ -2,6 +2,7 @@ package com.github.anji.plus.aop;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.anji.plus.common.MagicValueConstants;
 import com.github.anji.plus.dto.BaseQueryBO;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -42,8 +43,12 @@ public class GaeaQueryAspect {
             //需要进行高级查询条件的封装，
             String jsonObj=argsArrayToJsonObj(joinPoint.getArgs());
             if(StringUtils.isEmpty(jsonObj)){
-
+                joinPoint.proceed(joinPoint.getArgs());
+                return;
             }
+            JSONObject jsonObject=JSONObject.parseObject(jsonObj);
+            //是否有常用查询条件
+            Long commonId= jsonObject.getLong(MagicValueConstants.COMMONID);
 
 
         }catch (Exception e){

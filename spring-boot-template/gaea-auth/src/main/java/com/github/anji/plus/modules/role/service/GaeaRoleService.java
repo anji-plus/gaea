@@ -1,6 +1,7 @@
 package com.github.anji.plus.modules.role.service;
 
 import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
+import com.github.anji.plus.modules.role.controller.param.RoleMenuActionReqParam;
 import com.github.anji.plus.modules.role.controller.param.RoleOrgReqParam;
 import com.github.anji.plus.modules.role.dao.entity.GaeaRole;
 import com.github.anji.plus.modules.role.controller.param.GaeaRoleParam;
@@ -37,4 +38,11 @@ public interface GaeaRoleService extends GaeaBaseService<GaeaRoleParam, GaeaRole
      * @return
      */
     Boolean saveOrgTreeForRole(RoleOrgReqParam requestModel);
+
+    /**
+     * 保存角色，菜单权限信息
+     * @param reqParam
+     * @return
+     */
+    Boolean saveMenuActionTreeForRole(RoleMenuActionReqParam reqParam);
 }

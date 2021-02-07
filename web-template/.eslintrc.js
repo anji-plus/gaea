@@ -28,6 +28,7 @@ module.exports = {
         "allowFirstLine": false
       }
     }],
+    "vue/require-default-prop":0,
     "vue/singleline-html-element-content-newline": "off",
     "vue/multiline-html-element-content-newline": "off",
     "vue/name-property-casing": ["error", "PascalCase"],
@@ -149,7 +150,7 @@ module.exports = {
     }],
     'no-unreachable': 2,
     'no-unsafe-finally': 2,
-    'no-unused-vars': [2, {
+    'no-unused-vars': [0, {
       'vars': 'all',
       'args': 'none'
     }],

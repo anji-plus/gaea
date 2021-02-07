@@ -3,6 +3,7 @@ package com.github.anji.plus.modules.role.controller;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
+import com.github.anji.plus.modules.role.controller.param.RoleMenuActionReqParam;
 import com.github.anji.plus.modules.role.controller.param.RoleOrgReqParam;
 import com.github.anji.plus.modules.role.dao.entity.GaeaRole;
 import com.github.anji.plus.modules.role.controller.dto.GaeaRoleDTO;
@@ -56,6 +57,12 @@ public class GaeaRoleController extends GaeaBaseController<GaeaRoleParam, GaeaRo
     @PostMapping("/saveOrgTreeForRole")
     public ResponseBean saveOrgTreeForRole(@RequestBody RoleOrgReqParam reqParam){
         Boolean data=gaeaRoleService.saveOrgTreeForRole(reqParam);
+        return responseSuccessWithData(data);
+    }
+
+    @PostMapping("/saveMenuActionTreeForRole")
+    public ResponseBean saveMenuActionTreeForRole(@RequestBody RoleMenuActionReqParam reqParam){
+        Boolean data=gaeaRoleService.saveMenuActionTreeForRole(reqParam);
         return responseSuccessWithData(data);
     }
 }

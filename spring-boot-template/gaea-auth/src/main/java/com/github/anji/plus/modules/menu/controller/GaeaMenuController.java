@@ -96,13 +96,12 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
     }
 
     /**
-     * 获取当前用户拥有的权限按钮
+     * 获取当前角色拥有的权限按钮
      * @return
      */
-    @GetMapping("/tree/actions")
-    public ResponseBean userActions() {
-        String username = UserContentHolder.getContext().getUsername();
-        return responseSuccessWithData(gaeaMenuService.getSelectActions(username));
+    @GetMapping("/tree/actions/{roleCode}")
+    public ResponseBean userActions(@PathVariable("roleCode")String roleCode) {
+        return responseSuccessWithData(gaeaMenuService.getSelectActions(roleCode));
     }
 
     /**

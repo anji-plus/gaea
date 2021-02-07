@@ -32,6 +32,9 @@ public class AppUserDetailsServiceHelper extends UserDetailsServiceHelper {
         LambdaQueryWrapper<GaeaUser> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(GaeaUser::getUsername, username);
         GaeaUser gaeaUser = gaeaUserService.getMapper().selectOne(wrapper);
+        if (gaeaUser == null) {
+            return null;
+        }
 
         //构建security的用户对象
         //账号是否可用

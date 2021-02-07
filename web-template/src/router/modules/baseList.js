@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:34:51
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-04 15:17:34
+ * @Last Modified time: 2021-02-05 10:34:50
  */
 
 /** 脚手架基础页面路由 **/
@@ -77,7 +77,7 @@ export const baseList = [
         menuId: '2030',
         parentMenuId: '20',
         path: 'role',
-        component: 'authority/role',
+        component: 'authority/role/index',
         name: 'Role',
         meta: {
           title: 'role',
@@ -88,7 +88,7 @@ export const baseList = [
         menuId: '2040',
         parentMenuId: '20',
         path: 'user',
-        component: 'authority/user',
+        component: 'authority/user/index',
         name: 'User',
         meta: {
           title: 'user',
@@ -201,7 +201,7 @@ export const baseList = [
         menuId: '4020',
         parentMenuId: '40',
         path: 'template',
-        component: 'push-notify/template',
+        component: 'push-notify/template/index',
         name: 'Template',
         meta: {
           title: 'template',
@@ -213,7 +213,7 @@ export const baseList = [
         menuId: '4030',
         parentMenuId: '40',
         path: 'history',
-        component: 'push-notify/history',
+        component: 'push-notify/history/index',
         name: 'History',
         meta: {
           title: 'history',

@@ -2,16 +2,21 @@ package com.github.anji.plus.modules.role.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.anji.plus.gaea.bean.TreeNode;
 import com.github.anji.plus.gaea.constant.Enabled;
 import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
 import com.github.anji.plus.modules.org.dao.GaeaOrgMapper;
 import com.github.anji.plus.modules.org.dao.entity.GaeaOrg;
+import com.github.anji.plus.modules.role.controller.param.RoleMenuActionReqParam;
 import com.github.anji.plus.modules.role.controller.param.RoleOrgReqParam;
+import com.github.anji.plus.modules.role.dao.GaeaRoleMenuActionMapper;
 import com.github.anji.plus.modules.role.dao.GaeaRoleOrgMapper;
 import com.github.anji.plus.modules.role.dao.entity.GaeaRole;
 import com.github.anji.plus.modules.role.dao.GaeaRoleMapper;
+import com.github.anji.plus.modules.role.dao.entity.GaeaRoleMenuAction;
 import com.github.anji.plus.modules.role.dao.entity.GaeaRoleOrg;
 import com.github.anji.plus.modules.role.service.GaeaRoleService;
 import com.github.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
@@ -48,6 +53,8 @@ public class GaeaRoleServiceImpl implements GaeaRoleService {
     private GaeaOrgMapper gaeaOrgMapper;
     @Autowired
     private GaeaUserRoleOrgMapper gaeaUserRoleOrgMapper;
+    @Autowired
+    private GaeaRoleMenuActionMapper gaeaRoleMenuActionMapper;
 
     @Override
     public GaeaBaseMapper<GaeaRole> getMapper() {
@@ -77,7 +84,7 @@ public class GaeaRoleServiceImpl implements GaeaRoleService {
         QueryWrapper<GaeaOrg> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().select(GaeaOrg::getId, GaeaOrg::getOrgCode, GaeaOrg::getOrgName, GaeaOrg::getOrgParentCode)
                 .eq(GaeaOrg::getDeleteFlag, Enabled.NO.getValue())
-                .and(e -> e.eq(GaeaOrg::getEnableFlag, Enabled.YES.getValue()));
+                .and(e -> e.eq(GaeaOrg::getEnabled, Enabled.YES.getValue()));
         List<GaeaOrg> orgList = gaeaOrgMapper.selectList(queryWrapper);
 
         List<TreeNode> treeList = buildOrgTree(orgList, "0");
@@ -110,13 +117,43 @@ public class GaeaRoleServiceImpl implements GaeaRoleService {
         //根据roleId清除gaea_user_role_org的已勾选的orgIds
         QueryWrapper<GaeaUserRoleOrg> userRoleOrgQueryWrapper = new QueryWrapper<>();
         LambdaQueryWrapper<GaeaUserRoleOrg> lambdaQueryWrapper = userRoleOrgQueryWrapper.lambda();
-        lambdaQueryWrapper.eq(GaeaUserRoleOrg::getRoleCode,requestModel.getRoleCode());
+        lambdaQueryWrapper.eq(GaeaUserRoleOrg::getRoleCode, requestModel.getRoleCode());
         if (checkedCodes.size() > 0) {
-            lambdaQueryWrapper.notIn(GaeaUserRoleOrg::getOrgCode,checkedCodes);
+            lambdaQueryWrapper.notIn(GaeaUserRoleOrg::getOrgCode, checkedCodes);
         }
         gaeaUserRoleOrgMapper.delete(userRoleOrgQueryWrapper);
         return true;
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean saveMenuActionTreeForRole(RoleMenuActionReqParam reqParam) {
+        String roleCode = reqParam.getRoleCode();
+        List<String> checkedCodsList = reqParam.getCodes();
+
+        //清除菜单的旧关联按钮
+        LambdaQueryWrapper<GaeaRoleMenuAction> queryWrapper=Wrappers.lambdaQuery();
+        queryWrapper.select(GaeaRoleMenuAction::getId,GaeaRoleMenuAction::getRoleCode)
+                .eq(GaeaRoleMenuAction::getRoleCode,roleCode);
+        gaeaRoleMenuActionMapper.delete(queryWrapper);
+
+        if(CollectionUtils.isNotEmpty(checkedCodsList)){
+            List<GaeaRoleMenuAction> checkList=new ArrayList<>(checkedCodsList.size());
+            //保存新的关联
+            checkedCodsList.forEach(s -> {
+                String[] codesArr= s.split(":");
+                String menuCode=codesArr[0];
+                String actionCode=codesArr[1];
+                GaeaRoleMenuAction gaeaRoleMenuAction=new GaeaRoleMenuAction();
+                gaeaRoleMenuAction.setRoleCode(roleCode);
+                gaeaRoleMenuAction.setActionCode(actionCode);
+                gaeaRoleMenuAction.setMenuCode(menuCode);
+                checkList.add(gaeaRoleMenuAction);
+            });
+            gaeaRoleMenuActionMapper.insertBatch(checkList);
+        }
+        return true;
     }
 
 
@@ -130,7 +167,7 @@ public class GaeaRoleServiceImpl implements GaeaRoleService {
     private List<TreeNode> buildOrgTree(List<GaeaOrg> orgList, String pCode) {
         List<TreeNode> childList = new ArrayList<>();
         orgList.forEach(orgPO -> {
-            if (orgPO.getOrgParentCode().equals(pCode)) {
+            if (StringUtils.isNotEmpty(orgPO.getOrgParentCode())&&orgPO.getOrgParentCode().equals(pCode)) {
                 TreeNode treeVO = new TreeNode();
                 treeVO.setId(orgPO.getOrgCode());
                 treeVO.setLabel(orgPO.getOrgName());

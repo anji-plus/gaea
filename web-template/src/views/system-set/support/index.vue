@@ -33,7 +33,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-button type="primary" icon="el-icon-plus">{{ $t('btn.add') }}</el-button>
+    <el-button type="primary" icon="el-icon-plus" @click="addOrEdit('add')">{{ $t('btn.add') }}</el-button>
     <!-- 查询结果列表 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" style="width: 100%" border fit highlight-current-row>
       <el-table-column align="center" label="序号" width="70">
@@ -103,7 +103,7 @@ export default {
     return {
       formData: {},
       // 弹框默认隐藏
-      dialogFormVisible: true,
+      dialogFormVisible: false,
       params: {
         currentPage: 1,
         pageSize: 10,
@@ -143,6 +143,9 @@ export default {
     this.queryByPage()
   },
   methods: {
+    addOrEdit() {
+      this.dialogFormVisible = true
+    },
     // 查询
     search(formName) {
       this.$refs[formName].validate((valid) => {
