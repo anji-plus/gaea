@@ -14,6 +14,10 @@ public final class MagicValueConstants {
 
     private MagicValueConstants() {
     }
+    public static final boolean FALSE = false;
+    //接口返回结果成功状态
+    public static final boolean TRUE = true;
+    public static final String DEFAULT_PASSWORD="123456";
 
     public static final String GAEA = "GAEA";
     //接口返回结果成功状态

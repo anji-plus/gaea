@@ -2,22 +2,28 @@ package com.github.anji.plus.modules.menu.controller;
 
 import java.util.*;
 
+import com.github.anji.plus.common.RespCommonCode;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.bean.TreeNode;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
+import com.github.anji.plus.gaea.exception.BusinessExceptionBuilder;
 import com.github.anji.plus.gaea.holder.UserContentHolder;
 import com.github.anji.plus.modules.menu.controller.dto.GaeaLeftMenuDTO;
 import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
+import com.github.anji.plus.modules.menu.controller.param.LeftMenuReqParam;
 import com.github.anji.plus.modules.menu.controller.param.MenuActionReqParam;
 import com.github.anji.plus.modules.menu.dao.entity.GaeaMenu;
 import com.github.anji.plus.modules.menu.controller.dto.GaeaMenuDTO;
 import com.github.anji.plus.modules.menu.controller.param.GaeaMenuParam;
 import com.github.anji.plus.modules.menu.service.GaeaMenuService;
 import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
+import com.github.anji.plus.modules.org.dao.entity.GaeaOrg;
 import com.github.anji.plus.modules.role.service.GaeaRoleService;
 import com.github.anji.plus.modules.user.dao.entity.GaeaUser;
 import com.github.anji.plus.modules.user.service.GaeaUserService;
 import io.swagger.annotations.Api;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,6 +87,37 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
         userInfo.put("roles",userRoles);
         userInfo.put("username",username);
         userInfo.put("nickname",gaeaUser.getNickname());
+        ResponseBean listResponseBean = ResponseBean.builder().data(userInfo).build();
+        return listResponseBean;
+    }
+
+    @PostMapping("/menuUserInfoByOrg")
+    public ResponseBean getMenuInfoByOrg(@RequestBody LeftMenuReqParam reqParam){
+        String username = UserContentHolder.getContext().getUsername();
+        //获取当前用户所在机构
+        Map<String,Object> userInfo = new HashMap<>(8);
+        List<GaeaOrg> orgList = gaeaUserService.getOrgByUsername(username);
+        if(!CollectionUtils.isEmpty(orgList)){
+            String orgCode=reqParam.getOrgCode();
+            if(StringUtils.isEmpty(orgCode)){
+                orgCode=orgList.get(0).getOrgCode();
+            }
+            List<String> userRoles =gaeaUserService.getRoleByUserOrg(username,orgCode);
+            //获取当前用户所拥有的菜单
+            List<GaeaLeftMenuDTO> userMenus = gaeaMenuService.getMenus(userRoles);
+            userInfo.put("menus",userMenus);
+            userInfo.put("roles",userRoles);
+            userInfo.put("orgs",orgList);
+            userInfo.put("currentOrgCode",orgCode);
+        }else{
+            userInfo.put("menus",null);
+            userInfo.put("roles",null);
+            userInfo.put("orgs",null);
+        }
+        GaeaUser gaeaUser = gaeaUserService.getUserByUsername(username);
+        userInfo.put("username",username);
+        userInfo.put("nickname",gaeaUser.getNickname());
+
         ResponseBean listResponseBean = ResponseBean.builder().data(userInfo).build();
         return listResponseBean;
     }

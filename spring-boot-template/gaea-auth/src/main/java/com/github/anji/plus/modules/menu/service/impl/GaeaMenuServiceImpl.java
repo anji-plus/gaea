@@ -3,6 +3,7 @@ package com.github.anji.plus.modules.menu.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.anji.plus.common.MagicValueConstants;
 import com.github.anji.plus.gaea.bean.TreeNode;
 import com.github.anji.plus.gaea.constant.Enabled;
 import com.github.anji.plus.modules.action.dao.GaeaActionMapper;
@@ -106,6 +107,7 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
         List<GaeaLeftMenuDTO> leafMenus = leafMenuList.stream().map(gaeaMenu -> {
             GaeaLeftMenuDTO gaeaMenuDTO = new GaeaLeftMenuDTO();
             BeanUtils.copyProperties(gaeaMenu, gaeaMenuDTO);
+            gaeaMenuDTO.setName(gaeaMenu.getMenuName());
             setDtoMeta(gaeaMenuDTO);
 
             gaeaMenuDTO.setPermission(menuActionMap.get(gaeaMenuDTO.getMenuCode()));
@@ -120,17 +122,17 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
             GaeaMenu gaeaMenu = menuMap.get(entry.getKey());
             GaeaLeftMenuDTO gaeaLeftMenuDTO = new GaeaLeftMenuDTO();
             BeanUtils.copyProperties(gaeaMenu, gaeaLeftMenuDTO);
+            gaeaLeftMenuDTO.setName(gaeaMenu.getMenuName());
             gaeaLeftMenuDTO.setChildren(entry.getValue());
             return setChild(gaeaLeftMenuDTO, menuMap);
-
-        }).collect(Collectors.toList());
+        }).sorted(Comparator.comparing(GaeaLeftMenuDTO::getSort)).collect(Collectors.toList());
 
         return menuResult;
     }
 
     private void setDtoMeta(GaeaLeftMenuDTO gaeaMenuDTO) {
         Map<String, String> meta = new HashMap<>(2);
-        meta.put("title", gaeaMenuDTO.getMenuCode());
+        meta.put("title", gaeaMenuDTO.getName());
         meta.put("icon", gaeaMenuDTO.getMenuIcon());
         gaeaMenuDTO.setMeta(meta);
     }
@@ -147,12 +149,13 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
         setDtoMeta(gaeaMenuDTO);
 
         //当没有父菜单code时，递归结束
-        if(gaeaMenuDTO.getParentCode() == null) {
+        if(StringUtils.isEmpty(gaeaMenuDTO.getParentCode())|| MagicValueConstants.STRING_ZERO.equals(gaeaMenuDTO.getParentCode())) {
             return gaeaMenuDTO;
         }
         GaeaMenu gaeaMenu = menuMap.get(gaeaMenuDTO.getMenuCode());
         GaeaLeftMenuDTO dto = new GaeaLeftMenuDTO();
         BeanUtils.copyProperties(gaeaMenu, dto);
+        dto.setName(gaeaMenu.getMenuName());
         return setChild(dto, menuMap);
     }
 
@@ -212,7 +215,7 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
         return rootResources.stream().map(resource -> {
             TreeNode node = new TreeNode();
             node.setId(resource.getMenuCode());
-            node.setLabel(resource.getMenuCode());
+            node.setLabel(resource.getMenuName());
             //树子集合
             List<TreeNode> treeResult = new ArrayList<>();
             //菜单对应的actions

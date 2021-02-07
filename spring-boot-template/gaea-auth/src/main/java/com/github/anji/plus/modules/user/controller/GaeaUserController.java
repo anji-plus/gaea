@@ -5,6 +5,7 @@ import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
 import com.github.anji.plus.modules.role.controller.param.RoleOrgReqParam;
+import com.github.anji.plus.modules.user.controller.param.GaeaUserPasswordParam;
 import com.github.anji.plus.modules.user.controller.param.UserRoleOrgReqParam;
 import com.github.anji.plus.modules.user.dao.entity.GaeaUser;
 import com.github.anji.plus.modules.user.controller.dto.GaeaUserDTO;
@@ -13,6 +14,7 @@ import com.github.anji.plus.modules.user.service.GaeaUserService;
 import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
 import io.swagger.annotations.Api;
 import lombok.extern.java.Log;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,6 +51,12 @@ public class GaeaUserController extends GaeaBaseController<GaeaUserParam, GaeaUs
         return new GaeaUserDTO();
     }
 
+
+    @PostMapping("/insertUser")
+    public ResponseBean saveGaeauser(@Validated @RequestBody GaeaUserDTO dto){
+        return responseSuccessWithData(gaeaUserService.saveGaeaUser(dto));
+    }
+
     /**
      * 查询用户关联的机构角色树
      *
@@ -73,7 +81,25 @@ public class GaeaUserController extends GaeaBaseController<GaeaUserParam, GaeaUs
         return responseSuccessWithData(data);
     }
 
+    /**
+     * 用户修改密码
+     * @param reqParam
+     * @return
+     */
+    @PostMapping("/updatePassword")
+    public ResponseBean updatePassword(@RequestBody GaeaUserPasswordParam reqParam){
+        return responseSuccessWithData(gaeaUserService.updatePassword(reqParam));
+    }
 
+    /**
+     * 用户重置密码
+     * @param reqParam
+     * @return
+     */
+    @PostMapping("/resetPwd")
+    public ResponseBean resetPassword(@RequestBody GaeaUserPasswordParam reqParam){
+        return responseSuccessWithData(gaeaUserService.setDefaultPwd(reqParam.getUsername()));
+    }
 
 
 }

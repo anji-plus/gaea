@@ -1,5 +1,6 @@
 package com.github.anji.plus.modules.user.controller.dto;
 
+import com.github.anji.plus.gaea.annotation.Unique;
 import com.github.anji.plus.gaea.curd.dto.GaeaBaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class GaeaUserDTO extends GaeaBaseDTO {
 
     @ApiModelProperty(value = "用户登录名")
+    @Unique
     private String username;
 
     @ApiModelProperty(value = "用户密码")
