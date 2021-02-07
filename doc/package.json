@@ -1,0 +1,23 @@
+{
+  "name": "doc",
+  "version": "1.0.0",
+  "description": "AJ Gaea Doc",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "keywords": [
+    "AJ-Gaea",
+    "Gaea-Archiver"
+  ],
+  "author": "anji-plus gaea team",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@vuepress/plugin-back-to-top": "1.8.0",
+    "@vuepress/plugin-medium-zoom": "1.8.0",
+    "vue-toasted": "^1.1.25",
+    "vuepress": "^1.8.0",
+    "vuepress-plugin-flowchart": "^1.4.2"
+  }
+}

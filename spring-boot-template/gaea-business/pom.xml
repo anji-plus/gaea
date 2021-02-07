@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>spring-boot-template</artifactId>
-        <groupId>com.github.anji-plus</groupId>
+        <groupId>com.anji-plus</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -15,13 +15,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.anji-plus</groupId>
-            <artifactId>spring-boot-gaea</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.anji-plus</groupId>
+            <artifactId>gaea-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>

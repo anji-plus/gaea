@@ -1,6 +1,0 @@
-<template>
-  <div class="app-container">推送历史</div>
-</template>
-<script>
-export default {}
-</script>

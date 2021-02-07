@@ -99,6 +99,12 @@ public interface UserResponseCode {
      */
     String REQUEST_BODY_ERROR = "500-02-0013";
 
+
+    /**
+     * 用户注销，不可用
+     */
+    String USER_DISABLED_ERROR = "500-02-0014";
+
     //*********************************数据字典500-02-1*
 
     /**

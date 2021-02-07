@@ -9,7 +9,7 @@
         <version>2.3.5.RELEASE</version>
     </parent>
 
-    <groupId>com.github.anji-plus</groupId>
+    <groupId>com.anji-plus</groupId>
     <artifactId>spring-boot-gaea-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>

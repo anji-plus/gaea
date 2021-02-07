@@ -1,8 +1,10 @@
 package com.github.anji.plus.modules.user.controller.dto;
 
+import com.github.anji.plus.gaea.annotation.Unique;
 import com.github.anji.plus.gaea.curd.dto.GaeaBaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 /**
  * 用户表(GaeaUser)实体类
  *
@@ -13,13 +15,14 @@ import io.swagger.annotations.ApiModelProperty;
 public class GaeaUserDTO extends GaeaBaseDTO {
 
     @ApiModelProperty(value = "用户登录名")
+    @Unique
     private String username;
 
     @ApiModelProperty(value = "用户密码")
     private String password;
-        /**
-    * 真实姓名
-    */
+    /**
+     * 真实姓名
+     */
     @ApiModelProperty(value = "真实姓名")
     private String nickname;
 
@@ -28,24 +31,24 @@ public class GaeaUserDTO extends GaeaBaseDTO {
 
     @ApiModelProperty(value = "手机号")
     private String phone;
-        /**
-    * 1：可用 0：禁用
-    */
+    /**
+     * 1：可用 0：禁用
+     */
     @ApiModelProperty(value = "1：可用 0：禁用")
     private Integer enabled;
-        /**
-    * 0：否，锁定，1：是，未锁定
-    */
+    /**
+     * 0：否，锁定，1：是，未锁定
+     */
     @ApiModelProperty(value = "0：否，锁定，1：是，未锁定")
     private Integer accountLocked;
-        /**
-    * 0：否，过期，1：是，未过期
-    */
+    /**
+     * 0：否，过期，1：是，未过期
+     */
     @ApiModelProperty(value = "0：否，过期，1：是，未过期")
     private Integer accountNonExpired;
-        /**
-    * 0：否，过期，1：是，未过期
-    */
+    /**
+     * 0：否，过期，1：是，未过期
+     */
     @ApiModelProperty(value = "0：否，过期，1：是，未过期")
     private Integer credentialsNonExpired;
 

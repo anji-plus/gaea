@@ -25,7 +25,7 @@ public class GaeaLeftMenuDTO {
      * 菜单名称
      */
     @ApiModelProperty(value = "菜单名称")
-    private String menuName;
+    private String name;
     /**
      * 父级id
      */
@@ -66,6 +66,11 @@ public class GaeaLeftMenuDTO {
     private List<GaeaLeftMenuDTO> children;
 
     /**
+     * 排序，升序
+     */
+    private Integer sort;
+
+    /**
      * 元数据
      */
     public Map<String,String> meta;
@@ -83,12 +88,12 @@ public class GaeaLeftMenuDTO {
         this.menuCode = menuCode;
     }
 
-    public String getMenuName() {
-        return menuName;
+    public String getName() {
+        return name;
     }
 
-    public void setMenuName(String menuName) {
-        this.menuName = menuName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getParentCode() {
@@ -170,5 +175,13 @@ public class GaeaLeftMenuDTO {
 
     public void setPermission(Set<String> permission) {
         this.permission = permission;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

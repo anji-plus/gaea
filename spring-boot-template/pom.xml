@@ -8,15 +8,16 @@
         <module>gaea-gateway</module>
         <module>gaea-auth</module>
         <module>gaea-business</module>
+        <module>gaea-common</module>
     </modules>
 
     <parent>
-        <groupId>com.github.anji-plus</groupId>
+        <groupId>com.anji-plus</groupId>
         <artifactId>spring-boot-gaea-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.github.anji-plus</groupId>
+    <groupId>com.anji-plus</groupId>
     <artifactId>spring-boot-template</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>spring-boot-template</name>
@@ -29,14 +30,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.github.anji-plus</groupId>
+                <groupId>com.anji-plus</groupId>
                 <artifactId>spring-boot-gaea</artifactId>
                 <version>${gaea.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.anjiplus.gaea</groupId>
-                <artifactId>security</artifactId>
+                <groupId>com.anji-plus</groupId>
+                <artifactId>spring-boot-starter-gaea-security</artifactId>
                 <version>${gaea.security.version}</version>
             </dependency>
         </dependencies>

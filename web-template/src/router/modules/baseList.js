@@ -201,7 +201,7 @@ export const baseList = [
         menuId: '4020',
         parentMenuId: '40',
         path: 'template',
-        component: 'push-notify/template',
+        component: 'push-notify/template/index',
         name: 'Template',
         meta: {
           title: 'template',
@@ -213,7 +213,7 @@ export const baseList = [
         menuId: '4030',
         parentMenuId: '40',
         path: 'history',
-        component: 'push-notify/history',
+        component: 'push-notify/history/index',
         name: 'History',
         meta: {
           title: 'history',
