@@ -2,7 +2,6 @@ package com.anjiplus.gaea.security.security.handler;
 
 
 import com.alibaba.fastjson.JSONObject;
-
 import com.anjiplus.gaea.security.GaeaSecurityProperties;
 import com.anjiplus.gaea.security.cache.CacheKeyEnum;
 import com.anjiplus.gaea.security.code.UserResponseCode;
@@ -12,14 +11,13 @@ import com.github.anji.plus.gaea.cache.CacheHelper;
 import com.github.anji.plus.gaea.constant.GaeaConstant;
 import com.github.anji.plus.gaea.holder.UserContentHolder;
 import com.github.anji.plus.gaea.i18.MessageSourceHolder;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -34,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 登录成功
+ *
  * @author lirui
  * @since 2021-01-27
  */
@@ -81,6 +80,7 @@ public class GaeaLoginFailureHandler implements AuthenticationFailureHandler {
 
         ResponseBean.Builder builder = ResponseBean.builder();
 
+
         //用户名密码错误异常
         if (exception instanceof BadCredentialsException) {
             code = UserResponseCode.USER_PASSWORD_ERROR;
@@ -92,7 +92,7 @@ public class GaeaLoginFailureHandler implements AuthenticationFailureHandler {
             cacheHelper.expire(key, TimeUnit.HOURS, TIME_OUT);
 
             //返回错误次数
-            Map<String,Long> result = new HashMap<>(2);
+            Map<String, Long> result = new HashMap<>(2);
             result.put(ERROR_TIMES, increment);
 
             //错误大于5次，账户锁定,发出锁定事件
@@ -112,14 +112,19 @@ public class GaeaLoginFailureHandler implements AuthenticationFailureHandler {
             builder.data(result);
         }
 
-
+        //账户锁定
         if (exception instanceof LockedException) {
             code = UserResponseCode.USER_LOCKED;
+        }
+
+        //用户不可用，注销
+        if (exception instanceof DisabledException) {
+            code = UserResponseCode.USER_DISABLED_ERROR;
         }
 
 
         ResponseBean responseBean = builder.code(code).build();
         responseBean.setMessage(messageSourceHolder.getMessage(code));
-        response.getWriter().print( JSONObject.toJSONString(responseBean));
+        response.getWriter().print(JSONObject.toJSONString(responseBean));
     }
 }

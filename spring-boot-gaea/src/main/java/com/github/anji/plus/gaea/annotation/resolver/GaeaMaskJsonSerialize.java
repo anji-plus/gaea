@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
+import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.github.anji.plus.gaea.annotation.GaeaMask;
 import com.github.anji.plus.gaea.utils.GaeaMaskUtils;
 
@@ -15,6 +17,7 @@ import java.io.IOException;
  * 数据脱敏注解解析
  * @author lr
  * @since 2021-02-05
+ * @see JsonSerialize#using()
  */
 public class GaeaMaskJsonSerialize extends JsonSerializer<String> implements ContextualSerializer {
 
@@ -29,6 +32,13 @@ public class GaeaMaskJsonSerialize extends JsonSerializer<String> implements Con
         this.gaeaMask = gaeaMask;
     }
 
+    /**
+     * Jackson序列化时会调用该方法，自定义属性值
+     * @param value
+     * @param gen
+     * @param serializers
+     * @throws IOException
+     */
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
 
@@ -59,6 +69,13 @@ public class GaeaMaskJsonSerialize extends JsonSerializer<String> implements Con
         gen.writeString(result);
     }
 
+    /**
+     * Jackson序列化时会调用该方法创建JsonSerializer
+     * @param prov
+     * @param property
+     * @return
+     * @throws JsonMappingException
+     */
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
 
@@ -70,6 +87,6 @@ public class GaeaMaskJsonSerialize extends JsonSerializer<String> implements Con
             return prov.findValueSerializer(property.getType(), property);
         }
 
-        return prov.findNullValueSerializer(property);
+        return NullSerializer.instance;
     }
 }
