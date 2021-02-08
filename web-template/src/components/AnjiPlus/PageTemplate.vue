@@ -1,0 +1,283 @@
+<!-- 
+  通用性页面组件
+  目前 将查询条件部分，列表部分 ，弹窗部分分三个字段传输
+  查询条件部分传输格式如下
+  prop-from:{
+    // 所有查询条件列表               //     参数说明         必须	   	      类型	          可选值	          默认值      
+    list:[
+      {
+        formType: 'input',          //     form表单类型       否            string        select/input        'input'
+        label: '字段展示名称',      //   按钮名称-支持国际化   是            string             -                 -
+        field: 'actionName',       //        字段名           是            string             -                 -
+        fieldValue: null,          //      字段初始值         否               -               -                 -
+        disabled:false             //     该项表单的禁用       否              boolean           -               false
+        clearable:true             //  是否显示清除按钮       否              boolean           -               true
+        placeholder: '',          //       placeholder        否               -               -                -
+        rules:{ message: '提示' }  //        校验规则         否          object/array         -                 -
+        options:[{                //      下拉框的可选值      否              array            -                 []
+          label:'启用',
+          value:'1'
+        }],
+        optionsconfig:{           //   下拉框options的配置    否             object            -                 {}
+          key: 'label',           //下拉框options的key绑定值  否             string            -    默认用下边label的值若label未传，则默值为'label'
+          label: 'label',         //   options的label绑定值   否             string            -               'label'
+          value: 'value'          //   options的value绑定值   否             string            -               'value'
+        }
+      }
+    ],
+    labelWidth:'100px',          //     表单域标签的宽度       否              string            -               '100px'
+    rules:{},                     //     表单验证规则          否              object            -                 -
+    disabled:false               //     所有表单的禁用         否              boolean           -               false
+    //  待扩展...
+  }
+ -->
+<template>
+  <div class="app-container">
+    <el-form ref="formSearch" :model="searchForm" :label-width="propForm.labelWidth || '100px'" :rules="propForm.rules" :disabled="propForm.disabled">
+      <el-row>
+        <el-col :span="19">
+          <el-row class="form_table">
+            <el-col v-for="item in formList" :key="item.filed" :span="item.span || 6">
+              <!-- 下拉框 -->
+              <el-form-item v-if="item.formType == 'select'" :label="item.label" :rules="item.rules" :prop="item.filed" :disabled="item.disabled">
+                <el-select v-model="searchForm[item.filed]" :placeholder="item.placeholder || $t('placeholder.select')" :clearable="item.clearable">
+                  <el-option v-for="ele in item.options || []" :key="ele[item.optionsconfig.key || item.optionsconfig.label || 'label']" :label="ele[item.optionsconfig.label || 'label']" :value="ele[item.optionsconfig.value || 'value']" />
+                </el-select>
+              </el-form-item>
+              <!-- 日期时间框  -->
+              <el-form-item v-else-if="item.formType.indexOf('date') >= 0" :label="item.label" :rules="item.rules" :prop="item.filed" :disabled="item.disabled">
+                <el-date-picker v-model="searchForm[item.filed]" style="width: 100%" :placeholder="item.placeholder || $t('placeholder.select')" :type="item.formType" />
+              </el-form-item>
+              <!-- 输入框 -->
+              <el-form-item v-else :label="item.label" :rules="item.rules" :prop="item.filed" :disabled="item.disabled">
+                <el-input v-model.trim="searchForm[item.filed]" :placeholder="item.placeholder || $t('placeholder.input')" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="5" style="text-align: center">
+          <el-button
+            type="primary"
+            @click="
+              searchForm.pageNumber = 1
+              getData()
+            "
+          >{{ $t('btn.query') }}</el-button>
+          <el-button type="danger" @click="resetForm('formSearch')">{{ $t('btn.reset') }}</el-button>
+        </el-col>
+      </el-row>
+    </el-form>
+    <!-- <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button> -->
+    <permission-btn label="add" icon="el-icon-plus" type="primary" @click.native="openCreateUser" />
+    <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
+    <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" />
+    <el-table :data="tableList" border @selection-change="handleSelectionChange">
+      <el-table-column fixed type="selection" width="40" center />
+      <el-table-column label="按钮代码" min-width="110" align="center">
+        <template slot-scope="scope">
+          <span class="view" @click="editDetail('view', scope.row)">{{ scope.row.actionCode }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="actionName" label="按钮名称" min-width="110" align="center" />
+      <el-table-column prop="sort" label="排序" min-width="110" align="center" />
+      <el-table-column prop="enabled" label="启用状态" min-width="90" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.enabled ? '启用' : '禁用' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="createTime" :label="$t('userManage.creationTime')" align="center" min-width="160" />
+      <el-table-column prop="createBy" :label="$t('userManage.creator')" align="center" min-width="160" />
+      <el-table-column prop="updateTime" :label="$t('userManage.modifyTime')" align="center" min-width="180" />
+      <el-table-column prop="updateBy" :label="$t('userManage.modifyUser')" align="center" min-width="140" />
+    </el-table>
+    <el-pagination v-show="total > 0" background :current-page.sync="searchForm.pageNumber" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="50%" :close-on-click-modal="false" center :visible.sync="basicDialog" @close="closeDialog">
+      <el-form ref="userForm" :model="dialogForm" :rules="formRules" label-width="100px" :disabled="dialogTittle == 'view'">
+        <el-row class="form_table">
+          <el-col :span="12">
+            <el-form-item label="按钮代码" prop="actionCode">
+              <el-input v-model.trim="dialogForm.actionCode" :disabled="dialogTittle != 'add'" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="按钮名称" prop="actionName">
+              <el-input v-model.trim="dialogForm.actionName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="启用状态" prop="enabled">
+              <el-select v-model="dialogForm.enabled" :placeholder="$t('placeholder.select')">
+                <el-option key="1" label="启用" :value="1" />
+                <el-option key="0" label="禁用" :value="0" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" style="text-align: center">
+        <el-button v-if="dialogTittle != 'view'" type="primary" plain @click="confirm">{{ $t('btn.confirm') }}</el-button>
+        <el-button type="danger" plain @click="basicDialog = false">{{ $t('btn.close') }}</el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+<script>
+import { getBtnList, addBtn, editBtn, deleteBtn } from '@/api/authority'
+import { cloneDeep } from 'loadsh'
+
+export default {
+  props: {
+    propForm: {
+      require: true,
+      type: Object,
+      default: () => {
+        return {
+          list: [
+            {
+              formType: 'input',
+              label: '按钮名称',
+              field: 'actionName',
+              fieldValue: null,
+              rules: { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+            },
+            {
+              formType: 'select',
+              label: '按钮名称',
+              field: 'actionName',
+              fieldValue: null,
+              rules: [],
+              options: [
+                { label: '启用', value: '1' },
+                { label: '禁用', value: '0' },
+              ],
+              optionsconfig: {
+                key: 'label',
+                label: 'label',
+                value: 'value',
+              },
+            },
+            {
+              formType: 'datetimerange',
+              label: '时间',
+              field: 'actiontime',
+            },
+          ],
+          labelWidth: '100px',
+          rules: {
+            actionCode: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+            actionName: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+          },
+        }
+      },
+    },
+  },
+  data() {
+    return {
+      selectedList: [],
+      searchForm: {
+        actionName: null,
+        actionCode: null,
+        enabled: null,
+        pageNumber: 1,
+        pageSize: 10,
+      },
+      tableList: [],
+      total: 0,
+      dialogTittle: 'view',
+      basicDialog: false,
+      dialogForm: {
+        actionCode: null,
+        actionName: null,
+        enabled: 1,
+      },
+      formRules: {
+        actionCode: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        actionName: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+      },
+    }
+  },
+  created() {
+    this.propForm.list.forEach((item) => {
+      this.searchForm[item.field] = item.fieldValue || null
+      // 如果是select框，并且未传入options配置项时，给optionsconfig弄个默认值
+      item.formType == 'select' && !item.optionsconfig && (item.optionsconfig = {})
+      // 未传入clearable 时，clearable  默认为true
+      !item.hasOwnProperty('clearable') && (item.clearable = true)
+    })
+    this.formList = cloneDeep(this.propForm.list)
+  },
+  methods: {
+    // 提交按钮
+    confirm() {
+      this.$refs.userForm.validate(async(valid, obj) => {
+        if (valid) {
+          if (this.dialogTittle == 'add') {
+            const { code } = await addBtn(this.dialogForm)
+            if (code != '200') return
+            this.closeDialog(true)
+          } else {
+            const { code } = await editBtn(this.dialogForm)
+            if (code != '200') return
+            this.closeDialog(true)
+          }
+        } else {
+          return
+        }
+      })
+    },
+    // 关闭弹窗
+    closeDialog(bool) {
+      bool && this.getData() // 点确定关闭弹窗的时候才会刷新列表
+      this.$refs['userForm'].resetFields()
+      this.basicDialog = false
+    },
+    // 删除操作
+    async handleDelete() {
+      const { code } = await deleteBtn(this.selectedList[0].id)
+      if (code != '200') return
+      this.getData()
+    },
+    // 新建操作
+    openCreateUser() {
+      this.dialogTittle = 'add' // 新建
+      this.basicDialog = true
+    },
+    // 编辑和查看操作
+    editDetail(title, row) {
+      this.dialogTittle = title
+      this.basicDialog = true
+      this.$nextTick(() => {
+        this.dialogForm = JSON.parse(JSON.stringify(row || this.selectedList[0]))
+      })
+    },
+    // 重置
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+      this.tableList = []
+      this.total = 0
+    },
+    // 查询
+    async getData() {
+      const { data, code } = await getBtnList(this.searchForm)
+      if (code != '200') return
+      this.tableList = data.records
+      this.total = data.total
+    },
+    // 选择项改变时
+    handleSelectionChange(val) {
+      this.selectedList = val
+    },
+    // 页码改变
+    handleCurrentChange(pageNumber) {
+      this.searchForm.pageNumber = pageNumber
+      this.getData()
+    },
+    // 每页size改变时
+    handleSizeChange(val) {
+      this.searchForm.pageNumber = 1
+      this.searchForm.pageSize = val
+      this.getData()
+    },
+  },
+}
+</script>
