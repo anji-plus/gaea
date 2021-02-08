@@ -13,9 +13,6 @@ body {
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
 
-label {
-  // font-weight: 700;
-}
 
 html {
   height: 100%;
@@ -246,4 +243,11 @@ aside {
 
 .el-button-mine + .el-button, .el-button + .el-button-mine{
   margin-left: 10px;
+}
+
+// 所有的树结构弹窗都固定高度并可滚动
+.tree_dialog .el-dialog__body {
+  height: 60vh;
+  overflow: hidden;
+  overflow-y: auto;
 }

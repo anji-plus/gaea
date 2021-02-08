@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="设定组织" width="60%" :close-on-click-modal="false" center :visible.sync="visib" :before-close="closeDialog">
+  <el-dialog class="tree_dialog" title="设定组织" width="60%" :close-on-click-modal="false" center :visible.sync="visib" :before-close="closeDialog">
     <el-tree ref="roleTree" :data="menuData" show-checkbox node-key="id" default-expand-all :default-checked-keys="checkedKeys" />
     <div slot="footer" style="text-align: center">
       <el-button type="primary" plain @click="confirm">{{ $t('btn.confirm') }}</el-button>
