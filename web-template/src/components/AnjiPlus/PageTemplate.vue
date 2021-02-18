@@ -7,7 +7,7 @@
     list:[
       {
         formType: 'input',          //     form表单类型       否            string        select/input        'input'
-        label: '字段展示名称',      //   按钮名称-支持国际化   是            string             -                 -
+        label: '字段展示名称',      //   字段名称-支持国际化   是            string             -                 -
         field: 'actionName',       //        字段名           是            string             -                 -
         fieldValue: null,          //      字段初始值         否               -               -                 -
         disabled:false             //     该项表单的禁用       否              boolean           -               false
@@ -30,6 +30,23 @@
     disabled:false               //     所有表单的禁用         否              boolean           -               false
     //  待扩展...
   }
+  列表部分传输格式如下
+  prop-from:{
+    // 所有查询条件列表               //     参数说明         必须	   	      类型	          可选值	          默认值      
+    list:[
+      {
+        label: '',                //         列名称           是            string             -                 -
+        field: 'actionName',       //        字段名           是            string             -                 -
+      }
+    ],
+    border: true,                 //     表格是否带边框        否              boolean            -               true
+    height: 0                     //     Table 的高度,         否              string/number        -               -
+    maxHeight: 0               //     Table 的最大高度,         否              string/number        -               -
+    hasSelection:true,            //    是否展示复选框         否              boolean            -               true
+    hasIndex:true,                //    是否展示索引列         否              boolean            -               false
+    hasCreateAndupdate:true,  // 是否展示创建/更新者和创建时间   否              boolean            -               true
+    //  待扩展...
+  }
  -->
 <template>
   <div class="app-container">
@@ -37,20 +54,16 @@
       <el-row>
         <el-col :span="19">
           <el-row class="form_table">
-            <el-col v-for="item in formList" :key="item.filed" :span="item.span || 6">
-              <!-- 下拉框 -->
-              <el-form-item v-if="item.formType == 'select'" :label="item.label" :rules="item.rules" :prop="item.filed" :disabled="item.disabled">
-                <el-select v-model="searchForm[item.filed]" :placeholder="item.placeholder || $t('placeholder.select')" :clearable="item.clearable">
+            <el-col v-for="item in formList" :key="item.field" :span="item.span || 6">
+              <el-form-item :label="item.label" :rules="item.rules" :prop="item.field" :disabled="item.disabled">
+                <!-- 下拉框 -->
+                <el-select v-if="item.formType == 'select'" v-model="searchForm[item.field]" :placeholder="item.placeholder || $t('placeholder.select')" :clearable="item.clearable !== false">
                   <el-option v-for="ele in item.options || []" :key="ele[item.optionsconfig.key || item.optionsconfig.label || 'label']" :label="ele[item.optionsconfig.label || 'label']" :value="ele[item.optionsconfig.value || 'value']" />
                 </el-select>
-              </el-form-item>
-              <!-- 日期时间框  -->
-              <el-form-item v-else-if="item.formType.indexOf('date') >= 0" :label="item.label" :rules="item.rules" :prop="item.filed" :disabled="item.disabled">
-                <el-date-picker v-model="searchForm[item.filed]" style="width: 100%" :placeholder="item.placeholder || $t('placeholder.select')" :type="item.formType" />
-              </el-form-item>
-              <!-- 输入框 -->
-              <el-form-item v-else :label="item.label" :rules="item.rules" :prop="item.filed" :disabled="item.disabled">
-                <el-input v-model.trim="searchForm[item.filed]" :placeholder="item.placeholder || $t('placeholder.input')" />
+                <!-- 日期时间框  -->
+                <el-date-picker v-else-if="item.formType.indexOf('date') >= 0" v-model="searchForm[item.field]" style="width: 100%" :placeholder="item.placeholder || $t('placeholder.select')" :type="item.formType" :clearable="item.clearable !== false" />
+                <!-- 输入框 -->
+                <el-input v-else v-model.trim="searchForm[item.field]" :placeholder="item.placeholder || $t('placeholder.input')" :clearable="item.clearable !== false" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -67,34 +80,53 @@
         </el-col>
       </el-row>
     </el-form>
-    <!-- <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button> -->
-    <permission-btn label="add" icon="el-icon-plus" type="primary" @click.native="openCreateUser" />
-    <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
-    <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" />
-    <el-table :data="tableList" border @selection-change="handleSelectionChange">
-      <el-table-column fixed type="selection" width="40" center />
-      <el-table-column label="按钮代码" min-width="110" align="center">
+    <div v-if="propBtn">
+      <permission-btn label="add" icon="el-icon-plus" type="primary" @click.native="openCreateUser" />
+      <permission-btn label="edit" icon="el-icon-edit" type="primary" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</permission-btn>
+      <delete-btn :disabled="selectedList.length != 1" :has-permission="true" @handleDelete="handleDelete" />
+    </div>
+    <div v-else>
+      <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button>
+      <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
+      <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" />
+    </div>
+    <el-table :data="tableList" :border="table.border" :height="table.height || null" :max-height="table.maxHeight || null" :stripe="table.stripe" @selection-change="handleSelectionChange">
+      <el-table-column v-if="table.hasSelection !== false" fixed type="selection" width="40" center />
+      <el-table-column v-if="table.hasIndex" type="index" width="50" center />
+      <el-table-column v-for="(item, index) in propTable.list" :key="item.field" :label="item.label" :min-width="item.minWidth || 110" align="center">
         <template slot-scope="scope">
-          <span class="view" @click="editDetail('view', scope.row)">{{ scope.row.actionCode }}</span>
+          <!-- 第一列高亮并且可以点击 -->
+          <span v-if="!index" class="view" @click="editDetail('view', scope.row)">{{ scope.row[item.field] }}</span>
+          <span v-else>{{ scope.row[item.field] }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="actionName" label="按钮名称" min-width="110" align="center" />
-      <el-table-column prop="sort" label="排序" min-width="110" align="center" />
-      <el-table-column prop="enabled" label="启用状态" min-width="90" align="center">
+      <!-- <el-table-column prop="enabled" label="启用状态" min-width="90" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.enabled ? '启用' : '禁用' }}</span>
         </template>
-      </el-table-column>
-      <el-table-column prop="createTime" :label="$t('userManage.creationTime')" align="center" min-width="160" />
-      <el-table-column prop="createBy" :label="$t('userManage.creator')" align="center" min-width="160" />
-      <el-table-column prop="updateTime" :label="$t('userManage.modifyTime')" align="center" min-width="180" />
-      <el-table-column prop="updateBy" :label="$t('userManage.modifyUser')" align="center" min-width="140" />
+      </el-table-column> -->
+      <el-table-column v-if="table.hasCreateAndupdate !== false" prop="createTime" :label="$t('userManage.creationTime')" align="center" min-width="160" />
+      <el-table-column v-if="table.hasCreateAndupdate !== false" prop="createBy" :label="$t('userManage.creator')" align="center" min-width="160" />
+      <el-table-column v-if="table.hasCreateAndupdate !== false" prop="updateTime" :label="$t('userManage.modifyTime')" align="center" min-width="180" />
+      <el-table-column v-if="table.hasCreateAndupdate !== false" prop="updateBy" :label="$t('userManage.modifyUser')" align="center" min-width="140" />
     </el-table>
     <el-pagination v-show="total > 0" background :current-page.sync="searchForm.pageNumber" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     <el-dialog :title="$t(`btn.${dialogTittle}`)" width="50%" :close-on-click-modal="false" center :visible.sync="basicDialog" @close="closeDialog">
-      <el-form ref="userForm" :model="dialogForm" :rules="formRules" label-width="100px" :disabled="dialogTittle == 'view'">
+      <el-form ref="formDialog" :model="dialogForm" :label-width="propDialog.labelWidth || '100px'" :rules="propDialog.rules" :disabled="dialogTittle == 'view'">
         <el-row class="form_table">
-          <el-col :span="12">
+          <el-col v-for="item in dialogList" :key="item.field" :span="item.span || 8">
+            <el-form-item :label="item.label" :rules="item.rules" :prop="item.field" :disabled="item.disabled">
+              <!-- 下拉框 -->
+              <el-select v-if="item.formType == 'select'" v-model="dialogForm[item.field]" :placeholder="item.placeholder || $t('placeholder.select')" :clearable="item.clearable !== false">
+                <el-option v-for="ele in item.options || []" :key="ele[item.optionsconfig.key || item.optionsconfig.label || 'label']" :label="ele[item.optionsconfig.label || 'label']" :value="ele[item.optionsconfig.value || 'value']" />
+              </el-select>
+              <!-- 日期时间框  -->
+              <el-date-picker v-else-if="item.formType.indexOf('date') >= 0" v-model="dialogForm[item.field]" style="width: 100%" :placeholder="item.placeholder || $t('placeholder.select')" :type="item.formType" :clearable="item.clearable !== false" />
+              <!-- 输入框 -->
+              <el-input v-else v-model.trim="dialogForm[item.field]" :placeholder="item.placeholder || $t('placeholder.input')" :clearable="item.clearable !== false" />
+            </el-form-item>
+          </el-col>
+          <!-- <el-col :span="12">
             <el-form-item label="按钮代码" prop="actionCode">
               <el-input v-model.trim="dialogForm.actionCode" :disabled="dialogTittle != 'add'" />
             </el-form-item>
@@ -111,7 +143,7 @@
                 <el-option key="0" label="禁用" :value="0" />
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form>
       <div slot="footer" style="text-align: center">
@@ -122,7 +154,6 @@
   </div>
 </template>
 <script>
-import { getBtnList, addBtn, editBtn, deleteBtn } from '@/api/authority'
 import { cloneDeep } from 'loadsh'
 
 export default {
@@ -131,53 +162,66 @@ export default {
       require: true,
       type: Object,
       default: () => {
-        return {
-          list: [
-            {
-              formType: 'input',
-              label: '按钮名称',
-              field: 'actionName',
-              fieldValue: null,
-              rules: { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-            },
-            {
-              formType: 'select',
-              label: '按钮名称',
-              field: 'actionName',
-              fieldValue: null,
-              rules: [],
-              options: [
-                { label: '启用', value: '1' },
-                { label: '禁用', value: '0' },
-              ],
-              optionsconfig: {
-                key: 'label',
-                label: 'label',
-                value: 'value',
-              },
-            },
-            {
-              formType: 'datetimerange',
-              label: '时间',
-              field: 'actiontime',
-            },
-          ],
-          labelWidth: '100px',
-          rules: {
-            actionCode: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-            actionName: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-          },
-        }
+        return {}
+      },
+    },
+    propBtn: {
+      require: true,
+      type: Boolean,
+      default: () => {
+        return false
+      },
+    },
+    propTable: {
+      require: true,
+      type: Object,
+      default: () => {
+        return {}
+      },
+    },
+    propDialog: {
+      require: true,
+      type: Object,
+      default: () => {
+        return {}
+      },
+    },
+    queryApi: {
+      require: true,
+      type: Function,
+      default: () => {
+        return Function
+      },
+    },
+    addApi: {
+      require: true,
+      type: Function,
+      default: () => {
+        return Function
+      },
+    },
+    editApi: {
+      require: true,
+      type: Function,
+      default: () => {
+        return Function
+      },
+    },
+    deleteApi: {
+      require: true,
+      type: Function,
+      default: () => {
+        return Function
       },
     },
   },
   data() {
     return {
+      formList: [], // 查询条件prop相关的过度变量
+      table: {}, // 列表prop相关的过度变量
+      dialogList: [],
       selectedList: [],
       searchForm: {
-        actionName: null,
-        actionCode: null,
-        enabled: null,
         pageNumber: 1,
         pageSize: 10,
       },
@@ -185,38 +229,44 @@ export default {
       total: 0,
       dialogTittle: 'view',
       basicDialog: false,
-      dialogForm: {
-        actionCode: null,
-        actionName: null,
-        enabled: 1,
-      },
-      formRules: {
-        actionCode: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-        actionName: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-      },
+      dialogForm: {},
     }
   },
   created() {
-    this.propForm.list.forEach((item) => {
-      this.searchForm[item.field] = item.fieldValue || null
+    // 查询条件处理
+    this.formList = cloneDeep(this.propForm.list)
+    this.formList.forEach((item) => {
+      // 动态添加属性
+      this.$set(this.searchForm, item.field, item.fieldValue || null)
       // 如果是select框，并且未传入options配置项时，给optionsconfig弄个默认值
       item.formType == 'select' && !item.optionsconfig && (item.optionsconfig = {})
-      // 未传入clearable 时，clearable  默认为true
-      !item.hasOwnProperty('clearable') && (item.clearable = true)
     })
-    this.formList = cloneDeep(this.propForm.list)
+
+    // 表格处理
+    this.table = cloneDeep(this.propTable)
+    // 没传border属性时，border属性默认为 true
+    !this.table.hasOwnProperty('border') && (this.table.border = true)
+
+    // 弹窗处理
+    this.dialogList = cloneDeep(this.propDialog.list)
+    this.dialogList.forEach((item) => {
+      // 动态添加属性
+      this.$set(this.dialogForm, item.field, item.fieldValue || null)
+      // 如果是select框，并且未传入options配置项时，给optionsconfig弄个默认值
+      item.formType == 'select' && !item.optionsconfig && (item.optionsconfig = {})
+    })
   },
   methods: {
     // 提交按钮
     confirm() {
-      this.$refs.userForm.validate(async(valid, obj) => {
+      this.$refs.formDialog.validate(async(valid, obj) => {
         if (valid) {
           if (this.dialogTittle == 'add') {
-            const { code } = await addBtn(this.dialogForm)
+            const { code } = await this.addApi(this.dialogForm)
             if (code != '200') return
             this.closeDialog(true)
           } else {
-            const { code } = await editBtn(this.dialogForm)
+            const { code } = await this.editApi(this.dialogForm)
             if (code != '200') return
             this.closeDialog(true)
           }
@@ -228,12 +278,12 @@ export default {
     // 关闭弹窗
     closeDialog(bool) {
       bool && this.getData() // 点确定关闭弹窗的时候才会刷新列表
-      this.$refs['userForm'].resetFields()
+      this.$refs['formDialog'].resetFields()
       this.basicDialog = false
     },
     // 删除操作
     async handleDelete() {
-      const { code } = await deleteBtn(this.selectedList[0].id)
+      const { code } = await this.deleteApi(this.selectedList[0].id)
       if (code != '200') return
       this.getData()
     },
@@ -258,7 +308,7 @@ export default {
     },
     // 查询
     async getData() {
-      const { data, code } = await getBtnList(this.searchForm)
+      const { data, code } = await this.queryApi(this.searchForm)
       if (code != '200') return
       this.tableList = data.records
       this.total = data.total
