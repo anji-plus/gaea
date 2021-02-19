@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * (GaeaCommonCondition)实体类
  * 常用查询相关
- * @author makejava
+ * @author peiyanni
  * @since 2021-02-02 14:42:41
  */
 @RestController

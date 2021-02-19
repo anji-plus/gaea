@@ -1,5 +1,6 @@
 package com.github.anji.plus.modules.org.controller;
 
+import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
@@ -62,6 +63,7 @@ public class GaeaOrgController extends GaeaBaseController<GaeaOrgParam, GaeaOrg,
      * @return
      */
     @PostMapping("/saveOrg")
+    @GaeaAuditLog(pageTitle="新增机构")
     public ResponseBean saveOrg(@RequestBody GaeaOrgDTO dto){
         return responseSuccessWithData(gaeaOrgService.saveOrUpdateOrg(dto));
     }
@@ -72,6 +74,7 @@ public class GaeaOrgController extends GaeaBaseController<GaeaOrgParam, GaeaOrg,
      * @return
      */
     @PostMapping("/updateOrg")
+    @GaeaAuditLog(pageTitle="编辑机构")
     public ResponseBean updateOrg(@RequestBody GaeaOrgDTO dto){
         return responseSuccessWithData(gaeaOrgService.saveOrUpdateOrg(dto));
     }

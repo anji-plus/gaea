@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-form ref="form" :rules="rules" :model="form" label-width="100px">
+      {{ form }}
       <el-row class="form_table">
         <el-col :span="12">
           <el-form-item label="参数名称" prop="settingName">
@@ -12,26 +13,10 @@
             <el-input v-model.trim="form.settingLabel" />
           </el-form-item>
         </el-col>
-        <!--<el-col :span="12">-->
-        <!--<el-form-item label="字典代码" prop="itemName">-->
-        <!--<el-input v-model.trim="form.itemName"/>-->
-        <!--</el-form-item>-->
-        <!--</el-col>-->
-        <!--<el-col :span="12">-->
-        <!--<el-form-item label="代码值" prop="itemValue">-->
-        <!--<el-input v-model.trim="form.itemValue"/>-->
-        <!--</el-form-item>-->
-        <!--</el-col>-->
-        <!--<el-col :span="12">-->
-        <!--<el-form-item label="代码描述" prop="itemDesc">-->
-        <!--<el-input v-model.trim="form.itemDesc"/>-->
-        <!--</el-form-item>-->
-        <!--</el-col>-->
         <el-col :span="12">
           <el-form-item label="参数类型" prop="settingType">
             <el-select v-model="form.settingType" :placeholder="$t('placeholder.select')">
-              <el-option key="1" label="启用" :value="1" />
-              <el-option key="0" label="禁用" :value="0" />
+              <el-option v-for="(item, i) in settingTYpeList" :key="i" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
         </el-col>
@@ -40,11 +25,14 @@
             <el-input v-model.trim="form.remark" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="排序" prop="sort" class="dataDictionary">
-            <el-input-number v-model="form.sort" :min="1" />
-          </el-form-item>
+        <el-col :span="24">
+          <form-type :form-data="form" />
         </el-col>
+        <!--<el-col :span="12">-->
+        <!--<el-form-item label="排序" prop="sort" class="dataDictionary">-->
+        <!--<el-input-number v-model="form.sort" :min="1" />-->
+        <!--</el-form-item>-->
+        <!--</el-col>-->
       </el-row>
       <!--编辑的时候才会显示-->
       <el-row v-if="clickType != 'add'">
@@ -78,7 +66,11 @@
 </template>
 
 <script>
+import FormType from './forms'
 export default {
+  components: {
+    FormType,
+  },
   props: {
     clickType: {
       type: String,
@@ -90,17 +82,12 @@ export default {
       type: Object,
       default: function() {
         return {
-          settingId: null,
           settingName: '',
           settingLabel: '',
           settingType: '',
           settingValue: '',
           settingForm: '',
           remark: '',
-          createdBy: '',
-          createdTime: null,
-          updatedBy: '',
-          updatedTime: null,
         }
       },
     },
@@ -124,15 +111,25 @@ export default {
       //   updatedBy: '',
       //   updatedTime: null
       // },
+      settingTYpeList: [
+        { extend: '', label: '字符串', labelEng: 'input', value: 'input' },
+        { extend: '', label: '数字', labelEng: 'input-number', value: 'input-number' },
+        { extend: '', label: '文本区域', labelEng: 'textarea', value: 'textarea' },
+        { extend: '', label: '数据字典', labelEng: 'code-select', value: 'code-select' },
+        { extend: '', label: '下拉列表', labelEng: 'select', value: 'select' },
+        { extend: '', label: '单选按钮', labelEng: 'radio-group', value: 'radio-group' },
+        { extend: '', label: '多选按钮', labelEng: 'checkbox-group', value: 'checkbox-group' },
+        { extend: '', label: '自定义表单', labelEng: 'custom-form', value: 'custom-form' },
+      ],
       rules: {
         settingName: [{ required: true, message: '请输入参数名称', trigger: 'blur' }],
         settingLabel: [{ required: true, message: '请输入参数描述', trigger: 'blur' }],
         settingType: [{ required: true, message: '请选择参数类型', trigger: 'change' }],
-        remark: [{ required: true, message: '请输入备注', trigger: 'blur' }],
-        sort: [
-          { required: true, message: '请输入排序', trigger: 'blur' },
-          { type: 'number', message: '排序必须为数字值' },
-        ],
+        // remark: [{ required: true, message: '请输入备注', trigger: 'blur' }],
+        // sort: [
+        //   { required: true, message: '请输入排序', trigger: 'blur' },
+        //   { type: 'number', message: '排序必须为数字值' },
+        // ],
       },
       isFind: true,
     }

@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2021-02-05 16:58:35
  */
-@TableName("GaeaSetting")
+@TableName("gaea_setting")
 public class GaeaSetting extends GaeaBaseEntity implements Serializable {
     /**
      * 参数名称

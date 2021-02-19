@@ -5,9 +5,14 @@
         <el-col :xs="23" :sm="23" :md="23" :lg="23" :xl="23">
           <el-form ref="form1" label-position="right" :model="form1" :rules="rules" label-width="130px">
             <el-row :gutter="20" class="labelName">
+              {{ form1.newTemplateType }}
               <el-col :xs="20" :sm="10" :md="10" :lg="10" :xl="10">
                 <el-form-item label="模板类型" prop="newTemplateType">
                   <!--<code-select id="newTemplateType" v-model.trim="form1.newTemplateType" dictname="ALERT_CHANNEL" :disabled="disabled" @changed="getTemplateType" mystyle="width: 100%;" placeholder="请选择"/>-->
+                  <el-select v-model="form1.newTemplateType" :placeholder="$t('placeholder.select')" @change="getTemplateType">
+                    <el-option label="邮件" value="mail" />
+                    <el-option label="钉钉" value="dingtalk" />
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="24" :md="1" :lg="1" :xl="1"> &nbsp; </el-col>
@@ -276,9 +281,12 @@ export default {
   },
   methods: {
     getTemplateType(val) {
-      const value = parseFloat(val.value)
+      console.log(111, val)
+      // const value = parseFloat(val.value)
       // this.modalTemplateType=this.getDictCode('ALERT_CHANNEL' ,value,"value").labelEng;
       // this.form1.newTemplateType=this.getDictCode('ALERT_CHANNEL' ,value).value;
+      this.modalTemplateType = val
+      // this.form1.newTemplateType=val;
       this.mailDemoInformation2()
     },
     mailDemoInformation2() {
@@ -294,7 +302,8 @@ export default {
       })
     },
     mailDemoInformation(val) {
-      console.log(this.proData)
+      console.log(11, val)
+
       if (val != null) {
         this.disabled = true
         this.form1.newTemplateType = val.templateType
@@ -345,7 +354,12 @@ export default {
         if (res.repCode == '0000') {
           this.form1 = res.repData
           // this.form1.newTemplateType=this.getDictCode('ALERT_CHANNEL' ,res.repData.templateType,"labelEng").value;
-          this.modalTemplateType = res.repData.templateType
+          // this.modalTemplateType = res.repData.templateType
+
+          this.form1.newTemplateType = res.repData.templateType
+
+          // console.log(999)
+          // return
           if (this.modalTemplateType == 'sms') {
             this.form1.templateShow = res.repData.template
             const smsTemplateAccount = res.repData.smsTemplateAccount

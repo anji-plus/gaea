@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * (GaeaSetting)Mapper
  *
- * @author makejava
+ * @author peiyanni
  * @since 2021-02-05 16:58:36
  */
 @Mapper

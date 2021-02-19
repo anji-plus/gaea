@@ -2,6 +2,7 @@ package com.github.anji.plus.modules.menu.controller;
 
 import java.util.*;
 
+import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.github.anji.plus.common.RespCommonCode;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.bean.TreeNode;
@@ -92,6 +93,7 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
     }
 
     @PostMapping("/menuUserInfoByOrg")
+    @GaeaAuditLog(pageTitle="切换组织获取菜单")
     public ResponseBean getMenuInfoByOrg(@RequestBody LeftMenuReqParam reqParam){
         String username = UserContentHolder.getContext().getUsername();
         //获取当前用户所在机构
@@ -158,6 +160,7 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
      * @return
      */
     @PostMapping("/saveActionTreeForMenu")
+    @GaeaAuditLog(pageTitle="设置菜单按钮")
     public ResponseBean saveActionTreeForMenu(@RequestBody MenuActionReqParam reqParam){
         Boolean data=gaeaMenuService.saveActionTreeForMenu(reqParam);
         return responseSuccessWithData(data);

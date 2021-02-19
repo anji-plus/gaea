@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2021-02-05 16:58:58
  */
 @RestController
-@RequestMapping("/gaeaSetting")
-@Api(value = "/gaeaSetting", tags = "")
+@RequestMapping("/setting")
+@Api(value = "/setting", tags = "")
 public class GaeaSettingController extends GaeaBaseController<GaeaSettingParam, GaeaSetting, GaeaSettingDTO> {
     @Autowired
     private GaeaSettingService gaeaSettingService;

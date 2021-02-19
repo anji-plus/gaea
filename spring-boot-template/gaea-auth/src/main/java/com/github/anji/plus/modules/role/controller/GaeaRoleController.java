@@ -1,5 +1,6 @@
 package com.github.anji.plus.modules.role.controller;
 
+import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
@@ -49,18 +50,21 @@ public class GaeaRoleController extends GaeaBaseController<GaeaRoleParam, GaeaRo
     }
 
     @GetMapping("/queryOrgTreeForRole/{code}")
+    @GaeaAuditLog(pageTitle="查询角色组织")
     public ResponseBean queryOrgTreeForRole(@PathVariable("code") String roleCode) {
         TreeDTO data = gaeaRoleService.queryRoleOrgTree(roleCode);
         return responseSuccessWithData(data);
     }
 
     @PostMapping("/saveOrgTreeForRole")
+    @GaeaAuditLog(pageTitle="保存角色组织")
     public ResponseBean saveOrgTreeForRole(@RequestBody RoleOrgReqParam reqParam){
         Boolean data=gaeaRoleService.saveOrgTreeForRole(reqParam);
         return responseSuccessWithData(data);
     }
 
     @PostMapping("/saveMenuActionTreeForRole")
+    @GaeaAuditLog(pageTitle="保存角色菜单权限")
     public ResponseBean saveMenuActionTreeForRole(@RequestBody RoleMenuActionReqParam reqParam){
         Boolean data=gaeaRoleService.saveMenuActionTreeForRole(reqParam);
         return responseSuccessWithData(data);
