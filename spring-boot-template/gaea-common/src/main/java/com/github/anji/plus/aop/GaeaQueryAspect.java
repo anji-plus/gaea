@@ -33,25 +33,28 @@ public class GaeaQueryAspect {
     }
 
     @Around(value = "logPointCut()")
-    public void doBefore(ProceedingJoinPoint joinPoint)throws Throwable{
+    public void doBefore(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
-            GaeaQuery gaeaQuery= getAnnotationLog(joinPoint);
-            if(null==gaeaQuery){
+            GaeaQuery gaeaQuery = getAnnotationLog(joinPoint);
+            if (null == gaeaQuery) {
                 joinPoint.proceed(joinPoint.getArgs());
                 return;
             }
             //需要进行高级查询条件的封装，
-            String jsonObj=argsArrayToJsonObj(joinPoint.getArgs());
-            if(StringUtils.isEmpty(jsonObj)){
+            String jsonObj = argsArrayToJsonObj(joinPoint.getArgs());
+            if (StringUtils.isEmpty(jsonObj)) {
                 joinPoint.proceed(joinPoint.getArgs());
                 return;
             }
-            JSONObject jsonObject=JSONObject.parseObject(jsonObj);
+            BaseQueryBO baseQueryBO = JSON.parseObject(jsonObj, BaseQueryBO.class);
             //是否有常用查询条件
-            Long commonId= jsonObject.getLong(MagicValueConstants.COMMONID);
+            Long commonId = baseQueryBO.getCommonId();
+            if (null != commonId) {
+
+            }
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -75,11 +78,11 @@ public class GaeaQueryAspect {
      * 参数获取 BaseQueryBO转换为json字符串
      */
     private String argsArrayToJsonObj(Object[] paramsArray) {
-        String jsonObj=null;
+        String jsonObj = null;
         if (paramsArray != null && paramsArray.length > 0) {
             for (int i = 0; i < paramsArray.length; i++) {
                 if (!(paramsArray[i] instanceof BaseQueryBO)) {
-                   continue;
+                    continue;
                 }
                 return JSON.toJSONString(paramsArray[i]);
             }

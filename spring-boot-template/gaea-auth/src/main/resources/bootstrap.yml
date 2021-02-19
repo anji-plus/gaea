@@ -5,6 +5,10 @@ spring:
     subscribes:
       security:
         enabled: true
+      audit-log:
+        enabled: true
+        callback-url: http://10.108.12.20:9090/gaea/auth/log/callback
+
 logging:
   level:
     com.alibaba.cloud.nacos.client.NacosPropertySourceBuilder: debug

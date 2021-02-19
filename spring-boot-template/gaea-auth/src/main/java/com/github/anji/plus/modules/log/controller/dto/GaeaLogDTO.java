@@ -1,51 +1,62 @@
-package com.anjiplus.gaea.log.aspect;
+package com.github.anji.plus.modules.log.controller.dto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import com.github.anji.plus.gaea.curd.dto.GaeaBaseDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 /**
- * 日志相关数据
- * @author lirui
+ * (GaeaLog)实体类
+ *
+ * @author peiyanni
+ * @since 2021-02-18 16:30:24
  */
-public class LogOperation implements Serializable {
-
+@ApiModel(value = "")
+public class GaeaLogDTO extends GaeaBaseDTO {
+    /**
+     * 用户名称
+     */
+    @ApiModelProperty(value = "用户名称")
     private String userName;
-
     /**
      * 请求路径
      */
+    @ApiModelProperty(value = "请求路径")
     private String requestUrl;
-
     /**
      * 页面或按钮标题
      */
+    @ApiModelProperty(value = "页面或按钮标题")
     private String pageTitle;
-
     /**
      * 请求参数
      */
-    private String requestParam;
-
+    @ApiModelProperty(value = "请求参数")
+    private Object requestParam;
     /**
      * 响应参数
      */
-    private String responseParam;
-
+    @ApiModelProperty(value = "响应参数")
+    private Object responseParam;
     /**
      * 来源IP
      */
+    @ApiModelProperty(value = "来源IP")
     private String sourceIp;
-
-    /**
-     * 请求方式get/post/put/delete
-     */
-    private String requestMethod;
-
     /**
      * 访问时间
      */
+    @ApiModelProperty(value = "访问时间")
     private Date requestTime;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public String getRequestUrl() {
         return requestUrl;
@@ -63,19 +74,19 @@ public class LogOperation implements Serializable {
         this.pageTitle = pageTitle;
     }
 
-    public String getRequestParam() {
+    public Object getRequestParam() {
         return requestParam;
     }
 
-    public void setRequestParam(String requestParam) {
+    public void setRequestParam(Object requestParam) {
         this.requestParam = requestParam;
     }
 
-    public String getResponseParam() {
+    public Object getResponseParam() {
         return responseParam;
     }
 
-    public void setResponseParam(String responseParam) {
+    public void setResponseParam(Object responseParam) {
         this.responseParam = responseParam;
     }
 
@@ -87,14 +98,6 @@ public class LogOperation implements Serializable {
         this.sourceIp = sourceIp;
     }
 
-    public String getRequestMethod() {
-        return requestMethod;
-    }
-
-    public void setRequestMethod(String requestMethod) {
-        this.requestMethod = requestMethod;
-    }
-
     public Date getRequestTime() {
         return requestTime;
     }
@@ -103,11 +106,5 @@ public class LogOperation implements Serializable {
         this.requestTime = requestTime;
     }
 
-    public String getUserName() {
-        return userName;
-    }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 }

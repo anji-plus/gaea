@@ -55,6 +55,12 @@
 			<artifactId>mybatis-plus-boot-starter</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+		</dependency>
+
 	</dependencies>
 
 </project>
