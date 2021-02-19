@@ -73,3 +73,12 @@ export function settingPageList(params) {
     params,
   })
 }
+
+// 操作日志查询接口
+export function logPageList(params) {
+  return request({
+    url: '/auth/log/pageList',
+    method: 'get',
+    params,
+  })
+}
