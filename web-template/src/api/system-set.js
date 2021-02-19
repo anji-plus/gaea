@@ -64,3 +64,12 @@ export function log(params) {
     params,
   })
 }
+
+// 参数管理查询
+export function settingPageList(params) {
+  return request({
+    url: '/auth/setting/pageList',
+    method: 'get',
+    params,
+  })
+}

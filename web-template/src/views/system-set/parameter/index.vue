@@ -1,17 +1,17 @@
 <template>
   <div class="app-container">
-    <el-form ref="formSearch" :rules="rules" :model="searchForm" label-width="100px">
+    <el-form ref="formSearch" :rules="rules" :model="params" label-width="100px">
       <el-row>
         <el-col :span="19">
           <el-row class="form_table">
             <el-col :span="6">
               <el-form-item prop="dictionaryName" label="参数名称">
-                <el-input v-model="searchForm.parmasName" />
+                <el-input v-model="params.settingName" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item prop="dictionaryDescription" label="参数描述">
-                <el-input v-model="searchForm.parmasDescription" />
+                <el-input v-model="params.settingLabel" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -35,7 +35,7 @@
       </el-table-column>
       <el-table-column align="center" label="序号" min-width="60">
         <template slot-scope="scope">
-          {{ params.pageSize * (params.currentPage - 1) + scope.$index + 1 }}
+          {{ params.pageSize * (params.pageNumber - 1) + scope.$index + 1 }}
         </template>
       </el-table-column>
       <el-table-column label="参数名称" min-width="180" align="center" :show-overflow-tooltip="true">
@@ -62,22 +62,22 @@
       </el-table-column>
       <el-table-column label="创建人" min-width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.createdBy }}
+          {{ scope.row.createBy }}
         </template>
       </el-table-column>
       <el-table-column label="创建日期" min-width="160" align="center">
         <template slot-scope="scope">
-          {{ scope.row.createdTime }}
+          {{ scope.row.createTime }}
         </template>
       </el-table-column>
       <el-table-column label="修改人" min-width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.updatedBy }}
+          {{ scope.row.updateBy }}
         </template>
       </el-table-column>
       <el-table-column label="修改时间" min-width="160" align="center">
         <template slot-scope="scope">
-          {{ scope.row.updatedTime }}
+          {{ scope.row.updateTime }}
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" min-width="100" align="center">
@@ -93,7 +93,7 @@
       </el-table-column>
     </el-table>
     <div class="block">
-      <el-pagination :total="totalCount" :page-sizes="[10, 20, 50, 100]" :page-size="params.pageSize" :current-page="params.currentPage" layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      <el-pagination :total="totalCount" :page-sizes="[10, 20, 50, 100]" :page-size="params.pageSize" :current-page="params.pageNumber" layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
     <el-dialog title="表单" center width="40%" :visible.sync="dialogFormVisible">
       <add-edit ref="dlg" :form="formData" :click-type="clickType" @cancel="cancel" />
@@ -103,6 +103,7 @@
 
 <script>
 import AddEdit from './component/index'
+import { settingPageList } from '@/api/system-set'
 export default {
   components: {
     AddEdit,
@@ -113,16 +114,12 @@ export default {
       formData: {},
       // 弹框默认隐藏
       dialogFormVisible: false,
-      searchForm: {
-        parmasName: '',
-        parmasDescription: '',
-      },
       rules: {
-        parmasName: [
+        settingName: [
           { required: false, message: '请输入字典名称', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
         ],
-        parmasDescription: [
+        settingLabel: [
           { required: false, message: '请输入字典描述', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
         ],
@@ -131,10 +128,10 @@ export default {
         keyname: 'settingName',
       },
       params: {
-        currentPage: 1,
+        pageNumber: 1,
         pageSize: 10,
-        settingName: null,
-        settingLabel: null,
+        settingName: '',
+        settingLabel: '',
       },
       list: null,
       totalCount: 0,
@@ -154,12 +151,46 @@ export default {
     this.queryByPage()
   },
   methods: {
+    async queryByPage() {
+      const res = await settingPageList(this.params)
+      if (res.code != '200') return
+      this.list = res.data.records
+      this.totalCount = res.data.total
+      this.totalPage = res.data.pages
+      this.listLoading = false
+      return
+
+      this.listLoading = true
+      // queryByPage(this.params).then(response => {
+      const response = {
+        repCode: '0000',
+        repMsg: null,
+        repData: { totalPage: 1, pageSize: 10, list: [{ settingId: 7, settingName: 'big_screen_chart_refresh_frequency', settingLabel: '大屏图表刷新频率(秒)', settingType: 'input-number', settingForm: '', settingValue: '300', enableFlag: 1, remark: '单位(秒)', createdBy: 'admin', createdTime: '2020-11-25T15:01:57', updatedBy: 'admin1', updatedTime: '2021-01-07T12:10:55', settingValueJson: {}, itemDesc: null, intSettingValue: 300 }], pageNumber: 1, totalCount: 8 },
+        success: true,
+        error: false,
+      }
+      if (response.repCode == '0000') {
+        this.list = response.repData.list
+        this.totalCount = response.repData.totalCount
+        this.totalPage = response.repData.totalPage
+      }
+      this.listLoading = false
+      // })
+    },
     cancel() {
       this.dialogFormVisible = false
     },
     add() {
       this.clickType = 'add'
       this.dialogFormVisible = true
+      this.formData = {
+        settingName: '',
+        settingLabel: '',
+        settingType: '',
+        settingValue: '',
+        settingForm: '',
+        remark: '',
+      }
     },
     edit(id, val = '') {
       this.clickType = 'edit'
@@ -198,6 +229,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log('submit!')
+          this.queryByPage()
         } else {
           console.log('error submit!!')
           return false
@@ -207,9 +239,9 @@ export default {
     // 重置
     reset(formName) {
       this.$refs[formName].resetFields()
-      for (var key in this.searchForm) {
-        this.searchForm[key] = ''
-      }
+      this.params.settingName = ''
+      this.params.settingLabel = ''
+      this.queryByPage()
     },
     // 启用禁用切换
     switchEnableById(val) {
@@ -219,30 +251,12 @@ export default {
       //   }
       // })
     },
-    queryByPage() {
-      this.listLoading = true
-      // queryByPage(this.params).then(response => {
-      const response = {
-        repCode: '0000',
-        repMsg: null,
-        repData: { totalPage: 1, pageSize: 10, list: [{ settingId: 7, settingName: 'big_screen_chart_refresh_frequency', settingLabel: '大屏图表刷新频率(秒)', settingType: 'input-number', settingForm: '', settingValue: '300', enableFlag: 1, remark: '单位(秒)', createdBy: 'admin', createdTime: '2020-11-25T15:01:57', updatedBy: 'admin', updatedTime: '2021-01-07T12:10:55', settingValueJson: {}, itemDesc: null, intSettingValue: 300 }], currentPage: 1, totalCount: 8 },
-        success: true,
-        error: false,
-      }
-      if (response.repCode == '0000') {
-        this.list = response.repData.list
-        this.totalCount = response.repData.totalCount
-        this.totalPage = response.repData.totalPage
-      }
-      this.listLoading = false
-      // })
-    },
     handleSizeChange(val) {
       this.params.pageSize = val
       this.queryByPage()
     },
     handleCurrentChange(val) {
-      this.params.currentPage = val
+      this.params.pageNumber = val
       this.queryByPage()
     },
     handleClickAddOrEdit(id, val = '') {
