@@ -3,11 +3,8 @@
     <el-form ref="form" :model="params" :rules="rules" label-width="100px">
       <el-row>
         <el-col :span="6">
-          <el-form-item prop="loginName" label="用户名称">
-            <el-select v-model="params.loginName" :placeholder="$t('placeholder.select')">
-              <el-option key="1" label="名称1" :value="1" />
-              <el-option key="0" label="名称2" :value="0" />
-            </el-select>
+          <el-form-item prop="userName" label="用户名称">
+            <el-input v-model.trim="params.userName" />
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -34,12 +31,6 @@
             <span class="titel">请求路径: </span>
             <span>{{ props.row.requestUrl }}</span>
           </p>
-          <!--
-          <p class="table-expand-item">
-            <span class="titel">请求类型: </span>
-            <span>{{props.row.requestMethod}}</span>
-          </p>
-          -->
           <p class="table-expand-item">
             <span class="titel">请求参数: </span>
             <span>{{ props.row.requestParam }}</span>
@@ -52,7 +43,7 @@
       </el-table-column>
       <el-table-column align="center" label="序号" min-width="40">
         <template slot-scope="scope">
-          {{ params.pageSize * (params.currentPage - 1) + scope.$index + 1 }}
+          {{ params.pageSize * (params.pageNumber - 1) + scope.$index + 1 }}
         </template>
       </el-table-column>
       <el-table-column label="用户名称" max-width="120" align="center" :show-overflow-tooltip="true">
@@ -70,13 +61,6 @@
           <span>{{ scope.row.requestUrl }}</span>
         </template>
       </el-table-column>
-      <!--
-      <el-table-column label="请求类型" min-width="80" align="center" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          {{ scope.row.requestMethod }}
-        </template>
-      </el-table-column>
-      -->
       <el-table-column label="请求参数" min-width="110" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           {{ scope.row.requestParam }}
@@ -99,37 +83,28 @@
       </el-table-column>
     </el-table>
     <div class="block">
-      <el-pagination :total="totalCount" :page-sizes="[10, 20, 50, 100]" :page-size="params.pageSize" :current-page="params.currentPage" layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      <el-pagination :total="totalCount" :page-sizes="[10, 20, 50, 100]" :page-size="params.pageSize" :current-page="params.pageNumber" layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
   </div>
 </template>
 
 <script>
+import { logPageList } from '@/api/system-set'
+
 export default {
-  components: {
-    // AddEdit,
-  },
   data() {
     return {
-      searchForm: {
-        parmasName: '',
-        parmasDescription: '',
-      },
       rules: {
         requestUrl: [{ required: false, message: '请输入请求路径', trigger: 'blur' }],
         pageTitle: [{ required: false, message: '请输入页面标题', trigger: 'blur' }],
-        loginName: [{ required: false, message: '请选择用户名称', trigger: 'change' }],
-      },
-      selectInput: {
-        keyname: 'settingName',
+        userName: [{ required: false, message: '请输入用户名称', trigger: 'blur' }],
       },
       params: {
-        currentPage: 1,
+        pageNumber: 1,
         pageSize: 10,
-        pageTitle: null,
-        requestUrl: null,
-        userName: null,
-        loginName: null,
+        pageTitle: '',
+        requestUrl: '',
+        userName: '',
       },
       list: null,
       totalCount: 0,
@@ -154,6 +129,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log('submit!')
+          this.queryByPage()
         } else {
           console.log('error submit!!')
           return false
@@ -163,54 +139,26 @@ export default {
     // 重置
     reset(formName) {
       this.$refs[formName].resetFields()
-      for (var key in this.searchForm) {
-        this.searchForm[key] = ''
-      }
+      this.params.userName = ''
+      this.params.pageTitle = ''
+      this.params.requestUrl = ''
+      this.queryByPage()
     },
-    queryByPage() {
+    async queryByPage() {
+      const res = await logPageList(this.params)
+      if (res.code != '200') return
       this.listLoading = true
-      // queryByPage(this.params).then(response => {
-      const response = {
-        repCode: '0000',
-        repMsg: null,
-        repData: {
-          totalPage: 188,
-          pageSize: 10,
-          list: [
-            {
-              logId: 171279,
-              userId: 1,
-              userName: 'admin',
-              requestUrl: '/auth-service/menu/queryActionTreeForMenu',
-              pageTitle: '查询菜单的关联按钮树',
-              requestParam: '{"menuId":52}',
-              responseParam:
-                '{"repCode":"0000","repMsg":null,"repData":{"checkedIds":[1,2,3,4,22],"treeData":[{"id":1,"label":"新增","disabled":false,"children":[],"extend":null,"parentId":null,"name":null,"value":null,"type":null,"checked":false,"expend":false},{"id":2,"label":"修改","disabled":false,"children":[],"extend":null,"parentId":null,"name":null,"value":null,"type":null,"checked":false,"expend":false},{"id":3,"label":"删除","disabled":false,"children":[],"extend":null,"parentId":null,"name":null,"value":null,"type":null,"checked":false,"expend":false},{"id":4,"label":"查询","disabled":false,"children":[],"extend":null,"parentId":null,"name":null,"value":null,"type":null,"checked":false,"expend":false},{"id":11,"label":"分配权限","disabled":false,"children":[],"extend":null,"parentId":null,"name":null,"value":null,"type":null,"checked":false,"expend":false},{"id":12,"label":"分配角色","disabled":false,"children":[],"extend":null,"parentId":null,"name":null,"value":null,"type":null,"checked":false,"expend":false},{"id":13,"label":"重置密码","disabled":false,"children":[],"extend":null,"parentId":null,"name":null,"value":null,"type":null,"checked":false,"expend":false},{"id":21,"label":"导入","disabled":false,"children":[],"extend":null,"parentId":null,"name":null,"value":null,"type":null,"checked":false,"expend":false},{"id":22,"label":"导出","disabled":false,"children":[],"extend":null,"parentId":null,"name":null,"value":null,"type":null,"checked":false,"expend":false}]},"success":true,"error":false}',
-              sourceIp: '10.108.12.20',
-              requestMethod: null,
-              requestTime: '2021-02-05T12:47:17',
-            },
-          ],
-          currentPage: 1,
-          totalCount: 1872,
-        },
-        success: true,
-        error: false,
-      }
-      if (response.repCode == '0000') {
-        this.list = response.repData.list
-        this.totalCount = response.repData.totalCount
-        this.totalPage = response.repData.totalPage
-      }
+      this.list = res.data.records
+      this.totalCount = res.data.total
+      this.totalPage = res.data.pages
       this.listLoading = false
-      // })
     },
     handleSizeChange(val) {
       this.params.pageSize = val
       this.queryByPage()
     },
     handleCurrentChange(val) {
-      this.params.currentPage = val
+      this.params.pageNumber = val
       this.queryByPage()
     },
   },
