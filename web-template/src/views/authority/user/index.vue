@@ -122,7 +122,7 @@ export default {
   },
   data() {
     return {
-      id: null,
+      id: '',
       treeDialog: false,
       selectedList: [],
       searchForm: {

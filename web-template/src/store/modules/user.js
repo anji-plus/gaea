@@ -51,7 +51,7 @@ const actions = {
       //       } else {
       //         // 设置token
       // commit('SET_TOKEN', response.data)
-      commit('SET_TOKEN', 'a')
+      commit('SET_TOKEN', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTM3MjQ3NjAsInVzZXJuYW1lIjoiYWRtaW4ifQ.bcwyuGVbH3ztkGBk4ggJ7L3rC0Zpp2M30sDckV3YMtw')
       resolve()
       //   }
       // })

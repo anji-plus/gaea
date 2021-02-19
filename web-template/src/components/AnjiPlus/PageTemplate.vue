@@ -1,6 +1,11 @@
 <!-- 
   通用性页面组件
-  目前 将查询条件部分，列表部分 ，弹窗部分分三个字段传输
+  接收参数
+  prop-from     --- 查询条件form表单相关
+  prop-table    --- 列表相关
+  prop-dialog   --- 弹窗form表单相关
+  prop-btn      --- 页面是否存在按钮权限 
+  prop-api      --- 增删改查接口
   查询条件部分传输格式如下
   prop-from:{
     // 所有查询条件列表               //     参数说明         必须	   	      类型	          可选值	          默认值      
@@ -31,20 +36,49 @@
     //  待扩展...
   }
   列表部分传输格式如下
-  prop-from:{
+  prop-table:{
     // 所有查询条件列表               //     参数说明         必须	   	      类型	          可选值	          默认值      
     list:[
       {
         label: '',                //         列名称           是            string             -                 -
         field: 'actionName',       //        字段名           是            string             -                 -
+        minWidth: '100'            //       列最小宽度         否            string             -                110
       }
     ],
     border: true,                 //     表格是否带边框        否              boolean            -               true
+    stripe: false                   //     表格是否斑马纹        否              boolean            -              false
     height: 0                     //     Table 的高度,         否              string/number        -               -
     maxHeight: 0               //     Table 的最大高度,         否              string/number        -               -
     hasSelection:true,            //    是否展示复选框         否              boolean            -               true
     hasIndex:true,                //    是否展示索引列         否              boolean            -               false
     hasCreateAndupdate:true,  // 是否展示创建/更新者和创建时间   否              boolean            -               true
+    //  待扩展...
+  }
+  // 所有form表单新增项             //     参数说明         必须	   	      类型	          可选值	          默认值      
+  prop-dialog:{
+    // 所有查询条件列表               //     参数说明         必须	   	      类型	          可选值	          默认值      
+    list:[
+      {
+        formType: 'input',          //     form表单类型       否            string        select/input        'input'
+        label: '字段展示名称',      //   字段名称-支持国际化   是            string             -                 -
+        field: 'actionName',       //        字段名           是            string             -                 -
+        notEditable:false          //   该项表单的不可编辑     否              boolean           -               false
+        clearable:true             //  是否显示清除按钮       否              boolean           -               true
+        placeholder: '',          //       placeholder        否               -               -                -
+        rules:{ message: '提示' }  //        校验规则         否          object/array         -                 -
+        options:[{                //      下拉框的可选值      否              array            -                 []
+          label:'启用',
+          value:'1'
+        }],
+        optionsconfig:{           //   下拉框options的配置    否             object            -                 {}
+          key: 'label',           //下拉框options的key绑定值  否             string            -    默认用下边label的值若label未传，则默值为'label'
+          label: 'label',         //   options的label绑定值   否             string            -               'label'
+          value: 'value'          //   options的value绑定值   否             string            -               'value'
+        }
+      }
+    ],
+    labelWidth:'100px',          //     表单域标签的宽度       否              string            -               '100px'
+    rules:{},                     //     表单验证规则          否              object            -                 -
     //  待扩展...
   }
  -->
@@ -56,14 +90,16 @@
           <el-row class="form_table">
             <el-col v-for="item in formList" :key="item.field" :span="item.span || 6">
               <el-form-item :label="item.label" :rules="item.rules" :prop="item.field" :disabled="item.disabled">
+                <!-- 输入框 -->
+                <el-input v-if="!item.formType || item.formType == 'input'" v-model.trim="searchForm[item.field]" :placeholder="item.placeholder || $t('placeholder.input')" :clearable="item.clearable !== false" />
                 <!-- 下拉框 -->
-                <el-select v-if="item.formType == 'select'" v-model="searchForm[item.field]" :placeholder="item.placeholder || $t('placeholder.select')" :clearable="item.clearable !== false">
+                <el-select v-else-if="item.formType == 'select'" v-model="searchForm[item.field]" :placeholder="item.placeholder || $t('placeholder.select')" :clearable="item.clearable !== false">
                   <el-option v-for="ele in item.options || []" :key="ele[item.optionsconfig.key || item.optionsconfig.label || 'label']" :label="ele[item.optionsconfig.label || 'label']" :value="ele[item.optionsconfig.value || 'value']" />
                 </el-select>
                 <!-- 日期时间框  -->
                 <el-date-picker v-else-if="item.formType.indexOf('date') >= 0" v-model="searchForm[item.field]" style="width: 100%" :placeholder="item.placeholder || $t('placeholder.select')" :type="item.formType" :clearable="item.clearable !== false" />
-                <!-- 输入框 -->
-                <el-input v-else v-model.trim="searchForm[item.field]" :placeholder="item.placeholder || $t('placeholder.input')" :clearable="item.clearable !== false" />
+                <!-- 待扩展的表单类型，请自行扩展 -->
+                <el-input v-else placeholder="组件不支持此类型表单请至组件内部自行扩展" disabled />
               </el-form-item>
             </el-col>
           </el-row>
@@ -90,9 +126,9 @@
       <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
       <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" />
     </div>
-    <el-table :data="tableList" :border="table.border" :height="table.height || null" :max-height="table.maxHeight || null" :stripe="table.stripe" @selection-change="handleSelectionChange">
-      <el-table-column v-if="table.hasSelection !== false" fixed type="selection" width="40" center />
-      <el-table-column v-if="table.hasIndex" type="index" width="50" center />
+    <el-table :data="tableList" :border="table.border !== false" :height="table.height || null" :max-height="table.maxHeight || null" :stripe="table.stripe" @selection-change="handleSelectionChange">
+      <el-table-column v-if="table.hasSelection !== false" fixed type="selection" width="40" align="center" />
+      <el-table-column v-if="table.hasIndex" label="序号" type="index" width="50" align="center" />
       <el-table-column v-for="(item, index) in propTable.list" :key="item.field" :label="item.label" :min-width="item.minWidth || 110" align="center">
         <template slot-scope="scope">
           <!-- 第一列高亮并且可以点击 -->
@@ -116,34 +152,18 @@
         <el-row class="form_table">
           <el-col v-for="item in dialogList" :key="item.field" :span="item.span || 8">
             <el-form-item :label="item.label" :rules="item.rules" :prop="item.field" :disabled="item.disabled">
+              <!-- 输入框 -->
+              <el-input v-if="!item.formType || item.formType == 'input'" v-model.trim="dialogForm[item.field]" :placeholder="item.placeholder || $t('placeholder.input')" :clearable="item.clearable !== false" :disabled="item.notEditable && dialogTittle != 'add'" />
               <!-- 下拉框 -->
-              <el-select v-if="item.formType == 'select'" v-model="dialogForm[item.field]" :placeholder="item.placeholder || $t('placeholder.select')" :clearable="item.clearable !== false">
+              <el-select v-else-if="item.formType == 'select'" v-model="dialogForm[item.field]" :placeholder="item.placeholder || $t('placeholder.select')" :clearable="item.clearable !== false" :disabled="item.notEditable && dialogTittle != 'add'">
                 <el-option v-for="ele in item.options || []" :key="ele[item.optionsconfig.key || item.optionsconfig.label || 'label']" :label="ele[item.optionsconfig.label || 'label']" :value="ele[item.optionsconfig.value || 'value']" />
               </el-select>
               <!-- 日期时间框  -->
-              <el-date-picker v-else-if="item.formType.indexOf('date') >= 0" v-model="dialogForm[item.field]" style="width: 100%" :placeholder="item.placeholder || $t('placeholder.select')" :type="item.formType" :clearable="item.clearable !== false" />
+              <el-date-picker v-else-if="item.formType.indexOf('date') >= 0" v-model="dialogForm[item.field]" style="width: 100%" :placeholder="item.placeholder || $t('placeholder.select')" :type="item.formType" :clearable="item.clearable !== false" :disabled="item.notEditable && dialogTittle != 'add'" />
               <!-- 输入框 -->
-              <el-input v-else v-model.trim="dialogForm[item.field]" :placeholder="item.placeholder || $t('placeholder.input')" :clearable="item.clearable !== false" />
+              <el-input v-else placeholder="组件不支持此类型表单请至组件内部自行扩展" disabled />
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="12">
-            <el-form-item label="按钮代码" prop="actionCode">
-              <el-input v-model.trim="dialogForm.actionCode" :disabled="dialogTittle != 'add'" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="按钮名称" prop="actionName">
-              <el-input v-model.trim="dialogForm.actionName" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="启用状态" prop="enabled">
-              <el-select v-model="dialogForm.enabled" :placeholder="$t('placeholder.select')">
-                <el-option key="1" label="启用" :value="1" />
-                <el-option key="0" label="禁用" :value="0" />
-              </el-select>
-            </el-form-item>
-          </el-col> -->
         </el-row>
       </el-form>
       <div slot="footer" style="text-align: center">
@@ -186,32 +206,11 @@ export default {
         return {}
       },
     },
-    queryApi: {
+    propApi: {
       require: true,
-      type: Function,
+      type: Object,
       default: () => {
-        return Function
-      },
-    },
-    addApi: {
-      require: true,
-      type: Function,
-      default: () => {
-        return Function
-      },
-    },
-    editApi: {
-      require: true,
-      type: Function,
-      default: () => {
-        return Function
-      },
-    },
-    deleteApi: {
-      require: true,
-      type: Function,
-      default: () => {
-        return Function
+        return {}
       },
     },
   },
@@ -262,11 +261,11 @@ export default {
       this.$refs.formDialog.validate(async(valid, obj) => {
         if (valid) {
           if (this.dialogTittle == 'add') {
-            const { code } = await this.addApi(this.dialogForm)
+            const { code } = await this.propApi.add(this.dialogForm)
             if (code != '200') return
             this.closeDialog(true)
           } else {
-            const { code } = await this.editApi(this.dialogForm)
+            const { code } = await this.propApi.edit(this.dialogForm)
             if (code != '200') return
             this.closeDialog(true)
           }
@@ -283,7 +282,7 @@ export default {
     },
     // 删除操作
     async handleDelete() {
-      const { code } = await this.deleteApi(this.selectedList[0].id)
+      const { code } = await this.propApi.delete(this.selectedList[0].id)
       if (code != '200') return
       this.getData()
     },
@@ -308,7 +307,7 @@ export default {
     },
     // 查询
     async getData() {
-      const { data, code } = await this.queryApi(this.searchForm)
+      const { data, code } = await this.propApi.query(this.searchForm)
       if (code != '200') return
       this.tableList = data.records
       this.total = data.total

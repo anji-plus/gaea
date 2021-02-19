@@ -108,7 +108,7 @@ export default {
     return {
       orgDialog: false,
       menuDialog: false,
-      id: null,
+      id: '',
       selectedList: [],
       searchForm: {
         // roleCode: '',
