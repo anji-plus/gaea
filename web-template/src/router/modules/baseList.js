@@ -145,6 +145,17 @@ export const baseList = [
           icon: '',
         },
       },
+      // 参数管理
+      {
+        menuId: '3021',
+        parentMenuId: '30',
+        path: '/system-set/parameter/edit',
+        // component: () => import('@/views/system-set/parameter/component/edit'),
+        component: 'system-set/parameter/component/edit',
+        // name: 'parameterEdit',
+        hidden: 1,
+        meta: { title: 'changePassword', icon: '', noCache: true, breadcrumb: false },
+      },
       // 帮助中心
       {
         menuId: '3030',

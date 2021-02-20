@@ -73,6 +73,22 @@ export function settingPageList(params) {
     params,
   })
 }
+// 参数管理新增
+export function authSetting(data) {
+  return request({
+    url: '/auth/setting',
+    method: 'POST',
+    data,
+  })
+}
+// 参数管理编辑接口
+export function authSettingEdit(data) {
+  return request({
+    url: `/auth/setting`,
+    method: 'PUT',
+    data,
+  })
+}
 
 // 操作日志查询接口
 export function logPageList(params) {

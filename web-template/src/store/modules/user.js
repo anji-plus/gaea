@@ -44,20 +44,20 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password, verifyCode } = userInfo
     return new Promise((resolve, reject) => {
-      //   login({ username: username.trim(), password: transPsw(password), verifyCode: verifyCode })
-      //     .then((response) => {
-      //       if (response.code != '200') {
-      //         resolve(response.data) // 将 captcha 传递出去
-      //       } else {
-      //         // 设置token
-      // commit('SET_TOKEN', response.data)
-      commit('SET_TOKEN', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTM3MjQ3NjAsInVzZXJuYW1lIjoiYWRtaW4ifQ.bcwyuGVbH3ztkGBk4ggJ7L3rC0Zpp2M30sDckV3YMtw')
-      resolve()
-      //   }
-      // })
-      // .catch((error) => {
-      //   reject(error)
-      // })
+      login({ username: username.trim(), password: transPsw(password), verifyCode: verifyCode })
+        .then((response) => {
+          if (response.code != '200') {
+            resolve(response.data) // 将 captcha 传递出去
+          } else {
+            // 设置token
+            commit('SET_TOKEN', response.data)
+            // commit('SET_TOKEN', 'a')
+            resolve()
+          }
+        })
+        .catch((error) => {
+          reject(error)
+        })
     }).catch((e) => {
       console.log(e)
     })
