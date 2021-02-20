@@ -68,15 +68,15 @@ public class GaeaFileServiceImpl implements GaeaFileService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String upload(MultipartFile file){
-        try{
+    public String upload(MultipartFile file) {
+        try {
             String fileName = file.getOriginalFilename();
             if (StringUtils.isBlank(fileName)) {
                 throw BusinessExceptionBuilder.build(RespCommonCode.FILE_EMPTY_FILENAME);
             }
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
             //白名单校验(不区分大小写)
-            List<String> list = new ArrayList<String>( Arrays.asList(whiteList.split("\\|")));
+            List<String> list = new ArrayList<String>(Arrays.asList(whiteList.split("\\|")));
             list.addAll(list.stream().map(String::toUpperCase).collect(Collectors.toList()));
             if (!list.contains(suffixName)) {
                 throw BusinessExceptionBuilder.build(RespCommonCode.FILE_SUFFIX_UNSUPPORTED);
@@ -85,21 +85,21 @@ public class GaeaFileServiceImpl implements GaeaFileService {
             String fileId = UUID.randomUUID().toString();
             String newFileName = fileId + suffixName;
             // 本地文件保存路径
-            String filePath = dictPath + newFileName;
+            String filePath = dictPath + File.separator + newFileName;
             String urlPath = fileDownloadPath + File.separator + fileId;
 
-            GaeaFile gaeaFile=new GaeaFile();
+            GaeaFile gaeaFile = new GaeaFile();
             gaeaFile.setFilePath(filePath);
             gaeaFile.setFileId(fileId);
             gaeaFile.setUrlPath(urlPath);
             gaeaFileMapper.insert(gaeaFile);
 
             //写文件 将文件保存/app/dictPath/upload下
-            File dest = new File(dictPath + newFileName);
+            File dest = new File(dictPath + File.separator + newFileName);
             file.transferTo(dest);
             // 将完整的http访问路径返回
             return urlPath;
-        }catch (Exception e){
+        } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             log.error("file upload error: {}", e);
             throw BusinessExceptionBuilder.build(RespCommonCode.FILE_UPLOAD_ERROR);
@@ -108,13 +108,13 @@ public class GaeaFileServiceImpl implements GaeaFileService {
 
     @Override
     public ResponseEntity<byte[]> download(HttpServletRequest request, HttpServletResponse response, String fileId) {
-        try{
+        try {
             String userAgent = request.getHeader("User-Agent");
             boolean isIEBrowser = userAgent.indexOf("MSIE") > 0;
             //根据fileId，从gaea_file中读出filePath
-            LambdaQueryWrapper<GaeaFile> queryWrapper= Wrappers.lambdaQuery();
-            queryWrapper.eq(GaeaFile::getFileId,fileId);
-            GaeaFile gaeaFile=gaeaFileMapper.selectOne(queryWrapper);
+            LambdaQueryWrapper<GaeaFile> queryWrapper = Wrappers.lambdaQuery();
+            queryWrapper.eq(GaeaFile::getFileId, fileId);
+            GaeaFile gaeaFile = gaeaFileMapper.selectOne(queryWrapper);
             if (null == gaeaFile) {
                 throw BusinessExceptionBuilder.build(RespCommonCode.FILE_ONT_EXSIT);
             }
@@ -126,10 +126,10 @@ public class GaeaFileServiceImpl implements GaeaFileService {
             String filename = filePath.substring(filePath.lastIndexOf(File.separator));
             String fileSuffix = filename.substring(filename.lastIndexOf("."));
             //特殊处理：如果是excel文件，则从t_export表中查询文件名
-            List list = Arrays.asList(excelSuffix.split("\\|")) ;
+            List list = Arrays.asList(excelSuffix.split("\\|"));
             if (list.contains(fileSuffix)) {
-                LambdaQueryWrapper<GaeaExport> exportWrapper=Wrappers.lambdaQuery();
-                exportWrapper.eq(GaeaExport::getFileId,fileId);
+                LambdaQueryWrapper<GaeaExport> exportWrapper = Wrappers.lambdaQuery();
+                exportWrapper.eq(GaeaExport::getFileId, fileId);
                 GaeaExport exportPO = gaeaExportMapper.selectOne(exportWrapper);
                 if (null != exportPO) {
                     filename = exportPO.getFileTitle() + fileSuffix;
@@ -139,7 +139,7 @@ public class GaeaFileServiceImpl implements GaeaFileService {
             File file = new File(filePath);
             ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
             builder.contentLength(file.length());
-            if(StringPatternUtil.StringMatchIgnoreCase(fileSuffix, "(.png|.jpg|.jpeg|.bmp|.gif|.icon)")){
+            if (StringPatternUtil.StringMatchIgnoreCase(fileSuffix, "(.png|.jpg|.jpeg|.bmp|.gif|.icon)")) {
                 builder.cacheControl(CacheControl.noCache()).contentType(MediaType.IMAGE_PNG);
             } else if (StringPatternUtil.StringMatchIgnoreCase(fileSuffix, "(.flv|.swf|.mkv|.avi|.rm|.rmvb|.mpeg|.mpg|.ogg|.ogv|.mov|.wmv|.mp4|.webm|.wav|.mid|.mp3|.aac)")) {
                 builder.header("Content-Type", "video/mp4; charset=UTF-8");
@@ -154,7 +154,7 @@ public class GaeaFileServiceImpl implements GaeaFileService {
                 }
             }
             return builder.body(FileUtils.readFileToByteArray(file));
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("file download error: {}", e);
             return null;
         }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.github.anji.plus.common.CacheConstants;
 import com.github.anji.plus.common.CacheTimeConstants;
 import com.github.anji.plus.dto.DynamicQueryBo;
+import com.github.anji.plus.feign.AuthServiceClient;
 import com.github.anji.plus.service.cache.CacheService;
 import com.github.anji.plus.service.commoncondition.ICommonConditionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,10 @@ import java.util.concurrent.TimeUnit;
 public class CommonConditionServiceImpl implements ICommonConditionService {
     @Autowired
     private CacheService cacheService;
-    /*
+
     @Autowired
-    private BaseServiceClient baseServiceClient;
-    */
+    private AuthServiceClient authServiceClient;
+
     @Override
     public List<DynamicQueryBo> getDynamicQueryBoListById(Long id, List<DynamicQueryBo> paramList) {
         List<DynamicQueryBo> result = new ArrayList<>();
@@ -41,12 +42,12 @@ public class CommonConditionServiceImpl implements ICommonConditionService {
         String key = CacheConstants.COMMON_QUERY_CONDITION + id;
         Serializable serializable = cacheService.get(key);
         if (null == serializable) {
-            /*List<DynamicQueryBo> getSqlList = baseServiceClient.getDynamicQueryBoListById(id);
+            List<DynamicQueryBo> getSqlList = authServiceClient.getDynamicQueryBoListById(id);
             if (!CollectionUtils.isEmpty(getSqlList)) {
                 result.addAll(getSqlList);
             }
             cacheService.add(key, JSON.toJSONString(getSqlList), CacheTimeConstants.QUERY_CONDITION_TIME_THIRTY_DAYS, TimeUnit.DAYS);
-            */
+
         } else {
             result.addAll(JSON.parseArray((String) serializable, DynamicQueryBo.class));
         }

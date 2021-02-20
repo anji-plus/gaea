@@ -152,7 +152,6 @@ public class GaeaAuditLogAspect {
             if(null!=paramsMap){
                 operLog.setRequestParam(paramsMap.toString());
             }
-
         }
     }
 

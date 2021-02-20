@@ -13,7 +13,7 @@ import java.util.List;
  * @author peiyanni
  * @version BaseQueryBO.java
  */
-public abstract class BaseQueryBO implements Serializable {
+public class BaseQueryBO implements Serializable {
     private static final long serialVersionUID = -8871507943274741637L;
 
     private int pageNo = 1;
