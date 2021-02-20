@@ -75,10 +75,9 @@ export default {
       // 将一级菜单就是页面的树过滤出来，直接展示
       hasChildren.forEach((item, index) => {
         if (item.children.length == 1) {
-          hasChildren.splice(index, 1, item.children)
+          hasChildren.splice(index, 1, item.children[0])
         }
       })
-      // data.forEach()
       this.menuData = hasChildren
     },
     async getCheckedId() {

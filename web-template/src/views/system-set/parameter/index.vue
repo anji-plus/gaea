@@ -22,7 +22,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-button type="primary" icon="el-icon-plus" @click="add">{{ $t('btn.add') }}</el-button>
+    <el-button type="primary" icon="el-icon-plus" @click="handleClickAddOrEdit(null)">{{ $t('btn.add') }}</el-button>
     <!-- 查询结果列表 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
       <el-table-column type="expand">
@@ -50,8 +50,9 @@
       </el-table-column>
       <el-table-column label="启用状态" min-width="120" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <el-tooltip :content="scope.row.enableFlag == 1 ? '已启用' : '已禁用'" placement="top">
-            <el-switch v-model="scope.row.enableFlag" active-color="#13ce66" inactive-color="#ccc" :active-value="1" :inactive-value="0" @change="switchEnableById(scope.row)" />
+          {{ scope.row.enable }}
+          <el-tooltip :content="scope.row.enable == 1 ? '已启用' : '已禁用'" placement="top">
+            <el-switch v-model="scope.row.enable" active-color="#13ce66" inactive-color="#ccc" :active-value="1" :inactive-value="0" @change="switchEnableById(scope.row)" />
           </el-tooltip>
         </template>
       </el-table-column>
@@ -82,11 +83,11 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" min-width="100" align="center">
         <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" content="查看" placement="top">
-            <el-button :circle="true" :plain="true" type="success" icon="el-icon-view" size="mini" @click="edit(scope.row.settingId, 'find')" />
-          </el-tooltip>
+          <!--<el-tooltip class="item" effect="dark" content="查看" placement="top">-->
+          <!--<el-button :circle="true" :plain="true" type="success" icon="el-icon-view" size="mini" @click="edit(scope.row.settingId, 'find')" />-->
+          <!--</el-tooltip>-->
           <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-            <el-button :circle="true" :plain="true" type="primary" icon="el-icon-edit" size="mini" @click="edit(scope.row.settingId)" />
+            <el-button :circle="true" :plain="true" type="primary" icon="el-icon-edit" size="mini" @click="handleClickAddOrEdit(scope.row.id, null, scope.row.settingName)" />
           </el-tooltip>
           <!-- <el-button :circle="true" :plain="true" type="danger" icon="el-icon-delete" size="mini" @click="handleClickDelete(scope.row.parameterId)"/> -->
         </template>
@@ -95,19 +96,12 @@
     <div class="block">
       <el-pagination :total="totalCount" :page-sizes="[10, 20, 50, 100]" :page-size="params.pageSize" :current-page="params.pageNumber" layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
-    <el-dialog title="表单" center width="40%" :visible.sync="dialogFormVisible">
-      <add-edit ref="dlg" :form="formData" :click-type="clickType" @cancel="cancel" />
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import AddEdit from './component/index'
-import { settingPageList } from '@/api/system-set'
+import { settingPageList, authSettingEdit } from '@/api/system-set'
 export default {
-  components: {
-    AddEdit,
-  },
   data() {
     return {
       clickType: '',
@@ -158,71 +152,22 @@ export default {
       this.totalCount = res.data.total
       this.totalPage = res.data.pages
       this.listLoading = false
-      return
-
-      this.listLoading = true
-      // queryByPage(this.params).then(response => {
-      const response = {
-        repCode: '0000',
-        repMsg: null,
-        repData: { totalPage: 1, pageSize: 10, list: [{ settingId: 7, settingName: 'big_screen_chart_refresh_frequency', settingLabel: '大屏图表刷新频率(秒)', settingType: 'input-number', settingForm: '', settingValue: '300', enableFlag: 1, remark: '单位(秒)', createdBy: 'admin', createdTime: '2020-11-25T15:01:57', updatedBy: 'admin1', updatedTime: '2021-01-07T12:10:55', settingValueJson: {}, itemDesc: null, intSettingValue: 300 }], pageNumber: 1, totalCount: 8 },
-        success: true,
-        error: false,
-      }
-      if (response.repCode == '0000') {
-        this.list = response.repData.list
-        this.totalCount = response.repData.totalCount
-        this.totalPage = response.repData.totalPage
-      }
-      this.listLoading = false
-      // })
     },
     cancel() {
       this.dialogFormVisible = false
     },
-    add() {
-      this.clickType = 'add'
-      this.dialogFormVisible = true
-      this.formData = {
-        settingName: '',
-        settingLabel: '',
-        settingType: '',
-        settingValue: '',
-        settingForm: '',
-        remark: '',
-      }
-    },
-    edit(id, val = '') {
-      this.clickType = 'edit'
-      this.dialogFormVisible = true
-      this.$nextTick(function() {
-        const data = {
-          repCode: '0000',
-          repMsg: null,
-          repData: {
-            settingId: 25,
-            settingName: 'app_index_config',
-            settingLabel: 'app首页轮播',
-            settingType: 'custom-form',
-            settingForm:
-              '[{\r\n\t"type": "upload",\r\n\t"label": "轮播图片1",\r\n\t"name": "image_file1",\r\n\t"required": true,\r\n\t"placeholder": ""\r\n}, {\r\n\t"type": "upload",\r\n\t"label": "轮播图片2",\r\n\t"name": "image_file2",\r\n\t"required": true,\r\n\t"placeholder": ""\r\n}, {\r\n\t"type": "upload",\r\n\t"label": "轮播图片3",\r\n\t"name": "image_file3",\r\n\t"required": true,\r\n\t"placeholder": ""\r\n},{\r\n\t"type": "input-number",\r\n\t"label": "轮播间隔秒",\r\n\t"name": "durationSecond",\r\n\t"required": true,\r\n\t"placeholder": ""\r\n}]',
-            settingValue: '{"image_file1":"http://haitongnla.test.anji-plus.com/auth-service/file/download/a1357152-f47b-4768-a26b-7642ca16bfd5","image_file2":"http://haitongnla.test.anji-plus.com/auth-service/file/download/057d7496-c52d-45fc-a624-6101e389deba","image_file3":"http://haitongnla.test.anji-plus.com/auth-service/file/download/1567be96-f580-47cc-85a0-55159f7331a9","durationSecond":5}',
-            enableFlag: 1,
-            remark: 'app首页轮播',
-            createdBy: 'admin',
-            createdTime: '2020-11-25T15:01:57',
-            updatedBy: 'admin',
-            updatedTime: '2020-12-21T09:33:58',
-            settingValueJson: { image_file2: 'http://haitongnla.test.anji-plus.com/auth-service/file/download/057d7496-c52d-45fc-a624-6101e389deba', durationSecond: 5, image_file3: 'http://haitongnla.test.anji-plus.com/auth-service/file/download/1567be96-f580-47cc-85a0-55159f7331a9', image_file1: 'http://haitongnla.test.anji-plus.com/auth-service/file/download/a1357152-f47b-4768-a26b-7642ca16bfd5' },
-            itemDesc: null,
-            intSettingValue: null,
-          },
-          success: true,
-          error: false,
-        }
-        this.formData = data.repData
-      })
-      // this.$router.push({ path: '/system/dict/edit', query: { id: id, val: val }})
+    addOrEdit(id, val = '') {
+      this.$router.push({ path: '/system/setting/edit', query: { id: id, val: val }})
+      // this.clickType = 'add'
+      // this.dialogFormVisible = true
+      // this.formData = {
+      //   settingName: '',
+      //   settingLabel: '',
+      //   settingType: '',
+      //   settingValue: '',
+      //   settingForm: '',
+      //   remark: '',
+      // }
     },
     // 查询
     search(formName) {
@@ -244,12 +189,14 @@ export default {
       this.queryByPage()
     },
     // 启用禁用切换
-    switchEnableById(val) {
-      // reqSwitchEnableById({ settingId: val.settingId }).then((res) => {
-      //   if (res.repCode == '0000') {
-      //     this.$message.success('状态切换成功')
-      //   }
-      // })
+    async switchEnableById(val) {
+      const res = await authSettingEdit({
+        id: val.id,
+        enable: val.enable,
+      })
+      if (res.code !== '200') {
+        this.queryByPage()
+      }
     },
     handleSizeChange(val) {
       this.params.pageSize = val
@@ -259,8 +206,8 @@ export default {
       this.params.pageNumber = val
       this.queryByPage()
     },
-    handleClickAddOrEdit(id, val = '') {
-      this.$router.push({ path: '/system/setting/edit', query: { id: id, val: val }})
+    handleClickAddOrEdit(id, val = '', name = '') {
+      this.$router.push({ path: '/system-set/parameter/edit', query: { id: id, val: val, name: name }})
     },
     /*
       handleClickDelete(id) {

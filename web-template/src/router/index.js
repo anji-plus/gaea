@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-10 14:23:29
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-29 16:28:03
+ * @Last Modified time: 2021-02-19 16:19:50
  */
 import Vue from 'vue'
 import Router from 'vue-router'
@@ -65,11 +65,6 @@ export const constantRoutes = [
     hidden: true,
   },
   {
-    path: '/help',
-    component: () => import('@/views/help-center/index'),
-    hidden: true,
-  },
-  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
@@ -93,6 +88,15 @@ export const constantRoutes = [
         hidden: 1,
         meta: { title: 'changePassword', icon: '', noCache: true, breadcrumb: false },
       },
+    ],
+  },
+  {
+    path: '/helpCenList',
+    component: () => import('@/views/help-center/list'),
+    children: [
+      { path: 'list', component: () => import('@/views/help-center/list-title'), hidden: true },
+      { path: 'detail', component: () => import('@/views/help-center/list-detail'), hidden: true },
+      { path: 'search', component: () => import('@/views/help-center/list-search'), hidden: true },
     ],
   },
 ]
