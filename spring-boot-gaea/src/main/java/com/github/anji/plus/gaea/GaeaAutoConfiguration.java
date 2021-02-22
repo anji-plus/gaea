@@ -1,9 +1,10 @@
-package com.github.anji.plus.gaea.config;
+package com.github.anji.plus.gaea;
 
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.github.anji.plus.gaea.cache.CacheHelper;
+import com.github.anji.plus.gaea.config.MybatisPlusMetaObjectHandler;
 import com.github.anji.plus.gaea.curd.mapper.injected.CustomSqlInjector;
 import com.github.anji.plus.gaea.event.listener.ExceptionApplicationListener;
 import com.github.anji.plus.gaea.event.listener.LoginApplicationListener;
@@ -39,7 +40,6 @@ public class GaeaAutoConfiguration {
     public ApplicationContextUtils applicationContextUtils() {
         return new ApplicationContextUtils();
     }
-
 
     @Bean
     public CacheHelper cacheHelper() {

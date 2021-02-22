@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: @spring.profiles.active@
+  gaea:
+    subscribes:
+      security:
+        enabled: true
+      push:
+        sms:
+          aliyun:
+            access-key-id:
+            secret:
+logging:
+  level:
+    com.alibaba.cloud.nacos.client.NacosPropertySourceBuilder: debug

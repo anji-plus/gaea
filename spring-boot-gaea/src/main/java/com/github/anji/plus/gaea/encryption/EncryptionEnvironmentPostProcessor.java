@@ -1,20 +1,12 @@
 package com.github.anji.plus.gaea.encryption;
 
-import com.github.anji.plus.gaea.config.GaeaProperties;
 import com.github.anji.plus.gaea.utils.JasyptUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
-import org.springframework.core.env.PropertySource;
-import org.springframework.web.context.support.StandardServletEnvironment;
 
-import java.util.Iterator;
 import java.util.Properties;
 
 /**

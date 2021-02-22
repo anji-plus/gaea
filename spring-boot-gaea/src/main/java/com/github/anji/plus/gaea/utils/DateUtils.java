@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -11,7 +12,18 @@ import java.util.Date;
  * @author lirui
  * @since 2021-01-12
  */
-public abstract class LocalDateUtils {
+public abstract class DateUtils {
+
+    /**
+     * 日期转换为指定格式的字符串
+     * @param date
+     * @param pattern
+     * @return
+     */
+    public static String toString(Date date, String pattern) {
+        LocalDateTime localDateTime = toLocalDateTime(date);
+        return localDateTime.format(DateTimeFormatter.ofPattern(pattern));
+    }
 
     /**
      * LocalDate 转换为Date
