@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
  * CacheService
  * </pre>
  *
- * @author lusue
- * @version CacheService.java, v 0.1 2017/8/18 12:03 lusue Exp $
+ * @author
+ * @version CacheService.java
  */
 public interface CacheService {
 

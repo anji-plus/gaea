@@ -28,8 +28,8 @@ import java.util.concurrent.TimeUnit;
  * CacheServiceImpl
  * </pre>
  *
- * @author lusue
- * @version CacheServiceImpl.java, v 0.1 2017/8/18 12:08 lusue Exp $
+ * @author
+ * @version CacheServiceImpl.java,
  */
 @Service
 @ConditionalOnBean({RedisCacheConfig.class})

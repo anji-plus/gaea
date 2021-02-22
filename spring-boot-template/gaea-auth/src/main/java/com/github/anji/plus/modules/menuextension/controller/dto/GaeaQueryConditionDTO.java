@@ -20,7 +20,7 @@ public class GaeaQueryConditionDTO extends GaeaBaseDTO {
     /**
      * 菜单ID
      */
-    @ApiModelProperty(value = "菜单ID")
+    @ApiModelProperty(value = "菜单Code")
     private String menuCode;
     /**
      * 条件名称-key

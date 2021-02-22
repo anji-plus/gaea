@@ -46,8 +46,7 @@ public class GaeaExportController extends GaeaBaseController<GaeaExportParam, Ga
 
     @PostMapping("/queryAdvanceExport")
     public ResponseBean queryExportInfo(@RequestBody GaeaExportQueryParam param){
-        Page<GaeaExport> data= gaeaExportService.getExportListPage(param);
-        return responseSuccessWithData(data);
+        return responseSuccessWithData(gaeaExportService.getExportListPage(param));
     }
 
 }
