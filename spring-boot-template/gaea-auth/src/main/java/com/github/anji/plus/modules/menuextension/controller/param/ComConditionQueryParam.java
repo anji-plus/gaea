@@ -16,9 +16,9 @@ import java.io.Serializable;
 @Setter
 public class ComConditionQueryParam implements Serializable {
     /**
-     * 菜单id
+     * 菜单code
      */
-    private Long menuId;
+    private String menuCode;
     /**
      * 表格code
      */

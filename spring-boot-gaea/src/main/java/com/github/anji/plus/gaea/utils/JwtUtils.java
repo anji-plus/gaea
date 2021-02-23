@@ -28,7 +28,7 @@ public abstract class JwtUtils {
      */
     public static String createToken(String username) {
         String token = JWT.create()
-                .withExpiresAt(LocalDateUtils.toDate(LocalDateTime.now().plusHours(4)))
+                .withExpiresAt(DateUtils.toDate(LocalDateTime.now().plusHours(4)))
                 .withClaim("username", username)
                 .sign(Algorithm.HMAC256(SECRET));
         return token;
@@ -44,7 +44,7 @@ public abstract class JwtUtils {
      */
     public static String createToken(String username, List<String> roles, List<String> authorities, List<String> menus) {
         String token = JWT.create()
-                .withExpiresAt(LocalDateUtils.toDate(LocalDateTime.now().plusHours(4)))
+                .withExpiresAt(DateUtils.toDate(LocalDateTime.now().plusHours(4)))
                 .withClaim("username", username)
                 .withClaim("role", roles)
                 .withClaim("authorities", authorities)

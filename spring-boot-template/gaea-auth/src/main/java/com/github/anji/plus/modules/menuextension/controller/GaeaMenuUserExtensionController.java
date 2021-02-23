@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * (GaeaMenuUserExtension)实体类
- *
- * @author makejava
+ * 自定义列相关
+ * @author peiyanni
  * @since 2021-02-04 17:15:37
  */
 @RestController

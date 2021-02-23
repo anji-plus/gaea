@@ -1,4 +1,4 @@
-package com.github.anji.plus.gaea.config;
+package com.github.anji.plus.gaea;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

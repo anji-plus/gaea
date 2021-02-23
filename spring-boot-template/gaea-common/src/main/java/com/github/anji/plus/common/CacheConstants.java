@@ -20,5 +20,6 @@ public final class CacheConstants {
      * 菜单常用查询
      */
     public static final String COMMON_QUERY_CONDITION = "gaea:auth:menu:commonquerycondition:";
+    public static final String QUERY_CONDITION="gaea:auth:menu:querycondition:";
 
 }

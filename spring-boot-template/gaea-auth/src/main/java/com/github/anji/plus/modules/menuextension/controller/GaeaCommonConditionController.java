@@ -1,5 +1,6 @@
 package com.github.anji.plus.modules.menuextension.controller;
 
+import com.github.anji.plus.dto.DynamicQueryBo;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -48,12 +50,17 @@ public class GaeaCommonConditionController extends GaeaBaseController<GaeaCommon
 
 
     @ApiOperation("常用查询条件查询")
-    @PostMapping("/queryByCondition/v1")
+    @PostMapping("/queryByCondition")
     public ResponseBean queryByCondition(@RequestBody ComConditionQueryParam resquestParam) {
         List<GaeaCommonConditionDTO> result = gaeaCommonConditionService.queryByCondition(resquestParam);
         return responseSuccessWithData(result);
     }
 
+    @PostMapping("/getDynamicQueryBoListById")
+    public List<DynamicQueryBo> getDynamicQueryBoListById(@RequestParam("commonId") Long commonId) {
+        List<DynamicQueryBo> result = gaeaCommonConditionService.getDynamicQueryBoListById(commonId);
+        return result;
+    }
 
 
 

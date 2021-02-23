@@ -1,5 +1,6 @@
 package com.github.anji.plus.modules.menuextension.service;
 
+import com.github.anji.plus.dto.DynamicQueryBo;
 import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
 import com.github.anji.plus.modules.menuextension.controller.dto.GaeaCommonConditionDTO;
 import com.github.anji.plus.modules.menuextension.controller.param.ComConditionQueryParam;
@@ -21,4 +22,11 @@ public interface GaeaCommonConditionService extends GaeaBaseService<GaeaCommonCo
      * @return
      */
     List<GaeaCommonConditionDTO> queryByCondition(ComConditionQueryParam queryParam);
+
+    /**
+     * 根据commonID查询设置的常用查询
+     * @param commonId
+     * @return
+     */
+    List<DynamicQueryBo> getDynamicQueryBoListById(Long commonId);
 }

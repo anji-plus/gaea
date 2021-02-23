@@ -4,6 +4,8 @@ import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
 import com.github.anji.plus.modules.menuextension.controller.param.GaeaMenuExtensionParam;
 import com.github.anji.plus.modules.menuextension.entity.GaeaMenuExtension;
 
+import java.util.List;
+
 /**
  * (GaeaMenuExtension)Service
  *
@@ -12,4 +14,10 @@ import com.github.anji.plus.modules.menuextension.entity.GaeaMenuExtension;
  */
 public interface GaeaMenuExtensionService extends GaeaBaseService<GaeaMenuExtensionParam, GaeaMenuExtension> {
 
+    /**
+     * 根据菜单code查询自定义列
+     * @param menuCode
+     * @return
+     */
+    List<GaeaMenuExtension> queryMenuExtensionList(String menuCode);
 }
