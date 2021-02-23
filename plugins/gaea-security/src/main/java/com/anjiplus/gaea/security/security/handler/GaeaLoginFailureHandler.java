@@ -5,12 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.anjiplus.gaea.security.GaeaSecurityProperties;
 import com.anjiplus.gaea.security.cache.CacheKeyEnum;
 import com.anjiplus.gaea.security.code.UserResponseCode;
+import com.anjiplus.gaea.security.i18.GaeaMessageSourceAccessor;
+import com.anjiplus.gaea.security.i18.GaeaSecurityMessageSource;
 import com.anjiplus.gaea.security.security.event.UserLockedApplicationEvent;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.cache.CacheHelper;
 import com.github.anji.plus.gaea.constant.GaeaConstant;
 import com.github.anji.plus.gaea.holder.UserContentHolder;
-import com.github.anji.plus.gaea.i18.MessageSourceHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +64,8 @@ public class GaeaLoginFailureHandler implements AuthenticationFailureHandler {
 
     @Autowired
     private CacheHelper cacheHelper;
-    @Autowired
-    private MessageSourceHolder messageSourceHolder;
+
+    private GaeaMessageSourceAccessor messages = GaeaSecurityMessageSource.getAccessor();
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -124,7 +125,7 @@ public class GaeaLoginFailureHandler implements AuthenticationFailureHandler {
 
 
         ResponseBean responseBean = builder.code(code).build();
-        responseBean.setMessage(messageSourceHolder.getMessage(code));
+        responseBean.setMessage(messages.getMessage(code,code));
         response.getWriter().print(JSONObject.toJSONString(responseBean));
     }
 }

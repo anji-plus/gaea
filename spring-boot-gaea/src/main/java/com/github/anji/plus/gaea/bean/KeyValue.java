@@ -1,8 +1,6 @@
 package com.github.anji.plus.gaea.bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 前端下拉键值对
@@ -14,8 +12,6 @@ public class KeyValue implements Serializable {
 
     private Object id;
     private String text;
-    private List<KeyValue> children = new ArrayList<>();
-
     public KeyValue() {}
 
     public KeyValue(Object id, String text) {
@@ -37,13 +33,5 @@ public class KeyValue implements Serializable {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public List<KeyValue> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<KeyValue> children) {
-        this.children = children;
     }
 }

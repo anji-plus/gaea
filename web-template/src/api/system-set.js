@@ -98,3 +98,81 @@ export function logPageList(params) {
     params,
   })
 }
+
+// 字典管理查询
+export function gaeaDictpageList(params) {
+  return request({
+    url: '/business/gaeaDict/pageList',
+    method: 'get',
+    params,
+  })
+}
+
+// 字典管理新增
+export function gaeaDictAdd(data) {
+  return request({
+    url: '/business/gaeaDict',
+    method: 'POST',
+    data,
+  })
+}
+
+// 字典管理编辑
+export function gaeaDictEdit(data) {
+  return request({
+    url: '/business/gaeaDict',
+    method: 'PUT',
+    data,
+  })
+}
+
+// 字典管理删除
+export function businessGaeaDictDelect(id) {
+  return request({
+    url: `/business/gaeaDict/${id}`,
+    method: 'delete',
+  })
+}
+
+// 帮助中心查询
+export function gaeaHelpPageList(params) {
+  return request({
+    url: '/business/gaeaHelp/pageList',
+    method: 'get',
+    params,
+  })
+}
+
+// 帮助中心新增
+export function gaeaHelpAdd(data) {
+  return request({
+    url: '/business/gaeaHelp',
+    method: 'POST',
+    data,
+  })
+}
+
+// 帮助中心编辑
+export function gaeaHelpEdit(data) {
+  return request({
+    url: '/business/gaeaHelp',
+    method: 'PUT',
+    data,
+  })
+}
+
+// 帮助中心删除
+export function gaeaHelpDelect(id) {
+  return request({
+    url: `/business/gaeaHelp/${id}`,
+    method: 'delete',
+  })
+}
+
+// 数据字典接口  获取帮助中心所属分类
+export function dataDictionary(dictName) {
+  return request({
+    url: `/business/gaeaDict/select/${dictName}`,
+    method: 'get',
+  })
+}
