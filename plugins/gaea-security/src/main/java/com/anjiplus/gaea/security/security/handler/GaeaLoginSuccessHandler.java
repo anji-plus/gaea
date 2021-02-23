@@ -1,13 +1,13 @@
 package com.anjiplus.gaea.security.security.handler;
 
 import com.alibaba.fastjson.JSONObject;
-
 import com.anjiplus.gaea.security.cache.CacheKeyEnum;
 import com.anjiplus.gaea.security.code.UserResponseCode;
+import com.anjiplus.gaea.security.i18.GaeaMessageSourceAccessor;
+import com.anjiplus.gaea.security.i18.GaeaSecurityMessageSource;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.cache.CacheHelper;
 import com.github.anji.plus.gaea.constant.GaeaConstant;
-import com.github.anji.plus.gaea.i18.MessageSourceHolder;
 import com.github.anji.plus.gaea.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,8 +30,8 @@ public class GaeaLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
     private CacheHelper cacheHelper;
-    @Autowired
-    private MessageSourceHolder messageSourceHolder;
+
+    private GaeaMessageSourceAccessor messages = GaeaSecurityMessageSource.getAccessor();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -61,7 +61,7 @@ public class GaeaLoginSuccessHandler implements AuthenticationSuccessHandler {
         cacheHelper.setAdd(CacheKeyEnum.USER_AUTHORITIES.getKey() + username, authorities, true);
 
         ResponseBean responseBean = builder.code(UserResponseCode.SUCCESS).data(token).build();
-        responseBean.setMessage(messageSourceHolder.getMessage(code));
+        responseBean.setMessage(messages.getMessage(code,code));
         response.getWriter().print( JSONObject.toJSONString(responseBean));
     }
 }

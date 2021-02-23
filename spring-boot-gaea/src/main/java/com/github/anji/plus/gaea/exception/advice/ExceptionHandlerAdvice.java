@@ -25,20 +25,12 @@ public class ExceptionHandlerAdvice {
 
     /**
      * 业务异常
-     *
      * @param businessException
      * @return
      */
     @ExceptionHandler(BusinessException.class)
     public ResponseBean handleBusinessException(BusinessException businessException) {
-        String message;
-        try {
-            message = messageSourceHolder.getMessage(businessException.getCode(), businessException.getArgs());
-        } catch (NoSuchMessageException exception) {
-            message = businessException.getCode();
-        }
-
-        return ResponseBean.builder().code(FAIL_CODE).message(message).build();
+        return ResponseBean.builder().code(businessException.getCode()).args(businessException.getArgs()).build();
     }
 
     /**
