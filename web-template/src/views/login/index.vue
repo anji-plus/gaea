@@ -191,8 +191,8 @@ export default {
         .dispatch('user/login', this.loginForm)
         .then((res) => {
           this.loading = false
-          // 选中记住密码时 把密码存到cookie里
-          this.rememberPsw && cookies.set(`u_${this.loginForm.username}`, Encrypt(this.loginForm.password))
+          // 选中记住密码时 把密码存到cookie里,时效15天
+          this.rememberPsw && cookies.set(`u_${this.loginForm.username}`, Encrypt(this.loginForm.password), { expires: 15 })
           // 若是第一次登录则提示其修改密码
           // if (res && res.firstLogin) {
           //   this.$confirm(this.$t('login.firstLogin'), this.$t('promptMessage.deleteTipTitle'), {})
