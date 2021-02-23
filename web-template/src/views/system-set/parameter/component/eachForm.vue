@@ -90,7 +90,7 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       // fileList: [],
-      uploadUrl: process.env.VUE_APP_BASE_API + '/auth/file/upload',
+      uploadUrl: process.env.VUE_APP_BASE_API + '/business/file/upload',
     }
   },
   computed: {
