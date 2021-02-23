@@ -7,8 +7,7 @@
             <el-col :span="6">
               <el-form-item prop="helpCategory" label="所属分类">
                 <el-select v-model="params.helpCategory" :placeholder="$t('placeholder.select')">
-                  <el-option key="1" label="分类1" :value="1" />
-                  <el-option key="0" label="分类2" :value="0" />
+                  <el-option v-for="(item, i) in classificationList" :key="i" :label="item.text" :value="item.id" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -19,9 +18,8 @@
             </el-col>
             <el-col :span="6">
               <el-form-item prop="helpCategory" label="启用状态">
-                <el-select v-model="params.enableFlag" :placeholder="$t('placeholder.select')">
-                  <el-option key="1" label="状态1" :value="1" />
-                  <el-option key="0" label="状态2" :value="0" />
+                <el-select v-model="params.enabled" :placeholder="$t('placeholder.select')">
+                  <el-option v-for="(item, i) in statusList" :key="i" :label="item.label" :value="item.value" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -33,7 +31,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-button type="primary" icon="el-icon-plus" @click="addOrEdit('add')">{{ $t('btn.add') }}</el-button>
+    <el-button type="primary" icon="el-icon-plus" @click="addOrEdit(null, '新增')">{{ $t('btn.add') }}</el-button>
     <!-- 查询结果列表 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" style="width: 100%" border fit highlight-current-row>
       <el-table-column align="center" label="序号" width="70">
@@ -43,7 +41,7 @@
       </el-table-column>
       <el-table-column label="所属分类" min-width="60" align="center">
         <template slot-scope="scope">
-          {{ scope.row.helpCategory }}
+          {{ scope.row.helpCategory | filterClassification }}
         </template>
       </el-table-column>
       <el-table-column label="标题" min-width="140" align="center">
@@ -58,17 +56,16 @@
       </el-table-column>
       <el-table-column label="启用状态" min-width="40" align="center">
         <template slot-scope="scope">
-          {{ scope.row.status }}
-          {{ scope.row.enableFlag }}
+          {{ scope.row.enabled | filterStatus }}
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="140" align="center">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="查看" placement="top">
-            <el-button :circle="true" :plain="true" type="success" icon="el-icon-view" size="mini" @click="handleClickAddOrEdit(scope.row.helpId, 'find')" />
+            <el-button :circle="true" :plain="true" type="success" icon="el-icon-view" size="mini" @click="addOrEdit(scope.row, '查看')" />
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-            <el-button :circle="true" :plain="true" type="primary" icon="el-icon-edit" size="mini" @click="handleClickAddOrEdit(scope.row.helpId)" />
+            <el-button :circle="true" :plain="true" type="primary" icon="el-icon-edit" size="mini" @click="addOrEdit(scope.row, '编辑')" />
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="删除" placement="top">
             <el-button :circle="true" :plain="true" type="danger" icon="el-icon-delete" size="mini" @click="handleClickDelete(scope.row)" />
@@ -79,28 +76,35 @@
     <div class="block">
       <el-pagination :total="totalCount" :page-sizes="[10, 20, 50, 100]" :page-size="params.pageSize" :current-page="params.currentPage" layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
-    <el-dialog title="表单" center width="80%" :visible.sync="dialogFormVisible">
-      <!--<add-edit-->
-      <!--:form="formData"-->
-      <!--:clickType='clickType'-->
-      <!--@cancel='cancel'-->
-      <!--ref="dlg"/>-->
-      <add-edit :form="formData" />
+    <el-dialog v-if="dialogFormVisible" :title="clickType" center width="80%" :visible.sync="dialogFormVisible">
+      <add-edit ref="dlg" :help-form="formData" :click-type="clickType" :classification-list="classificationList" />
     </el-dialog>
   </div>
 </template>
 
 <script>
-// import { queryByPage, deleteOne } from '@/api/system/helpCenter'
-// import CodeSelect from '@/components/codeSelect'
-// import {getStorageItem,setStorageItem} from '@/utils/storage.js'
+import { gaeaHelpPageList, gaeaHelpDelect, dataDictionary } from '@/api/system-set'
 import AddEdit from './component/index'
+var typeData
 export default {
   components: {
     AddEdit,
   },
+  filters: {
+    filterStatus(val) {
+      return val === 1 ? '启用' : '禁用'
+    },
+    filterClassification(val) {
+      for (var i = 0; i < typeData.classificationList.length; i++) {
+        if (typeData.classificationList[i].id == val) {
+          return typeData.classificationList[i].text
+        }
+      }
+    },
+  },
   data() {
     return {
+      clickType: '',
       formData: {},
       // 弹框默认隐藏
       dialogFormVisible: false,
@@ -108,9 +112,30 @@ export default {
         currentPage: 1,
         pageSize: 10,
         helpTitle: '',
-        enableFlag: '',
+        enabled: null,
         helpCategory: '',
       },
+      // 启用状态数据
+      statusList: [
+        {
+          label: '启用',
+          value: 1,
+        },
+        {
+          label: '禁用',
+          value: 0,
+        },
+      ],
+      // 所属分类数据
+      classificationList: [
+        // {extend: "", label: "登录注册", labelEng: "login_register", value: "login_register"},
+        // {extend: "", label: "权限角色", labelEng: "auth_role", value: "auth_role"},
+        // {extend: "", label: "字典管理", labelEng: "dict_manager", value: "dict_manager"},
+        // {extend: "", label: "系统设置", labelEng: "system_setting", value: "system_setting"},
+        // {extend: "", label: "消息推送", labelEng: "message_push", value: "message_push"},
+        // {extend: "", label: "设备管理", labelEng: "device_manager", value: "device_manager"},
+        // {extend: "", label: "监控计算", labelEng: "item_calculate", value: "item_calculate"}
+      ],
       list: [],
       totalCount: 0,
       totalPage: 0,
@@ -121,35 +146,48 @@ export default {
           { required: false, message: '请输入标题', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
         ],
-        enableFlag: [{ required: false, message: '请选择启用状态', trigger: 'change' }],
+        enabled: [{ required: false, message: '请选择启用状态', trigger: 'change' }],
       },
     }
   },
   watch: {
     dialogFormVisible(val) {
       if (!val) {
-        // this.formData={}
-        // this.$refs.dlg.$refs.form.resetFields()
+        this.formData = {}
+        this.$refs.dlg.$refs.helpForm.resetFields()
       }
     },
   },
-  // created() {
-  //   this.queryByPage()
-  // },
+  // 在生命周期 beforeCreate里面改变this指向
+  beforeCreate: function() {
+    typeData = this
+  },
   mounted() {
-    // if(getStorageItem('helpCenterDetail')) {
-    //   this.params = getStorageItem('helpCenterDetail')
-    // }
     this.queryByPage()
   },
+  created() {
+    this.getDictionary()
+  },
   methods: {
-    addOrEdit() {
+    colseDialog(type) {
+      this.dialogFormVisible = false
+      this.clickType = ''
+      if (type != 'no') {
+        this.queryByPage()
+      }
+    },
+    addOrEdit(data, type) {
       this.dialogFormVisible = true
+      this.clickType = type
+      if (type == '查看' || type == '编辑') {
+        this.formData = JSON.parse(JSON.stringify(data))
+      }
     },
     // 查询
     search(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.queryByPage()
           console.log('submit!')
         } else {
           console.log('error submit!!')
@@ -160,50 +198,19 @@ export default {
     // 重置
     reset(formName) {
       this.$refs[formName].resetFields()
-      this.helpCategory = ''
-      this.helpTitle = ''
-      this.enableFlag = ''
-      // for(var key in this.params){
-      //   this.params[key]=""
-      // }
+      this.params.helpCategory = ''
+      this.params.helpTitle = ''
+      this.params.enabled = null
+      this.queryByPage()
     },
-    queryByPage() {
+    async queryByPage() {
       this.listLoading = true
-      // queryByPage(this.params).then(response => {
-      const response = {
-        repCode: '0000',
-        repMsg: null,
-        repData: {
-          totalPage: 2,
-          pageSize: 10,
-          list: [
-            {
-              helpId: 25,
-              helpCategory: 'login_register',
-              helpTitle: '1222',
-              helpContent: '<figure class="image"><img src="http://haitongnla.test.anji-plus.com/auth-service/file/download/b9b01955-d20e-434c-ac90-2c25597217a2"></figure><figure class="image"><img src="http://haitongnla.test.anji-plus.com/auth-service/file/download/f8f4a4e4-c156-45c2-b350-2e0c1afe87d4"></figure><p>&nbsp;</p><figure class="image"><img src="http://haitongnla.test.anji-plus.com/auth-service/file/download/3bdda098-8ba6-4a0b-bf2f-9e56550a872e"></figure><p>&nbsp;</p>',
-              enableFlag: 1,
-              sort: 1,
-              remark: null,
-              createdBy: 'aimee',
-              createdTime: '2020-12-22T11:02:40',
-              updatedBy: 'aimee',
-              updatedTime: '2020-12-22T11:05:53',
-            },
-          ],
-          currentPage: 1,
-          totalCount: 11,
-        },
-        success: true,
-        error: false,
-      }
-      if (response.repCode == '0000') {
-        this.list = response.repData.list
-        this.totalCount = response.repData.totalCount
-        this.totalPage = response.repData.totalPage
-      }
+      const res = await gaeaHelpPageList(this.params)
+      if (res.code != '200') return
+      this.list = res.data.records
+      this.totalCount = res.data.total
+      this.totalPage = res.data.pages
       this.listLoading = false
-      // })
     },
     handleSizeChange(val) {
       this.params.pageSize = val
@@ -213,13 +220,6 @@ export default {
       this.params.currentPage = val
       this.queryByPage()
     },
-    // 新增 or 编辑
-    handleClickAddOrEdit(id, val = '') {
-      if (id) {
-        // setStorageItem('helpCenterDetail', this.params)
-      }
-      this.$router.push({ path: '/system/helpCenter/edit', query: { id: id, val: val }})
-    },
     // 删除
     handleClickDelete(row) {
       this.$confirm('此操作将永久删除, 是否继续?', '提示', {
@@ -227,13 +227,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
       })
-        .then(() => {
-          // deleteOne({ helpId: row.helpId }).then((response) => {
-          //   if (response.repCode == '0000') {
-          //     this.$message({ message: '删除成功', type: 'success', duration: 1500 })
-          //     this.search()
-          //   }
-          // })
+        .then(async() => {
+          const { code } = await gaeaHelpDelect(row.id)
+          if (code != '200') return
+          this.queryByPage()
         })
         .catch(() => {
           this.$message({
@@ -241,6 +238,11 @@ export default {
             message: '已取消删除',
           })
         })
+    },
+    async getDictionary() {
+      const res = await dataDictionary('FILE_STATUS')
+      if (res.code != '200') return
+      this.classificationList = res.data
     },
   },
 }

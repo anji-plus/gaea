@@ -55,27 +55,27 @@
       <el-row v-if="clickType != 'add'">
         <el-col :span="12">
           <el-form-item label="创建人">
-            <el-input :disabled="true" :value="form.createdBy" />
+            <el-input :disabled="true" :value="form.createBy" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="创建时间">
-            <el-input :disabled="true" :value="form.createdTime" />
+            <el-input :disabled="true" :value="form.createTime" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="修改人">
-            <el-input :disabled="true" :value="form.updatedBy" />
+            <el-input :disabled="true" :value="form.updateBy" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="修改时间">
-            <el-input :disabled="true" :value="form.updatedTime" />
+            <el-input :disabled="true" :value="form.updateTime" />
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <div slot="footer" style="text-align: center">
+    <div v-if="clickType != 'see'" slot="footer" style="text-align: center">
       <el-button type="primary" plain @click="onSubmit">{{ $t('btn.confirm') }}</el-button>
       <el-button type="danger" plain @click="cancel">{{ $t('btn.close') }}</el-button>
     </div>
@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import { gaeaDictAdd, gaeaDictEdit } from '@/api/system-set'
 export default {
   props: {
     clickType: {
@@ -106,10 +107,10 @@ export default {
           deleteFlag: null,
           sort: null,
           remark: '',
-          createdBy: '',
-          createdTime: null,
-          updatedBy: '',
-          updatedTime: null,
+          createBy: '',
+          createTime: null,
+          updateBy: '',
+          updateTime: null,
         }
       },
     },
@@ -170,7 +171,21 @@ export default {
       // })
     },
     onSubmit() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(async(valid) => {
+        if (valid) {
+          console.log('submit!')
+          let res
+          if (this.clickType == 'add') {
+            res = await gaeaDictAdd(this.form)
+          } else {
+            res = await gaeaDictEdit(this.form)
+          }
+          if (res.code != '200') return
+          this.$parent.$parent.saveSucess()
+        } else {
+          console.log('error submit!!')
+          return false
+        }
         // if (!valid) {
         //   return
         // }
