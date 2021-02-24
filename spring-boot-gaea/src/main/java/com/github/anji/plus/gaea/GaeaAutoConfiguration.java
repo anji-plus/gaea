@@ -5,16 +5,22 @@ import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.github.anji.plus.gaea.cache.CacheHelper;
 import com.github.anji.plus.gaea.config.MybatisPlusMetaObjectHandler;
+import com.github.anji.plus.gaea.constant.GaeaConstant;
 import com.github.anji.plus.gaea.curd.mapper.injected.CustomSqlInjector;
 import com.github.anji.plus.gaea.event.listener.ExceptionApplicationListener;
 import com.github.anji.plus.gaea.event.listener.LoginApplicationListener;
+import com.github.anji.plus.gaea.holder.UserContentHolder;
+import com.github.anji.plus.gaea.holder.UserContext;
 import com.github.anji.plus.gaea.i18.MessageLocaleResolver;
 import com.github.anji.plus.gaea.i18.MessageSourceHolder;
 import com.github.anji.plus.gaea.intercept.AccessKeyInterceptor;
 import com.github.anji.plus.gaea.utils.ApplicationContextUtils;
+import com.github.anji.plus.gaea.utils.JwtUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +28,8 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 盖亚自动装配
@@ -90,7 +98,34 @@ public class GaeaAutoConfiguration {
             InterceptorRegistration interceptorRegistration = registry.addInterceptor(new AccessKeyInterceptor());
             interceptorRegistration.addPathPatterns("/**");
         }
+    }
 
+    /**
+     * 解析token用户名
+     * @return
+     */
+    @Bean
+    public FilterRegistrationBean registrationBean() {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        registrationBean.setFilter((request, response, chain) -> {
+
+            if (request instanceof HttpServletRequest) {
+                HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+                String authorization = httpServletRequest.getHeader(GaeaConstant.Authorization);
+                if (StringUtils.isNotBlank(authorization)) {
+                    String username = JwtUtils.getUsername(authorization);
+                    UserContext userContext = new UserContext();
+                    userContext.setUsername(username);
+                    //放入上下文
+                    UserContentHolder.setContext(userContext);
+                }
+            }
+            chain.doFilter(request, response);
+        });
+        registrationBean.addUrlPatterns("/*");
+        registrationBean.setName("LogCostFilter");
+        registrationBean.setOrder(1);
+        return registrationBean;
     }
 
     /**

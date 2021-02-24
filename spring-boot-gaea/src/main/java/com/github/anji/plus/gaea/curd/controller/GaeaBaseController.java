@@ -30,7 +30,7 @@ import static com.github.anji.plus.gaea.utils.GaeaUtils.toJSONString;
 /**
  * 基础controller
  *
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBaseEntity, D extends GaeaBaseDTO> {

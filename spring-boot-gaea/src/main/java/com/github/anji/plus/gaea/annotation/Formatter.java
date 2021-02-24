@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * 翻译
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 

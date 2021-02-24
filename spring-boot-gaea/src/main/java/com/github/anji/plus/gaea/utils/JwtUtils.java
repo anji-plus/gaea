@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * JWT工具类
- * @author lirui
+ * @author lr
  * @since 2021-01-09
  */
 public abstract class JwtUtils {
@@ -28,7 +28,7 @@ public abstract class JwtUtils {
      */
     public static String createToken(String username) {
         String token = JWT.create()
-                .withExpiresAt(DateUtils.toDate(LocalDateTime.now().plusHours(4)))
+                .withExpiresAt(GaeaDateUtils.toDate(LocalDateTime.now().plusHours(4)))
                 .withClaim("username", username)
                 .sign(Algorithm.HMAC256(SECRET));
         return token;
@@ -44,7 +44,7 @@ public abstract class JwtUtils {
      */
     public static String createToken(String username, List<String> roles, List<String> authorities, List<String> menus) {
         String token = JWT.create()
-                .withExpiresAt(DateUtils.toDate(LocalDateTime.now().plusHours(4)))
+                .withExpiresAt(GaeaDateUtils.toDate(LocalDateTime.now().plusHours(4)))
                 .withClaim("username", username)
                 .withClaim("role", roles)
                 .withClaim("authorities", authorities)

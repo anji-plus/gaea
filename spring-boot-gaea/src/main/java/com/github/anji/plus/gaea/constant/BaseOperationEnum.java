@@ -2,7 +2,7 @@ package com.github.anji.plus.gaea.constant;
 
 /**
  * 操作枚举
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 public enum BaseOperationEnum {
@@ -10,27 +10,17 @@ public enum BaseOperationEnum {
     /**
      * 插入操作枚举
      */
-    INSERT(1),
+    INSERT,
     /**
      * 更新操作枚举
      */
-    UPDATE(2),
+    UPDATE,
     /**
      * 删除操作枚举
      */
-    DELETE(3),
+    DELETE,
     /**
      * 批量删除操作枚举
      */
-    DELETE_BATCH(4);
-
-
-    private int value;
-
-    BaseOperationEnum(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }}
+    DELETE_BATCH
+}

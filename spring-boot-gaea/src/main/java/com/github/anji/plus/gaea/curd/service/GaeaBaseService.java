@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import com.github.anji.plus.gaea.annotation.ParamIgnore;
 import com.github.anji.plus.gaea.annotation.UnionUnique;
 import com.github.anji.plus.gaea.annotation.UnionUniqueCode;
 import com.github.anji.plus.gaea.annotation.Unique;
@@ -44,7 +45,7 @@ import static com.github.anji.plus.gaea.code.ResponseCode.*;
 /**
  * 基础service
  *
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 public interface GaeaBaseService<P extends PageParam, T extends GaeaBaseEntity> {
@@ -170,7 +171,7 @@ public interface GaeaBaseService<P extends PageParam, T extends GaeaBaseEntity> 
         //条件的值
         Field[] fields = param.getClass().getDeclaredFields();
 
-        Arrays.stream(fields).forEach(field -> {
+        Arrays.stream(fields).filter(field -> !field.isAnnotationPresent(ParamIgnore.class)).forEach(field -> {
             try {
                 boolean flag;
                 field.setAccessible(true);
@@ -212,9 +213,10 @@ public interface GaeaBaseService<P extends PageParam, T extends GaeaBaseEntity> 
                             queryWrapper.lt(column, field.get(param));
                             break;
                         case BWT:
-                            String[] split = column.split(GaeaConstant.SPLIT);
-                            queryWrapper.lt(split[0], field.get(param))
-                                    .gt(split[1], field.get(param));
+                            String[] split = field.get(param).toString().split(GaeaConstant.SPLIT);
+                            if (split.length == 2) {
+                                queryWrapper.between(column, split[0], split[1]);
+                            }
                             break;
                         default:
                             queryWrapper.eq(column, field.get(param));

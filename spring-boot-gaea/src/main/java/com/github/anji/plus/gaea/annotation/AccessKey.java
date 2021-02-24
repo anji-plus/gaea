@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * 验证数据的唯一性
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 

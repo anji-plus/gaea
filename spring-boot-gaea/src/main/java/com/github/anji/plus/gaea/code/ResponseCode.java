@@ -1,7 +1,7 @@
 package com.github.anji.plus.gaea.code;
 
 /**
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 public final class ResponseCode {
