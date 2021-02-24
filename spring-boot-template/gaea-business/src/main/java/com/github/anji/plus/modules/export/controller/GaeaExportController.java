@@ -1,5 +1,6 @@
 package com.github.anji.plus.modules.export.controller;
 
+import com.anjiplus.gaea.export.vo.ExportOperation;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
@@ -23,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2021-02-07 17:12:31
  */
 @RestController
-@RequestMapping("/gaeaExport")
-@Api(value = "/gaeaExport", tags = "导出中心")
+@RequestMapping("/export")
+@Api(value = "/export", tags = "导出中心")
 public class GaeaExportController extends GaeaBaseController<GaeaExportParam, GaeaExport, GaeaExportDTO> {
     @Autowired
     private GaeaExportService gaeaExportService;
@@ -45,8 +46,13 @@ public class GaeaExportController extends GaeaBaseController<GaeaExportParam, Ga
     }
 
     @PostMapping("/queryAdvanceExport")
-    public ResponseBean queryExportInfo(@RequestBody GaeaExportQueryParam param){
+    public ResponseBean queryExportInfo(@RequestBody GaeaExportQueryParam param) {
         return responseSuccessWithData(gaeaExportService.getExportListPage(param));
+    }
+
+    @PostMapping("/saveExportLog")
+    public Boolean export(@RequestBody ExportOperation exportOperation) {
+        return gaeaExportService.saveExportLog(exportOperation);
     }
 
 }

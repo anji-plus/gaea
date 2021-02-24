@@ -16,16 +16,4 @@ public class GaeaExportProperties {
      */
     public final static String COMPONENT_NAME = "export";
 
-    /**
-     * 是否发布事件
-     */
-    private boolean publishEvent = true;
-
-    public boolean isPublishEvent() {
-        return publishEvent;
-    }
-
-    public void setPublishEvent(boolean publishEvent) {
-        this.publishEvent = publishEvent;
-    }
 }

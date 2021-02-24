@@ -1,4 +1,4 @@
-package com.anjiplus.gaea.export.config;
+package com.anjiplus.gaea.export;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
@@ -38,6 +38,7 @@ import com.alibaba.excel.converters.string.StringErrorConverter;
 import com.alibaba.excel.converters.string.StringNumberConverter;
 import com.alibaba.excel.converters.string.StringStringConverter;
 import com.alibaba.excel.converters.url.UrlImageConverter;
+import com.anjiplus.gaea.export.config.GaeaExportProperties;
 import com.anjiplus.gaea.export.utils.LocalDateTimeConverter;
 import com.github.anji.plus.gaea.annotation.condition.ConditionalOnGaeaComponent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

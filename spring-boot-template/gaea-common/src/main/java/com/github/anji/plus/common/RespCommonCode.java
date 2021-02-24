@@ -24,5 +24,6 @@ public class RespCommonCode {
     public static final String FILE_SUFFIX_UNSUPPORTED="2002";
     public static final String FILE_UPLOAD_ERROR="2003";
     public static final String FILE_ONT_EXSIT="2004";
+    public static final String LIST_IS_EMPTY="2005";
 
 }

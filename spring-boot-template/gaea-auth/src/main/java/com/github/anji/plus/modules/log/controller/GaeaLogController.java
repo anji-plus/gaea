@@ -48,4 +48,8 @@ public class GaeaLogController extends GaeaBaseController<GaeaLogParam, GaeaLog,
         gaeaLogService.saveCallbackInfo(logOperation);
         return responseSuccess();
     }
+    @RequestMapping("/exportLogToFile")
+    public ResponseBean exportLogToFile(@RequestBody GaeaLogParam gaeaLogParam){
+        return responseSuccessWithData(gaeaLogService.exportLogToFile(gaeaLogParam));
+    }
 }

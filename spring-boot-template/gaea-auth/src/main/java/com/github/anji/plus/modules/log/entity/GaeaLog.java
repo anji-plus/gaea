@@ -29,11 +29,11 @@ public class GaeaLog extends GaeaBaseEntity implements Serializable {
     /**
      * 请求参数
      */
-    private Object requestParam;
+    private String requestParam;
     /**
      * 响应参数
      */
-    private Object responseParam;
+    private String responseParam;
     /**
      * 来源IP
      */
@@ -71,7 +71,7 @@ public class GaeaLog extends GaeaBaseEntity implements Serializable {
         return requestParam;
     }
 
-    public void setRequestParam(Object requestParam) {
+    public void setRequestParam(String requestParam) {
         this.requestParam = requestParam;
     }
 
@@ -79,9 +79,6 @@ public class GaeaLog extends GaeaBaseEntity implements Serializable {
         return responseParam;
     }
 
-    public void setResponseParam(Object responseParam) {
-        this.responseParam = responseParam;
-    }
 
     public String getSourceIp() {
         return sourceIp;

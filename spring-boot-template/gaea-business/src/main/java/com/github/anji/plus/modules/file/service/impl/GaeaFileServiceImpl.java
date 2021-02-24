@@ -85,7 +85,7 @@ public class GaeaFileServiceImpl implements GaeaFileService {
             String fileId = UUID.randomUUID().toString();
             String newFileName = fileId + suffixName;
             // 本地文件保存路径
-            String filePath = dictPath + File.separator + newFileName;
+            String filePath = dictPath  + newFileName;
             String urlPath = fileDownloadPath + File.separator + fileId;
 
             GaeaFile gaeaFile = new GaeaFile();

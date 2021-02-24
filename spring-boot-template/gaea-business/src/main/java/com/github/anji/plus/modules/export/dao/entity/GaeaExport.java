@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.anji.plus.gaea.curd.entity.GaeaBaseEntity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -25,23 +26,20 @@ public class GaeaExport extends GaeaBaseEntity implements Serializable {
     /**
      * 导出前，查询的数据开始时间
      */
-    private Date resultStartTime;
+    private LocalDateTime resultStartTime;
     /**
      * 导出前，查询的数据结束时间
      */
-    private Date resultEndTime;
+    private LocalDateTime resultEndTime;
     /**
      * 导出查询结果，数据总条数
      */
     private Long resultSize;
-    /**
-     * 文件导出触发时间
-     */
-    private Date fileCreateTime;
-    /**
-     * 文件生成完成时间
-     */
-    private Date fileFinishTime;
+    /** 文件导出触发时间 */
+    private LocalDateTime fileCreateTime;
+
+    /** 文件生成完成时间 */
+    private LocalDateTime fileFinishTime;
     /**
      * 文件状态，creating生成中，success生成成功,failed生成失败
      */
@@ -67,20 +65,20 @@ public class GaeaExport extends GaeaBaseEntity implements Serializable {
         this.fileTitle = fileTitle;
     }
 
-    public Date getResultStartTime() {
+    public LocalDateTime getResultStartTime() {
         return resultStartTime;
     }
 
-    public void setResultStartTime(Date resultStartTime) {
-        this.resultStartTime = resultStartTime;
-    }
-
-    public Date getResultEndTime() {
+    public LocalDateTime getResultEndTime() {
         return resultEndTime;
     }
 
-    public void setResultEndTime(Date resultEndTime) {
-        this.resultEndTime = resultEndTime;
+    public LocalDateTime getFileFinishTime() {
+        return fileFinishTime;
+    }
+
+    public void setFileFinishTime(LocalDateTime fileFinishTime) {
+        this.fileFinishTime = fileFinishTime;
     }
 
     public Long getResultSize() {
@@ -91,20 +89,20 @@ public class GaeaExport extends GaeaBaseEntity implements Serializable {
         this.resultSize = resultSize;
     }
 
-    public Date getFileCreateTime() {
+    public void setResultStartTime(LocalDateTime resultStartTime) {
+        this.resultStartTime = resultStartTime;
+    }
+
+    public void setResultEndTime(LocalDateTime resultEndTime) {
+        this.resultEndTime = resultEndTime;
+    }
+
+    public LocalDateTime getFileCreateTime() {
         return fileCreateTime;
     }
 
-    public void setFileCreateTime(Date fileCreateTime) {
+    public void setFileCreateTime(LocalDateTime fileCreateTime) {
         this.fileCreateTime = fileCreateTime;
-    }
-
-    public Date getFileFinishTime() {
-        return fileFinishTime;
-    }
-
-    public void setFileFinishTime(Date fileFinishTime) {
-        this.fileFinishTime = fileFinishTime;
     }
 
     public String getFileStatus() {

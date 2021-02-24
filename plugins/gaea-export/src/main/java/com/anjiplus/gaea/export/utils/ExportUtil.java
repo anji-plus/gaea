@@ -17,13 +17,11 @@ import java.util.UUID;
  * @author
  */
 public class ExportUtil {
-
     private static Logger logger = LoggerFactory.getLogger(ExportUtil.class);
 
     private static ExportUtil exportUtil=null;
 
     private ExportUtil(){
-
     }
 
     public static synchronized ExportUtil getInstance(){
@@ -71,7 +69,7 @@ public class ExportUtil {
     }
 
     /**
-     * asyExcel方式 导出格式为文件流
+     * easyExcel方式 导出格式为文件流
      *
      * @param exportOperation 参数
      * @param clazz           excel中list中的类型
@@ -117,9 +115,10 @@ public class ExportUtil {
             exportOperation.setFileStatus(FileStatusEnum.FAILED.getCodeValue());
             exportOperation.setFileFinishTime(LocalDateTime.now());
         } finally {
-            //发布事件
             logger.info("------>导出文件发布事件<-----");
+            exportOperation.setList(null);
             ApplicationContextUtils.publishEvent(new GaeaExportApplicationEvent(ExportUtil.class, exportOperation));
+
         }
     }
 
