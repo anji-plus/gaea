@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 登出成功
- * @author lirui
+ * @author lr
  * @since 2021-01-27
  */
 public class GaeaLogoutSuccessHandler implements LogoutSuccessHandler {

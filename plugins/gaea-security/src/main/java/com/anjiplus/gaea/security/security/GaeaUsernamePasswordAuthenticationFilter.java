@@ -36,7 +36,7 @@ import java.io.IOException;
 /**
  * 重写UsernamePasswordAuthenticationFilter，增加验证码并对用户名密码进行解密
  * 所有信息从请求体中取
- * @author lirui
+ * @author lr
  * @since 2021-01-27
  */
 public class GaeaUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {

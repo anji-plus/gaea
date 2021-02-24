@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  * 认证不通过
- * @author lirui
+ * @author lr
  * @since 2021-01-26
  */
 public class GaeaAuthenticationEntryPoint implements AuthenticationEntryPoint {

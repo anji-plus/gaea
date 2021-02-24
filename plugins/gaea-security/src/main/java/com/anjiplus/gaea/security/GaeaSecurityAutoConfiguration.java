@@ -17,7 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 /**
  * 盖亚自动装配类
  * @AutoConfigurationPackage 添加当前类所在包加入到AutoConfigurationPackages，保证该包及其子包下的实体类被扫描到
- * @author lirui
+ * @author lr
  * @since 2021-01-11
  */
 

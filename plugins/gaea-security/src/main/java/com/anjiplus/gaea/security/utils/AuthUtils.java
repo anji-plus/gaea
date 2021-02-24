@@ -10,7 +10,7 @@ import java.io.IOException;
 
 /**
  * 用户工具类
- * @author lirui
+ * @author lr
  * @since 2021-01-27
  */
 public class AuthUtils {

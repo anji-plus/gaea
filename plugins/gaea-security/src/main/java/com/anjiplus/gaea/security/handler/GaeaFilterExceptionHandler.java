@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 过滤器异常处理
- * @author lirui
+ * @author lr
  * @since 2021-01-23
  */
 public class GaeaFilterExceptionHandler {

@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 登录成功
  *
- * @author lirui
+ * @author lr
  * @since 2021-01-27
  */
 public class GaeaLoginFailureHandler implements AuthenticationFailureHandler {

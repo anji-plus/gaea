@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 /**
  * security 安全配置
  *
- * @author lirui
+ * @author lr
  * @since 2021-01-25
  */
 @Configuration
