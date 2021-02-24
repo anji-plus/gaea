@@ -6,6 +6,7 @@
         <artifactId>spring-boot-template</artifactId>
         <groupId>com.anji-plus</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -31,8 +32,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.anji-plus</groupId>
-            <artifactId>spring-boot-starter-gaea-push</artifactId>
+            <groupId>com.anji-plus.gaea</groupId>
+            <artifactId>gaea-push</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -49,6 +50,12 @@
             <groupId>com.anjiplus.gaea</groupId>
             <artifactId>gaea-export</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.anji.mirror</groupId>
+            <artifactId>push-service</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

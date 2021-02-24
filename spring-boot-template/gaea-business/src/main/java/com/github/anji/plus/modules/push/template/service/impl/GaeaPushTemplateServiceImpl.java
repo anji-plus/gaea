@@ -1,7 +1,7 @@
 package com.github.anji.plus.modules.push.template.service.impl;
 
-import com.anjiplus.gaea.push.domain.po.TemplatePO;
-import com.anjiplus.gaea.push.utils.TemplateAnalysisUtil;
+import com.anji.mirror.push.domain.po.TemplatePO;
+import com.anji.mirror.push.utils.TemplateAnalysisUtil;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
 import com.github.anji.plus.gaea.utils.GaeaBeanUtils;
