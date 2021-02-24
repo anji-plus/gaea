@@ -14,7 +14,7 @@
                     </li>
                     <li>
                       <label>发送时间：</label>
-                      <div>{{ dateFormat(mailDetails.createdTime) }}</div>
+                      <div>{{ dateFormat(mailDetails.createTime) }}</div>
                     </li>
                     <li>
                       <label>内容：</label>

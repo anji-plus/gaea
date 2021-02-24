@@ -7,8 +7,7 @@
             <el-col :span="6">
               <el-form-item label="推送类型">
                 <el-select v-model="form.templateType" :placeholder="$t('placeholder.select')">
-                  <el-option key="1" label="邮件" :value="1" />
-                  <el-option key="0" label="钉钉" :value="0" />
+                  <el-option v-for="item in pushTypeData" :key="item.id" :label="item.text" :value="item.id" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -26,7 +25,7 @@
         </el-col>
         <el-col :span="5" style="text-align: center">
           <el-button type="primary" @click="queryByPage">{{ $t('btn.query') }}</el-button>
-          <el-button type="danger">{{ $t('btn.reset') }}</el-button>
+          <el-button type="danger" @click="Reset">{{ $t('btn.reset') }}</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -40,15 +39,15 @@
       <el-table-column prop="templateName" label="模板名称" align="left" header-align="center" :show-overflow-tooltip="true" />
       <el-table-column label="推送类型" width="90">
         <template slot-scope="scope">
-          {{ scope.row.templateType }}
+          {{ scope.row.templateType | filterPushType }}
           <!-- {{getDictCode('ALERT_CHANNEL',scope.row.templateType,"labelEng").label}} -->
         </template>
       </el-table-column>
       <el-table-column prop="templateCode" label="模板代码" align="center" width="160" />
       <el-table-column prop="templateParam" label="模板参数" align="center" :show-overflow-tooltip="true" />
-      <el-table-column prop="updatedBy" label="创建者" align="center" width="120" />
-      <el-table-column prop="createdTime" :formatter="dateFormat" align="center" label="创建时间" width="160" />
-      <el-table-column prop="updatedTime" :formatter="dateFormat" align="center" label="修改时间" width="160" />
+      <el-table-column prop="createBy" label="创建者" align="center" width="120" />
+      <el-table-column prop="createTime" :formatter="dateFormat" align="center" label="创建时间" width="160" />
+      <el-table-column prop="updateTime" :formatter="dateFormat" align="center" label="修改时间" width="160" />
 
       <el-table-column label="操作" width="250" align="center">
         <template slot-scope="scope">
@@ -65,7 +64,7 @@
             <el-button type="primary" size="mini" icon="el-icon-edit" :plain="true" circle @click="addOrEditMailDemo(scope.$index, scope.row)" />
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="删除" placement="top">
-            <el-button type="danger" size="mini" icon="el-icon-delete" :plain="true" circle @click="DemoDel(scope.row.templateId)" />
+            <el-button type="danger" size="mini" icon="el-icon-delete" :plain="true" circle @click="DemoDel(scope.row.id)" />
           </el-tooltip>
         </template>
       </el-table-column>
@@ -90,6 +89,8 @@
 </template>
 
 <script>
+import { dataDictionary } from '@/api/system-set'
+import { gaeaPushTemplateDelect, gaeaPushTemplateSearch } from '@/api/push-notify'
 import Modal from './component/Modal.vue'
 import Edit from './component/Modal-edit'
 import Details from './component/Modal-details'
@@ -97,6 +98,8 @@ import SMSTest from './component/Modal-SMSTest'
 // import {queryTemplateList,deleteTemplate,showTemplateById} from '@/api/push/notify';
 // import parseTime from '@/utils/index'
 import moment from 'moment'
+
+var typeData
 // import miment from 'miment'
 // import CodeSelect from '@/components/codeSelect'
 export default {
@@ -107,8 +110,19 @@ export default {
     Details,
     SMSTest,
   },
+  filters: {
+    filterPushType(val) {
+      for (var i = 0; i < typeData.pushTypeData.length; i++) {
+        if (typeData.pushTypeData[i].id == val) {
+          return typeData.pushTypeData[i].text
+        }
+      }
+    },
+  },
   data() {
     return {
+      // 推送类型
+      pushTypeData: [],
       currentPage4: 1,
       total: 0,
       page: 1,
@@ -142,7 +156,14 @@ export default {
       isFind: true,
     }
   },
+  // 在生命周期 beforeCreate里面改变this指向
+  beforeCreate: function() {
+    typeData = this
+  },
   created() {
+    dataDictionary('ALERT_CHANNEL').then((res) => {
+      this.pushTypeData = res.data
+    })
     document.onkeypress = function(e) {
       var keycode = document.all ? event.keyCode : e.which
       if (keycode == 13) {
@@ -162,6 +183,14 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
+    Reset() {
+      this.form.field = ''
+      this.form.templateType = ''
+      this.beginDate = ''
+      this.endDate = ''
+      this.timeSelectedValue = null
+      this.queryByPage()
+    },
     // 列表查询
     queryByPage() {
       if (this.timeSelectedValue != null) {
@@ -171,94 +200,19 @@ export default {
         this.beginDate = ''
         this.endDate = ''
       }
-      // const param = {
-      //   sentTime: this.timeSelectedValue,
-      //   keyword: this.form.field,
-      //   pageSize: this.pageSize,
-      //   currentPage: this.pageNum,
-      //   startTime: this.beginDate,
-      //   endTime: this.endDate,
-      //   // templateType:this.getDictCode('ALERT_CHANNEL' ,this.form.templateType).labelEng
-      // }
-
-      // queryTemplateList(param).then(res=>{
-
-      const res = {
-        repCode: '0000',
-        repMsg: null,
-        repData: {
-          totalPage: 2,
-          pageSize: 10,
-          list: [
-            {
-              templateId: 237,
-              templateName: '案发时发放',
-              templateCode: '按时发发个',
-              templateType: 'mail',
-              template: '<h4>亲爱的#%#user#%#，你好！</h4></br></br></br>{使用关键字大括号}</br>#%#test#%#</br></br>云邮件系统</br>',
-              templateShow: '<h4>亲爱的{user}，你好！</h4></br>\n</br>\n</br>\n {使用关键字大括号}</br> \n {test} </br>\n\n </br> \n\n\n 云邮件系统</br>',
-              templateParam: '{"test":"text","user":"text"}',
-              templateInfo: '{"signNameSelected":"null","aliTemplateCode":"","aliSignName":"","jgSignId":"0","jgTemplateId":"0","sqajSignName":""}',
-              enableFlag: 1,
-              deleteFlag: 0,
-              createdBy: 'aimee',
-              createdTime: '2020-12-10T16:27:37',
-              updatedBy: 'aimee',
-              updatedTime: '2020-12-10T16:27:37',
-              endTime: null,
-              keyword: null,
-              startTime: null,
-              smsTemplateAccount: {
-                sendOrder: null,
-                signNameSelected: 'null',
-                ajSignName: '',
-                jgSignId: 0,
-                jgTemplateId: 0,
-                aliTemplateCode: '',
-                aliSignName: '',
-              },
-            },
-            {
-              templateId: 232,
-              templateName: '网口UP、DOWN',
-              templateCode: 'LINK_UPDOWN',
-              templateType: 'mail',
-              template: '<h3>告警名称：#%#alertname#%#</h3>告警信息</br>#%#alertinfolist#%#告警条数：#%#allalertitem#%#<br/>本邮件由推送系统发送，请勿回复',
-              templateShow: '<h3> 告警名称：{alertName}</h3>\n\n告警信息</br>\n{listbegin : alertInfoList : alertInfo }\n 发生时间: {alertInfo.dateTime}</br>\n 网口位置: {alertInfo.deviceName} {alertInfo.flag}</br>\n 网口状态: {alertInfo.statu}</br>\n{ listend }\n\n告警条数：{allAlertItem}<br/>\n\n本邮件由推送系统发送，请勿回复',
-              templateParam: '{"alertinfolist":{"begin":34,"contentBegin":69,"contentEnd":0,"end":0,"itemParamList":["datetime","devicename","flag","statu"],"itemVar":"alertinfo","listParam":"alertinfolist","listTemplate":"发生时间:#%#alertinfo.datetime#%#</br>网口位置:#%#alertinfo.devicename#%##%#alertinfo.flag#%#</br>网口状态:#%#alertinfo.statu#%#</br>","paramMap":{}},"alertname":"text","allalertitem":"text"}',
-              templateInfo: '{"signNameSelected":"null","jgSignId":"0","jgTemplateId":"0"}',
-              enableFlag: 1,
-              deleteFlag: 0,
-              createdBy: 'admin',
-              createdTime: '2020-12-04T17:08:38',
-              updatedBy: 'admin',
-              updatedTime: '2020-12-07T13:21:39',
-              endTime: null,
-              keyword: null,
-              startTime: null,
-              smsTemplateAccount: {
-                sendOrder: null,
-                signNameSelected: 'null',
-                ajSignName: null,
-                jgSignId: 0,
-                jgTemplateId: 0,
-                aliTemplateCode: null,
-                aliSignName: null,
-              },
-            },
-          ],
-          currentPage: 1,
-          totalCount: 17,
-        },
-        success: true,
-        error: false,
+      const param = {
+        createTime: this.beginDate ? `${this.beginDate},${this.endDate}` : '',
+        templateName: this.form.field,
+        pageSize: this.pageSize,
+        currentPage: this.pageNum,
+        templateType: this.form.templateType,
       }
-      if (res.repCode == '0000') {
-        this.tableData = res.repData.list
-        this.total = res.repData.totalCount
-        this.currentPage4 = res.repData.currentPage
-      }
-      // })
+      gaeaPushTemplateSearch(param).then((res) => {
+        if (res.code != '200') return
+        this.tableData = res.data.records
+        this.total = res.data.total
+        this.currentPage4 = res.data.pages
+      })
     },
     handleSizeChange(val) {
       this.pageSize = val
@@ -284,41 +238,7 @@ export default {
     Preview(val) {
       this.isModalMailDemo = true
       this.isModalTrueMailDemo = true
-      const res = {
-        repCode: '0000',
-        repMsg: null,
-        repData: {
-          templateId: 237,
-          templateName: '案发时发放',
-          templateCode: '按时发发个',
-          templateType: 'mail',
-          template: '<h4>亲爱的#%#user#%#，你好！</h4></br></br></br>{使用关键字大括号}</br>#%#test#%#</br></br>云邮件系统</br>',
-          templateShow: '<h4>亲爱的{user}，你好！</h4></br>\n</br>\n</br>\n {使用关键字大括号}</br> \n {test} </br>\n\n </br> \n\n\n 云邮件系统</br>',
-          templateParam: '{"test":"text","user":"text"}',
-          templateInfo: '{"signNameSelected":"null","aliTemplateCode":"","aliSignName":"","jgSignId":"0","jgTemplateId":"0","sqajSignName":""}',
-          enableFlag: 1,
-          deleteFlag: 0,
-          createdBy: 'aimee',
-          createdTime: '2020-12-10T16:27:37',
-          updatedBy: 'aimee',
-          updatedTime: '2020-12-10T16:27:37',
-          endTime: null,
-          keyword: null,
-          startTime: null,
-          smsTemplateAccount: {
-            sendOrder: null,
-            signNameSelected: 'null',
-            ajSignName: '',
-            jgSignId: 0,
-            jgTemplateId: 0,
-            aliTemplateCode: '',
-            aliSignName: '',
-          },
-        },
-        success: true,
-        error: false,
-      }
-      this.templateDetails = res.repData
+      this.templateDetails = val
       // showTemplateById({templateId:val.templateId}).then(res => {
       //   if (res.repCode == "0000") {
       //     this.templateDetails=res.repData;
@@ -348,7 +268,7 @@ export default {
       this.isModalTrueVisible = true
     },
     // 删除模板
-    DemoDel(val) {
+    DemoDel(id) {
       this.$confirm('此操作将永久删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -359,6 +279,10 @@ export default {
           //   templateType: this.templateDeployType,
           //   templateId: val,
           // }
+          gaeaPushTemplateDelect(id).then((res) => {
+            if (res.code != '200') return
+            this.queryByPage()
+          })
           // deleteTemplate(params).then((response) => {
           //   if (response.repCode == '0000') {
           //     this.$message({ message: '删除成功', type: 'success', duration: 1500 })
@@ -370,13 +294,6 @@ export default {
     },
     Tutorial() {
       this.$router.push({ path: '/push/push/tutorial' })
-    },
-    Reset() {
-      this.form.field = ''
-      this.beginDate = ''
-      this.endDate = ''
-      this.timeSelectedValue = null
-      this.queryByPage()
     },
     testSms(row) {
       this.isTsetSms = true
