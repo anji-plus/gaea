@@ -1,5 +1,6 @@
 package com.github.anji.plus.modules.export.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.anji.plus.gaea.curd.dto.GaeaBaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,11 +29,13 @@ public class GaeaExportDTO extends GaeaBaseDTO {
      * 导出前，查询的数据开始时间
      */
     @ApiModelProperty(value = "导出前，查询的数据开始时间")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date resultStartTime;
     /**
      * 导出前，查询的数据结束时间
      */
     @ApiModelProperty(value = "导出前，查询的数据结束时间")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date resultEndTime;
     /**
      * 导出查询结果，数据总条数
@@ -43,11 +46,13 @@ public class GaeaExportDTO extends GaeaBaseDTO {
      * 文件导出触发时间
      */
     @ApiModelProperty(value = "文件导出触发时间")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date fileCreateTime;
     /**
      * 文件生成完成时间
      */
     @ApiModelProperty(value = "文件生成完成时间")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date fileFinishTime;
     /**
      * 文件状态，creating生成中，success生成成功,failed生成失败

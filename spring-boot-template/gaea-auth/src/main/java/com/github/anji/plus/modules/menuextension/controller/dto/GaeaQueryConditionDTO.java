@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * (GaeaQueryCondition)实体类
  *
- * @author makejava
+ * @author peiyanni
  * @since 2021-02-04 17:16:01
  */
 @ApiModel(value = "")

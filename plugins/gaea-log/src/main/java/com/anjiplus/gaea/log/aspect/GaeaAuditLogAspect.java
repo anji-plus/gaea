@@ -97,14 +97,14 @@ public class GaeaAuditLogAspect {
             operLog.setRequestTime(new Date());
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog);
-            log.info("---盖亚日志组件---解析数据--{}", JSON.toJSONString(operLog));
+            log.info("--gaeaLog:requestData--{}", JSON.toJSONString(operLog));
             restTemplateCallback(operLog,getRequest());
             if (gaeaAuditLogProperties.isPublishEvent()) {
                 ApplicationContextUtils.publishEvent(new AuditLogApplicationEvent(this, operLog));
             }
         } catch (Exception exp) {
             // 记录本地异常日志
-            log.error("==盖亚日志组件异常=={}", e.getMessage());
+            log.error("--gaeaLog:error--{}", e.getMessage());
         }
     }
 
@@ -142,7 +142,7 @@ public class GaeaAuditLogAspect {
                 JSONObject jsonObject = JSONObject.parseObject(params);
                 operLog.setSourceIp(jsonObject.getString("opSourceIP"));
             } catch (Exception e) {
-                log.warn("解析请求json失败", e);
+                log.warn("--gaeaLog:error--", e);
             }
         }else if(HttpMethod.GET.name().equals(requestMethod)){
             Map<String,String[]> paramMap= getRequest().getParameterMap();
@@ -221,16 +221,16 @@ public class GaeaAuditLogAspect {
             return;
         }
         try {
-            log.info("--盖亚日志组件--回调方法--url={}", url);
+            log.info("--gaeaLog:callBack:url-{}--", url);
             HttpHeaders headers_new = new HttpHeaders();
             headers_new.setContentType(MediaType.APPLICATION_JSON);
             headers_new.set("Accept", "application/json;charset=UTF-8");
             headers_new.set("Authorization",request.getHeader("Authorization"));
             HttpEntity entity = new HttpEntity(logOperation, headers_new);
             JSONObject responseBody = restTemplate.postForObject(url, entity, JSONObject.class);
-            log.info("--盖亚日志组件--回调方法返回{}", responseBody);
+            log.info("--gaeaLog:callBack:response-{}", responseBody);
         } catch (Exception e) {
-            log.error("----盖亚日志组件回调出现异常{}------", e.getMessage());
+            log.error("--gaeaLog:callBack:error--", e.getMessage());
         }
     }
 }

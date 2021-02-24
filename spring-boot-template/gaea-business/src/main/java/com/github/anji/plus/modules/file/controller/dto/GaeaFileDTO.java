@@ -12,6 +12,11 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "")
 public class GaeaFileDTO extends GaeaBaseDTO {
+
+    /**
+     * 文件uuid
+     */
+    private String fileId;
     /**
      * 文件在linux中的完整目录，比如/app/dist/export/excel/${fileid}.xlsx
      */
@@ -52,5 +57,11 @@ public class GaeaFileDTO extends GaeaBaseDTO {
         this.fileInstruction = fileInstruction;
     }
 
+    public String getFileId() {
+        return fileId;
+    }
 
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
+    }
 }

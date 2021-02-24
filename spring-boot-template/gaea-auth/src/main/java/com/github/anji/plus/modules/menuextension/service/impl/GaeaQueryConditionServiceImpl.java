@@ -49,7 +49,7 @@ public class GaeaQueryConditionServiceImpl implements GaeaQueryConditionService 
         if (null == obj) {
             LambdaQueryWrapper<GaeaQueryCondition> queryWrapper= Wrappers.lambdaQuery();
             queryWrapper.eq(GaeaQueryCondition::getMenuCode,menuCode)
-                    .and(e->e.eq(GaeaQueryCondition::getTableCode,tableCode))
+                    .and(StringUtils.isNotEmpty(tableCode),e->e.eq(GaeaQueryCondition::getTableCode,tableCode))
                     .and(e->e.eq(GaeaQueryCondition::getIsDisabled, Enabled.NO.getValue()));
             List<GaeaQueryCondition> list=gaeaQueryConditionMapper.selectList(queryWrapper);
             if(CollectionUtils.isNotEmpty(list)){

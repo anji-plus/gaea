@@ -1,5 +1,6 @@
 package com.github.anji.plus.modules.log.controller;
 
+import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.anjiplus.gaea.log.aspect.LogOperation;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
@@ -49,6 +50,7 @@ public class GaeaLogController extends GaeaBaseController<GaeaLogParam, GaeaLog,
         return responseSuccess();
     }
     @RequestMapping("/exportLogToFile")
+    @GaeaAuditLog(pageTitle = "导出")
     public ResponseBean exportLogToFile(@RequestBody GaeaLogParam gaeaLogParam){
         return responseSuccessWithData(gaeaLogService.exportLogToFile(gaeaLogParam));
     }
