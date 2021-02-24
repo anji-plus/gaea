@@ -6,8 +6,7 @@
           <el-col :span="6">
             <el-form-item label="推送类型">
               <el-select v-model="form.templateType" :placeholder="$t('placeholder.select')">
-                <el-option key="1" label="邮件" :value="1" />
-                <el-option key="0" label="钉钉" :value="0" />
+                <el-option v-for="item in pushTypeData" :key="item.id" :label="item.text" :value="item.id" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -45,7 +44,7 @@
       <el-table-column prop="pushTo" :label="mailTo" :show-overflow-tooltip="true" />
       <el-table-column label="推送类型" width="90" align="center">
         <template slot-scope="scope">
-          {{ scope.row.templateType }}
+          {{ scope.row.templateType | filterPushType }}
           <!-- {{getDictCode('ALERT_CHANNEL',scope.row.templateType,"labelEng").label}} -->
         </template>
       </el-table-column>
@@ -74,10 +73,13 @@
 </template>
 
 <script>
+import { gaeaPushHistorySearch } from '@/api/push-notify'
+import { dataDictionary } from '@/api/system-set'
 import Modal from '../template/component/Modal'
 // import {queryPushHistoryByPage, queryPushHistoryById} from '@/api/push/notify';
 import Details from './component/Modal-details.vue'
 import moment from 'moment'
+var typeData
 // import CodeSelect from '@/components/codeSelect'
 export default {
   name: 'History',
@@ -85,8 +87,19 @@ export default {
     Modal,
     Details,
   },
+  filters: {
+    filterPushType(val) {
+      for (var i = 0; i < typeData.pushTypeData.length; i++) {
+        if (typeData.pushTypeData[i].id == val) {
+          return typeData.pushTypeData[i].text
+        }
+      }
+    },
+  },
   data() {
     return {
+      // 推送类型
+      pushTypeData: [],
       currentPage4: 1,
       total: 0,
       page: 1,
@@ -111,12 +124,19 @@ export default {
     }
   },
   created() {
+    dataDictionary('ALERT_CHANNEL').then((res) => {
+      this.pushTypeData = res.data
+    })
     document.onkeypress = function(e) {
       var keycode = document.all ? event.keyCode : e.which
       if (keycode == 13) {
         return false
       }
     }
+  },
+  // 在生命周期 beforeCreate里面改变this指向
+  beforeCreate: function() {
+    typeData = this
   },
   mounted() {
     this.queryByPage()
@@ -141,83 +161,24 @@ export default {
       }
       this.mailTo = '收件人'
       const param = {
-        sentTime: this.timeSelectedValue,
-        keyword: this.form.field,
+        // sentTime: this.timeSelectedValue,
+        sendTime: this.beginDate ? `${this.beginDate},${this.endDate}` : '',
+        // keyword: this.form.field,
+        pushTitle: this.form.field,
         pageSize: this.pageSize,
         currentPage: this.pageNum,
-        startTime: this.beginDate,
-        endTime: this.endDate,
-        // templateType:this.getDictCode('ALERT_CHANNEL' ,this.form.templateType).labelEng
+        // startTime: this.beginDate,
+        // endTime: this.endDate,
+        templateType: this.form.templateType,
       }
-      const res = {
-        repCode: '0000',
-        repMsg: null,
-        repData: {
-          totalPage: 81,
-          pageSize: 10,
-          list: [
-            {
-              pushId: 2664,
-              templateType: 'mail',
-              templateCode: 'power-failed',
-              content:
-                '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Document</title></head><body><h3>告警名称：s5560电源状态</h3>告警信息</br>发生时间:2021-01-07 14:04:29.111</br>电源位置:3号VPC 71.33 视频Power 1</br>电源状态:recovered</br>详情:2013 ServerSwitch %%10DEV/5/POWER_RECOVERED: Power 1 recovered.</br><br/>告警条数：1<br/>本邮件由推送系统发送，请勿回复</body></html>',
-              pushTitle: 's5560电源状态',
-              pushFrom: 'SYSTEM',
-              pushTo: 'gongaisheng@anji-plus.com.dis,raodeming@anji-plus.com.dis',
-              mobiles: null,
-              mailCopy: null,
-              mailBcc: null,
-              operator: '邮箱',
-              sendTime: '2021-01-07T14:05:33',
-              sendStatus: 1,
-              sendResult: 'success',
-              createdBy: null,
-              createdTime: '2021-01-07T14:05:33',
-              updatedBy: null,
-              updatedTime: '2021-01-07T14:05:33',
-              endTime: null,
-              keyword: null,
-              startTime: null,
-            },
-            {
-              pushId: 2663,
-              templateType: 'mail',
-              templateCode: 'fan-failed',
-              content:
-                '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Document</title></head><body><h3>告警名称：s5560风扇状态</h3>告警信息</br>发生时间:2021-01-07 14:04:29.111</br>风扇位置:3号VPC 71.33 视频Fan 1</br>风扇状态:recovered</br>详情:2020-10-18 09:39:41.000 Oct 18 09:39:08 2020 w6sj_2 %%10DEV/4/FAN RECOVERED(l): Fan 1 recovered.</br><br/>告警条数：1<br/>本邮件由推送系统发送，请勿回复</body></html>',
-              pushTitle: 's5560风扇状态',
-              pushFrom: 'SYSTEM',
-              pushTo: 'gongaisheng@anji-plus.com.dis,raodeming@anji-plus.com.dis',
-              mobiles: null,
-              mailCopy: null,
-              mailBcc: null,
-              operator: '邮箱',
-              sendTime: '2021-01-07T14:05:23',
-              sendStatus: 1,
-              sendResult: 'success',
-              createdBy: null,
-              createdTime: '2021-01-07T14:05:23',
-              updatedBy: null,
-              updatedTime: '2021-01-07T14:05:23',
-              endTime: null,
-              keyword: null,
-              startTime: null,
-            },
-          ],
-          currentPage: 1,
-          totalCount: 801,
-        },
-        success: true,
-        error: false,
-      }
-      // queryPushHistoryByPage(param).then(res=>{
-      if (res.repCode == '0000') {
-        this.tableData = res.repData.list
-        this.total = res.repData.totalCount
-        this.currentPage4 = res.repData.currentPage
-      }
-      // })
+      this.listLoading = true
+      gaeaPushHistorySearch(param).then((res) => {
+        if (res.code != '200') return
+        this.tableData = res.data.records
+        this.total = res.data.total
+        this.currentPage4 = res.data.pages
+      })
+      this.listLoading = false
     },
     Search() {
       this.queryByPage()
@@ -241,9 +202,8 @@ export default {
       console.log(val)
       this.temolateType = val.templateType
       this.isModalEmailInfo = true
-      const param = {
-        pushId: val.pushId,
-      }
+      this.mailDetails = val
+      return
       const res = {
         repCode: '0000',
         repMsg: null,
@@ -283,6 +243,7 @@ export default {
 
     Reset() {
       this.form.field = ''
+      this.form.templateType = ''
       this.beginDate = ''
       this.endDate = ''
       this.timeSelectedValue = null

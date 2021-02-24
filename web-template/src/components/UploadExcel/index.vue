@@ -45,7 +45,7 @@
 
 <script>
 import { getToken } from '@/utils/auth'
-import * as fileApi from '@/api/file-api'
+// import * as fileApi from '@/api/file-api'
 export default {
   props: {
     importApi: {
@@ -66,7 +66,7 @@ export default {
   },
   data() {
     return {
-      fileApi,
+      fileApi: {},
       dialogVisible: false,
       authHeader: {
         Authorization: 'Bearer ' + getToken(),
@@ -107,7 +107,7 @@ export default {
       this.$refs.upload.submit() // 提交按钮
     },
     download() {
-      window.open(this.fileApi[this.exportApi])
+      // window.open(this.fileApi[this.exportApi])
     },
     success(response) {
       if (response.code != '2000') {

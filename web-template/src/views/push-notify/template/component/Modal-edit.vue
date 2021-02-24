@@ -15,13 +15,13 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :xs="24" :sm="24" :md="1" :lg="1" :xl="1"> &nbsp; </el-col>
+              <el-col :xs="24" :sm="24" :md="1" :lg="1" :xl="1"> &nbsp;</el-col>
               <el-col :xs="20" :sm="10" :md="10" :lg="10" :xl="10">
                 <el-form-item label="模板名称" prop="templateName">
                   <el-input id="templateName" v-model="form1.templateName" />
                 </el-form-item>
               </el-col>
-              <el-col :xs="24" :sm="24" :md="1" :lg="1" :xl="1"> &nbsp; </el-col>
+              <el-col :xs="24" :sm="24" :md="1" :lg="1" :xl="1"> &nbsp;</el-col>
               <el-col :xs="20" :sm="10" :md="10" :lg="10" :xl="10">
                 <el-form-item label="模板代码" prop="templateCode">
                   <el-input id="templateCode" v-model="form1.templateCode" :disabled="disabled" />
@@ -145,6 +145,7 @@
               <el-col v-if="proData != null" :xs="20" :sm="10" :md="10" :lg="10" :xl="10">
                 <el-form ref="form" label-position="right" :model="form2" :rules="rules2" label-width="100px">
                   <el-row :gutter="20">
+                    {{ form2 }}
                     <el-col v-if="modalTemplateType == 'mail'" :span="24">
                       <el-form-item label="标题" prop="subject">
                         <el-input id="title" v-model="form2.subject" placeholder="邮件测试" />
@@ -177,6 +178,7 @@
   </div>
 </template>
 <script>
+import { gaeaPushTemplateAdd, gaeaPushTemplateEdit, gaeaPushTemplatePreview, gaeaPushTemplateTestSendPush } from '@/api/push-notify'
 // import {preview,saveTemplate,updateTemplate,showTemplateById,testSendMail} from "@/api/push/notify"
 import htmlEdit from './htmlEdit'
 // import CodeSelect from '@/components/codeSelect'
@@ -200,7 +202,7 @@ export default {
         template: '',
         newTemplateType: '',
         templateCode: '',
-        templateId: '',
+        id: '',
         aliSignName: '',
         aliTemplateCode: '',
         jgSignId: '',
@@ -302,84 +304,46 @@ export default {
       })
     },
     mailDemoInformation(val) {
-      console.log(11, val)
-
+      console.log(2222, val)
       if (val != null) {
         this.disabled = true
         this.form1.newTemplateType = val.templateType
         this.modalTemplateType = val.templateType
-        this.form1.templateId = val.templateId
+        this.form1.id = val.id
         if (val !== undefined) {
           this.proData = val
         }
-        // const params = {
-        //   templateType: this.form1.newTemplateType,
-        //   templateId: this.proData.templateId,
-        // }
-        const res = {
-          repCode: '0000',
-          repMsg: null,
-          repData: {
-            templateId: 237,
-            templateName: '案发时发放',
-            templateCode: '按时发发个',
-            templateType: 'mail',
-            template: '<h4>亲爱的#%#user#%#，你好！</h4></br></br></br>{使用关键字大括号}</br>#%#test#%#</br></br>云邮件系统</br>',
-            templateShow: '<h4>亲爱的{user}，你好！</h4></br>\n</br>\n</br>\n {使用关键字大括号}</br> \n {test} </br>\n\n </br> \n\n\n 云邮件系统</br>',
-            templateParam: '{"test":"text","user":"text"}',
-            templateInfo: '{"signNameSelected":"null","aliTemplateCode":"","aliSignName":"","jgSignId":"0","jgTemplateId":"0","sqajSignName":""}',
-            enableFlag: 1,
-            deleteFlag: 0,
-            createdBy: 'aimee',
-            createdTime: '2020-12-10T16:27:37',
-            updatedBy: 'aimee',
-            updatedTime: '2020-12-10T16:27:37',
-            endTime: null,
-            keyword: null,
-            startTime: null,
-            smsTemplateAccount: {
-              sendOrder: null,
-              signNameSelected: 'null',
-              ajSignName: '',
-              jgSignId: 0,
-              jgTemplateId: 0,
-              aliTemplateCode: '',
-              aliSignName: '',
-            },
-          },
-          success: true,
-          error: false,
-        }
-        // showTemplateById(params).then(res=>{
-        if (res.repCode == '0000') {
-          this.form1 = res.repData
-          // this.form1.newTemplateType=this.getDictCode('ALERT_CHANNEL' ,res.repData.templateType,"labelEng").value;
-          // this.modalTemplateType = res.repData.templateType
-
-          this.form1.newTemplateType = res.repData.templateType
-
-          // console.log(999)
-          // return
-          if (this.modalTemplateType == 'sms') {
-            this.form1.templateShow = res.repData.template
-            const smsTemplateAccount = res.repData.smsTemplateAccount
-            this.form1.aliTemplateCode = smsTemplateAccount.aliTemplateCode
-            this.form1.jgSignId = smsTemplateAccount.jgSignId
-            this.form1.jgTemplateId = smsTemplateAccount.jgTemplateId
-            this.form1.aliSignName = smsTemplateAccount.aliSignName
-            this.form1.ajSignName = smsTemplateAccount.ajSignName
-            if (smsTemplateAccount.signNameSelected == null) {
-              this.form1.signName = []
-            } else {
-              this.form1.signName = JSON.parse(smsTemplateAccount.signNameSelected)
-            }
+        var res = val
+        // let params={
+        //   templateType:this.form1.newTemplateType,
+        //   templateId:this.proData.templateId
+        // };
+        // gaeaPushTemplateDetail(this.proData.id).then(res=>{
+        // if (res.code == '0000') {
+        this.form1 = val
+        // this.form1.newTemplateType=this.getDictCode('ALERT_CHANNEL' ,res.repData.templateType,"labelEng").value;
+        this.modalTemplateType = res.templateType
+        this.form1.newTemplateType = res.templateType
+        if (this.modalTemplateType == 'sms') {
+          this.form1.templateShow = res.template
+          const smsTemplateAccount = res.smsTemplateAccount
+          this.form1.aliTemplateCode = smsTemplateAccount.aliTemplateCode
+          this.form1.jgSignId = smsTemplateAccount.jgSignId
+          this.form1.jgTemplateId = smsTemplateAccount.jgTemplateId
+          this.form1.aliSignName = smsTemplateAccount.aliSignName
+          this.form1.ajSignName = smsTemplateAccount.ajSignName
+          if (smsTemplateAccount.signNameSelected == null) {
+            this.form1.signName = []
           } else {
-            this.form1.templateShow = res.repData.templateShow
-            this.$nextTick(() => {
-              this.$refs.code.setContent(this.form1.templateShow)
-            })
+            this.form1.signName = JSON.parse(smsTemplateAccount.signNameSelected)
           }
+        } else {
+          this.form1.templateShow = res.templateShow
+          this.$nextTick(() => {
+            this.$refs.code.setContent(this.form1.templateShow)
+          })
         }
+        // }
         // }).catch(error => {})
       } else {
         this.disabled = false
@@ -391,42 +355,34 @@ export default {
     saveBtn(val) {
       this.$refs['form1'].validate((valid) => {
         if (valid) {
-          // const params = {
-          //   templateId: this.form1.templateId,
-          //   templateShow: this.form1.templateShow,
-          //   templateCode: this.form1.templateCode,
-          //   templateName: this.form1.templateName,
-          //   templateType: this.modalTemplateType,
-          //   smsTemplateAccount: {
-          //     sendOrder: null,
-          //     jgSignId: Number(this.form1.jgSignId),
-          //     jgTemplateId: Number(this.form1.jgTemplateId),
-          //     aliTemplateCode: this.form1.aliTemplateCode,
-          //     aliSignName: this.form1.aliSignName,
-          //     ajSignName: this.form1.ajSignName,
-          //     signNameSelected: JSON.stringify(this.signNameSelected),
-          //   },
-          // }
+          const params = {
+            id: this.form1.id,
+            templateShow: this.form1.templateShow,
+            templateCode: this.form1.templateCode,
+            templateName: this.form1.templateName,
+            templateType: this.modalTemplateType,
+            smsTemplateAccount: {
+              sendOrder: null,
+              jgSignId: Number(this.form1.jgSignId),
+              jgTemplateId: Number(this.form1.jgTemplateId),
+              aliTemplateCode: this.form1.aliTemplateCode,
+              aliSignName: this.form1.aliSignName,
+              ajSignName: this.form1.ajSignName,
+              signNameSelected: JSON.stringify(this.signNameSelected),
+            },
+          }
           if (this.proData != null) {
-            // updateTemplate(params).then((res) => {
-            //   if (res.repCode == '0000') {
-            //     this.$message({
-            //       message: '编辑模板成功',
-            //       type: 'success',
-            //     })
-            //     this.close()
-            //   }
-            // })
+            gaeaPushTemplateEdit(params).then((res) => {
+              if (res.code == '200') {
+                this.close()
+              }
+            })
           } else {
-            // saveTemplate(params).then((res) => {
-            //   if (res.repCode == '0000') {
-            //     this.$message({
-            //       message: '新增模板成功',
-            //       type: 'success',
-            //     })
-            //     this.close()
-            //   }
-            // })
+            gaeaPushTemplateAdd(params).then((res) => {
+              if (res.code == '200') {
+                this.close()
+              }
+            })
           }
         } else {
           return false
@@ -435,6 +391,7 @@ export default {
     },
     // 关闭模态框事件
     close() {
+      console.log(11234)
       this.$emit('closeModal')
     },
     destroyTimer() {
@@ -445,57 +402,58 @@ export default {
     // 预览模板
     previewTemplate(val) {
       this.innerVisible = true
-      // let params = {}
+      let params = {}
       if (this.proData == null) {
         this.form2 = {
           to: '',
           paramMap: "{'user':'test'}",
         }
-        // params = {
-        //   templateShow: val,
-        //   templateType: this.modalTemplateType,
-        // }
+        params = {
+          templateShow: val,
+          templateType: this.modalTemplateType,
+        }
       } else {
         this.form2 = {
           to: '',
           paramMap: this.proData.templateParam,
         }
-        // params = {
-        //   templateShow: val,
-        //   templateType: this.modalTemplateType,
-        //   templateId: this.proData.templateId,
+        params = {
+          templateShow: val,
+          templateType: this.modalTemplateType,
+          id: this.proData.id,
+        }
+      }
+
+      gaeaPushTemplatePreview(params).then((res) => {
+        // const res = {
+        //   repCode: '0000',
+        //   repMsg: null,
+        //   repData: {
+        //     id: null,
+        //     templateName: null,
+        //     templateCode: null,
+        //     templateType: null,
+        //     template: '<h4>亲爱的#%#user#%#，你好！</h4></br></br></br>{使用关键字大括号}</br>#%#test#%#</br></br>云邮件系统</br>',
+        //     templateShow: '<h4>亲爱的{user}，你好！</h4></br>\n</br>\n</br>\n {使用关键字大括号}</br> \n {test} </br>\n\n </br> \n\n\n 云邮件系统</br>',
+        //     templateParam: null,
+        //     templateInfo: null,
+        //     enableFlag: null,
+        //     deleteFlag: null,
+        //     createdBy: null,
+        //     createdTime: null,
+        //     updatedBy: null,
+        //     updatedTime: null,
+        //     paramMap: {test: 'text', user: 'text'},
+        //     html: '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Document</title></head><body><h4>亲爱的user，你好！</h4></br></br></br>{使用关键字大括号}</br>test</br></br>云邮件系统</br></body></html>',
+        //   },
+        //   success: true,
+        //   error: false,
         // }
-      }
-      // preview(params).then(res=>{
-      const res = {
-        repCode: '0000',
-        repMsg: null,
-        repData: {
-          templateId: null,
-          templateName: null,
-          templateCode: null,
-          templateType: null,
-          template: '<h4>亲爱的#%#user#%#，你好！</h4></br></br></br>{使用关键字大括号}</br>#%#test#%#</br></br>云邮件系统</br>',
-          templateShow: '<h4>亲爱的{user}，你好！</h4></br>\n</br>\n</br>\n {使用关键字大括号}</br> \n {test} </br>\n\n </br> \n\n\n 云邮件系统</br>',
-          templateParam: null,
-          templateInfo: null,
-          enableFlag: null,
-          deleteFlag: null,
-          createdBy: null,
-          createdTime: null,
-          updatedBy: null,
-          updatedTime: null,
-          paramMap: { test: 'text', user: 'text' },
-          html: '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Document</title></head><body><h4>亲爱的user，你好！</h4></br></br></br>{使用关键字大括号}</br>test</br></br>云邮件系统</br></body></html>',
-        },
-        success: true,
-        error: false,
-      }
-      if (res.repCode == '0000') {
-        this.form2.paramMap = JSON.stringify(res.repData.paramMap)
-        this.previewContent = res.repData.html
-      }
-      // })
+        if (res.code == '200') {
+          this.form2.paramMap = JSON.stringify(res.data.paramMap)
+          this.previewContent = res.data.html
+        }
+      })
     },
     // 发送测试
     testMail(val) {
@@ -512,28 +470,23 @@ export default {
         } else {
           this.pushType = 3
         }
-        // const params = {
-        //   pushType: this.pushType,
-        //   templateCode: this.form1.templateCode,
-        //   to: this.form2.to,
-        //   subject: this.form2.subject,
-        //   from: 'test',
-        //   copy: '',
-        //   paramMap: JSON.parse(this.form2.paramMap),
-        // }
+        const params = {
+          pushType: this.pushType,
+          templateCode: this.form1.templateCode,
+          to: this.form2.to,
+          subject: this.form2.subject,
+          from: 'test',
+          copy: '',
+          paramMap: JSON.parse(this.form2.paramMap),
+        }
         this.testMailDisabled = true
-        // testSendMail(params).then((res) => {
-        //   if (res.repCode == '0000') {
-        //     this.$message({
-        //       message: '发送成功，请注意查收',
-        //       type: 'success',
-        //     })
-        //     this.innerVisible = false
-        //   } else {
-        //     this.testMailDisabled = false
-        //     this.innerVisible = false
-        //   }
-        // })
+        gaeaPushTemplateTestSendPush(params).then((res) => {
+          if (res.code == '200') {
+            this.innerVisible = false
+            this.testMailDisabled = false
+            this.innerVisible = false
+          }
+        })
       }
     },
   },
