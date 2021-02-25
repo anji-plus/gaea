@@ -9,6 +9,7 @@ import com.github.anji.plus.modules.push.template.controller.dto.GaeaPushTemplat
 import com.github.anji.plus.modules.push.template.dao.GaeaPushTemplateMapper;
 import com.github.anji.plus.modules.push.template.dao.entity.GaeaPushTemplate;
 import com.github.anji.plus.modules.push.template.service.GaeaPushTemplateService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,15 +24,16 @@ import java.util.Map;
 @Service
 public class GaeaPushTemplateServiceImpl implements GaeaPushTemplateService {
     @Autowired
-    private GaeaPushTemplateMapper  gaeaPushTemplateMapper;
+    private GaeaPushTemplateMapper gaeaPushTemplateMapper;
 
     @Override
     public GaeaBaseMapper<GaeaPushTemplate> getMapper() {
-        return  gaeaPushTemplateMapper;
+        return gaeaPushTemplateMapper;
     }
 
     /**
      * 预览
+     *
      * @return
      */
     @Override

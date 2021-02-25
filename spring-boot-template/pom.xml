@@ -7,7 +7,7 @@
     <modules>
         <module>gaea-gateway</module>
         <module>gaea-auth</module>
-        <!--<module>gaea-business</module>-->
+        <module>gaea-business</module>
         <module>gaea-common</module>
     </modules>
 
@@ -35,7 +35,11 @@
                 <artifactId>spring-boot-gaea</artifactId>
                 <version>${gaea.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.anji-plus</groupId>
+                <artifactId>gaea-push</artifactId>
+                <version>${gaea.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.anji-plus</groupId>
                 <artifactId>spring-boot-starter-gaea-security</artifactId>
