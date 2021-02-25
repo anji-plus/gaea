@@ -49,7 +49,7 @@
 <script>
 import CKEditor from '@ckeditor/ckeditor5-build-decoupled-document'
 import '@ckeditor/ckeditor5-build-decoupled-document/build/translations/zh-cn'
-import { gaeaHelpAdd, gaeaHelpEdit } from '@/api/system-set'
+import { gaeaHelpAdd, gaeaHelpEdit, uploadImg } from '@/api/system-set'
 export default {
   components: {},
   props: {
@@ -131,18 +131,24 @@ export default {
         constructor(loader) {
           this.loader = loader
         }
-        // async upload() {
-        //   // 重置上传路径
-        //   const data = new FormData()
-        //   data.append('file', await this.loader.file)
-        //   return new Promise((resolve, reject) => {
-        //     upload(data).then((res) => {
-        //       resolve({
-        //         default: res.repData,
-        //       })
-        //     })
-        //   })
-        // }
+        async upload() {
+          // 重置上传路径
+          const data = new FormData()
+          data.append('file', await this.loader.file)
+          return new Promise((resolve, reject) => {
+            uploadImg(data)
+              .then((res) => {
+                if (res.code == '200') {
+                  resolve({
+                    default: res.data,
+                  })
+                }
+              })
+              .catch((err) => {
+                reject(err)
+              })
+          })
+        }
       }
       CKEditor.create(document.querySelector('#editor'), {
         language: 'zh-cn',
@@ -172,7 +178,7 @@ export default {
         }
         const toolbarContainer = document.querySelector('#toolbar-container')
         toolbarContainer.appendChild(editor.ui.view.toolbar.element)
-        this.editor = editor
+        this.editor = editor // 将编辑器保存起来，用来随时获取编辑器中的内容等，执行一些操作
       })
     },
     blurInput() {
@@ -191,7 +197,9 @@ export default {
       // })
     },
     queryDetail() {
+      console.log(1, this.helpForm.helpContent)
       this.editor.setData(this.helpForm.helpContent)
+      // this.editor.setData("\"<figure class=\"image\"><img src=\"https://gaea.anji-plus.com/auth-service/file/download/80a46139-7e4a-4cbb-9cff-e2485e038d45\"></figure>\"")
     },
     cancel() {
       this.$parent.$parent.colseDialog('no')

@@ -176,3 +176,13 @@ export function dataDictionary(dictName) {
     method: 'get',
   })
 }
+
+// 图片上传接口
+// 帮助中心新增
+export function uploadImg(data) {
+  return request({
+    url: '/business/file/upload',
+    method: 'POST',
+    data,
+  })
+}

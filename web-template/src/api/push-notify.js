@@ -77,3 +77,12 @@ export function gaeaPushTemplateDelect(id) {
     method: 'delete',
   })
 }
+
+// 收发概况
+export function generalSituationReceiving(data) {
+  return request({
+    url: '/business/gaeaPushHistory/getPushStatistics',
+    method: 'POST',
+    data,
+  })
+}

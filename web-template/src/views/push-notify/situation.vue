@@ -4,12 +4,12 @@
       <el-row>
         <el-col :span="18">
           <el-form-item label="选择日期" prop="actionCode">
-            <el-date-picker v-model="timeSelectedValue" type="daterange" align="left" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" />
+            <el-date-picker v-model="timeSelectedValue" type="daterange" align="left" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd HH:mm:ss" />
           </el-form-item>
         </el-col>
         <el-col :span="6" style="text-align: center">
           <el-button type="primary" @click="quiryChartMyData(timeSelectedValue)">{{ $t('btn.query') }}</el-button>
-          <el-button type="danger">{{ $t('btn.reset') }}</el-button>
+          <el-button type="danger" @click="reset">{{ $t('btn.reset') }}</el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { generalSituationReceiving } from '@/api/push-notify'
 import echarts from 'echarts'
 // import 'echarts-gl';
 import moment from 'moment'
@@ -61,6 +62,9 @@ export default {
     this.chartOption = {}
   },
   methods: {
+    reset() {
+      this.drawChart()
+    },
     // 图表基础配置
     options() {
       const data = {
@@ -184,171 +188,87 @@ export default {
       this.chartOption = this.options()
       // 格式化时间格式
       this.formatTime(val)
-      // const param = {
-      //   startTime: this.startTime,
-      //   endTime: this.endTime,
-      //   sendStatus: 1,
-      // }
-      // getPushStatistics(param).then(res=>{
-      const res = {
-        repCode: '0000',
-        repMsg: null,
-        repData: {
-          legendData: ['邮件', '短信', '钉钉'],
-          seriesData: [
-            {
-              fail: ['0', '0', '0', '0', '0', '0', '0', '0', '40', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-              success: ['0', '0', '3', '6', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '10', '230', '440', '430', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-            },
-            {
-              fail: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '220', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-              success: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-            },
-            {
-              fail: ['0', '0', '0', '0', '30', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-              success: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-            },
-          ],
-          startTime: null,
-          endTime: null,
-          sendTime: null,
-          sendStatus: null,
-          xaxisData: [
-            '2021-01-04',
-            '2021-01-05',
-            '2021-01-06',
-            '2021-01-07',
-            '2021-01-08',
-            '2021-01-09',
-            '2021-01-10',
-            '2021-01-11',
-            '2021-01-12',
-            '2021-01-13',
-            '2021-01-14',
-            '2021-01-15',
-            '2021-01-16',
-            '2021-01-17',
-            '2021-01-18',
-            '2021-01-19',
-            '2021-01-20',
-            '2021-01-21',
-            '2021-01-22',
-            '2021-01-23',
-            '2021-01-24',
-            '2021-01-25',
-            '2021-01-26',
-            '2021-01-27',
-            '2021-01-28',
-            '2021-01-29',
-            '2021-01-30',
-            '2021-01-31',
-            '2021-02-01',
-            '2021-02-02',
-            '2021-02-03',
-            '2021-02-04',
-            '2021-02-05',
-            '2021-02-06',
-            '2021-02-07',
-            '2021-02-08',
-            '2021-02-09',
-            '2021-02-10',
-            '2021-02-11',
-            '2021-02-12',
-            '2021-02-13',
-            '2021-02-14',
-            '2021-02-15',
-            '2021-02-16',
-            '2021-02-17',
-            '2021-02-18',
-            '2021-02-19',
-            '2021-02-20',
-            '2021-02-21',
-            '2021-02-22',
-            '2021-02-23',
-            '2021-02-24',
-            '2021-02-25',
-            '2021-02-26',
-            '2021-02-27',
-            '2021-02-28',
-          ],
-          yaxisData: null,
-        },
-        success: true,
-        error: false,
+      const param = {
+        startTime: this.startTime,
+        endTime: this.endTime,
+        // sendStatus: 1,
       }
-      if (res.repCode == '0000') {
-        // 给X轴赋值
-        this.chartOption.xAxis[0].data = res.repData.xaxisData
-        this.chartOption.xAxis[1].data = res.repData.xaxisData
+      generalSituationReceiving(param).then((res) => {
+        console.log(res)
+        // getPushStatistics(param).then(res=>{
+        if (res.code == '200') {
+          // 给X轴赋值
+          this.chartOption.xAxis[0].data = res.data.xaxisData
+          this.chartOption.xAxis[1].data = res.data.xaxisData
 
-        const color = ['#2cb801', '#03bdbf', '#107acb', '#dc770b', '#dc3c0b', '#e0b03d']
-        const series = []
-        for (let i = 0; i < res.repData.seriesData.length; i++) {
-          series.push(
-            {
-              name: res.repData.legendData[i] + '成功',
-              type: 'line',
-              xAxisIndex: 0,
-              yAxisIndex: 0,
-              color: color[i],
-              symbolSize: 8,
-              smooth: true,
-              itemStyle: {
-                normal: {
-                  areaStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
-                      {
-                        offset: 0,
-                        color: 'rgba(255,255,255,0)',
-                      },
-                      {
-                        offset: 1,
-                        color: color[i],
-                      },
-                    ]),
-                  },
-                  lineStyle: {
-                    width: 0.5,
-                  },
-                },
-              },
-              data: res.repData.seriesData[i].success,
-            },
-            {
-              name: res.repData.legendData[i] + '失败',
-              type: 'line',
-              xAxisIndex: 1,
-              yAxisIndex: 1,
-              symbolSize: 8,
-              smooth: true,
-              color: color[i + 3],
-              itemStyle: {
-                normal: {
-                  areaStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
-                      {
-                        offset: 0,
-                        color: color[i + 3],
-                      },
-                      {
-                        offset: 1,
-                        color: 'rgba(255,255,255,0)',
-                      },
-                    ]),
-                  },
-                  lineStyle: {
-                    width: 0.5,
+          const color = ['#2cb801', '#03bdbf', '#107acb', '#dc770b', '#dc3c0b', '#e0b03d']
+          const series = []
+          for (let i = 0; i < res.data.seriesData.length; i++) {
+            series.push(
+              {
+                name: res.data.legendData[i] + '成功',
+                type: 'line',
+                xAxisIndex: 0,
+                yAxisIndex: 0,
+                color: color[i],
+                symbolSize: 8,
+                smooth: true,
+                itemStyle: {
+                  normal: {
+                    areaStyle: {
+                      color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        {
+                          offset: 0,
+                          color: 'rgba(255,255,255,0)',
+                        },
+                        {
+                          offset: 1,
+                          color: color[i],
+                        },
+                      ]),
+                    },
+                    lineStyle: {
+                      width: 0.5,
+                    },
                   },
                 },
+                data: res.data.seriesData[i].success,
               },
-              data: res.repData.seriesData[i].fail,
-            }
-          )
+              {
+                name: res.data.legendData[i] + '失败',
+                type: 'line',
+                xAxisIndex: 1,
+                yAxisIndex: 1,
+                symbolSize: 8,
+                smooth: true,
+                color: color[i + 3],
+                itemStyle: {
+                  normal: {
+                    areaStyle: {
+                      color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        {
+                          offset: 0,
+                          color: color[i + 3],
+                        },
+                        {
+                          offset: 1,
+                          color: 'rgba(255,255,255,0)',
+                        },
+                      ]),
+                    },
+                    lineStyle: {
+                      width: 0.5,
+                    },
+                  },
+                },
+                data: res.data.seriesData[i].fail,
+              }
+            )
+          }
+          this.chartOption.series = series
+          this.mainChart.setOption(this.chartOption, true)
         }
-        this.chartOption.series = series
-        this.mainChart.setOption(this.chartOption, true)
-      }
-      // });
+      })
     },
     // 时间区间查询图表邮件短信发送量
     quiryChartMyData(val) {
