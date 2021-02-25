@@ -1,9 +1,9 @@
 package com.anji.mirror.push.service;
 
-import com.anji.mirror.push.domain.po.PushHistoryPO;
-import com.anji.mirror.push.domain.vo.PushHistoryVO;
 import com.anji.mirror.common.model.RequestModel;
 import com.anji.mirror.common.model.ResponseModel;
+import com.anjiplus.gaea.push.domain.po.PushHistoryPO;
+import com.anjiplus.gaea.push.domain.vo.PushHistoryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

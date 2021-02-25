@@ -1,7 +1,7 @@
 package com.anji.mirror.push.utils;
 
-import com.anji.mirror.push.domain.common.MailAccount;
 import com.anji.mirror.push.domain.common.MailParam;
+import com.anjiplus.gaea.push.domain.common.MailAccount;
 import lombok.extern.slf4j.Slf4j;
 import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
 import org.apache.commons.lang3.StringUtils;

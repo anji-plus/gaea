@@ -1,7 +1,7 @@
 package com.anji.mirror.push.mapper;
 
-import com.anji.mirror.push.domain.po.TemplatePO;
-import com.anji.mirror.push.domain.vo.TemplateVO;
+import com.anjiplus.gaea.push.domain.po.TemplatePO;
+import com.anjiplus.gaea.push.domain.vo.TemplateVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

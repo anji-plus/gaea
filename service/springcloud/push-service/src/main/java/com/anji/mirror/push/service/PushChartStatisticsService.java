@@ -2,7 +2,7 @@ package com.anji.mirror.push.service;
 
 import com.anji.mirror.common.model.RequestModel;
 import com.anji.mirror.common.model.ResponseModel;
-import com.anji.mirror.push.domain.vo.PushChartStatisticsVO;
+import com.anjiplus.gaea.push.domain.vo.PushChartStatisticsVO;
 
 /**
  * <p>

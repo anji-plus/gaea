@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.anji.mirror.common.enums.RepCodeEnum;
 import com.anji.mirror.common.model.ResponseModel;
 import com.anji.mirror.common.service.RedisService;
-import com.anji.mirror.push.utils.RequestWrapper;
+import com.anjiplus.gaea.push.utils.RequestWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.BeanFactory;

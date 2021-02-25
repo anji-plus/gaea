@@ -1,8 +1,6 @@
 package com.anji.mirror.push.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.anji.mirror.push.domain.po.PushHistoryPO;
-import com.anji.mirror.push.domain.vo.PushHistoryVO;
 import com.anji.mirror.push.mapper.PushHistoryMapper;
 import com.anji.mirror.push.service.PushHistoryService;
 import com.anji.mirror.common.enums.RepCodeEnum;
@@ -10,6 +8,8 @@ import com.anji.mirror.common.model.RequestModel;
 import com.anji.mirror.common.model.ResponseModel;
 import com.anji.mirror.common.utils.BeanUtils;
 import com.anji.mirror.push.utils.DateTimeUtil;
+import com.anjiplus.gaea.push.domain.po.PushHistoryPO;
+import com.anjiplus.gaea.push.domain.vo.PushHistoryVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
