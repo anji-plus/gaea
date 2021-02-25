@@ -7,12 +7,12 @@ cd  target\generated-sources\archetype
 pom.xml根节点追加如下内容，地址做相应修改
   <distributionManagement>
       <repository>
-          <id>my-nexus-releases</id>
-          <url>http://172.95.65.37:8071/nexus/content/repositories/releases/</url>
+          <id>nexus-releases</id>
+          <url>http://10.108.10.53:8081/repository/maven-releases/</url>
       </repository>
       <snapshotRepository>
-          <id>my-nexus-snapshots</id>
-          <url>http://172.95.65.37:8071/nexus/content/repositories/snapshots/</url>
+          <id>nexus-snapshots</id>
+          <url>http://10.108.10.53:8081/repository/maven-snapshots/</url>
       </snapshotRepository>
   </distributionManagement>
 
@@ -23,12 +23,12 @@ mvn deploy
 ```
   <archetypes>
     <archetype>
-      <groupId>com.cdj.propertyweb</groupId>
-      <artifactId>property-web-archetype</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <description>property-web-archetype</description>
+      <groupId>com.anji-plus</groupId>
+      <artifactId>spring-boot-template-archetype</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <description>web-archetype</description>
       <repository>
-		http://172.95.65.37:8071/nexus/content/repositories/snapshots
+		http://10.108.10.53:8081/repository/maven-snapshots/
 	  </repository>
     </archetype>
   </archetypes>
@@ -36,6 +36,6 @@ mvn deploy
   
 执行如下命令，生成新项目
 ```
-mvn archetype:generate -DarchetypeCatalog=local
+mvn archetype:generate -DarchetypeCatalog=local -DgroupId=com.anjiplus -DartifactId=demo-proj -Dpackage=com.anjiplus.demo -Dversion=1.0.0.SNAPSHOT -DarchetypeGroupId=com.anji-plus -DarchetypeArtifactId=spring-boot-template-archetype -DarchetypeVersion=1.0-SNAPSHOT
 ```
 
