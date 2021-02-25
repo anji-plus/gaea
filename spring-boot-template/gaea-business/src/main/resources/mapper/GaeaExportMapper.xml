@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.anji.plus.modules.export.dao.GaeaExportMapper">
+<mapper namespace="com.anji.plus.gaea.business.modules.export.dao.GaeaExportMapper">
 
-    <resultMap type="com.anji.plus.modules.export.dao.entity.GaeaExport" id="GaeaExportMap">
+    <resultMap type="com.anji.plus.gaea.business.modules.export.dao.entity.GaeaExport" id="GaeaExportMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="fileId" column="file_id" jdbcType="VARCHAR"/>
         <result property="fileTitle" column="file_title" jdbcType="VARCHAR"/>

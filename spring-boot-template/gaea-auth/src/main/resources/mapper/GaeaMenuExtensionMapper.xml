@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.anji.plus.modules.menuextension.dao.GaeaMenuExtensionMapper">
+<mapper namespace="com.anji.plus.gaea.auth.modules.menuextension.dao.GaeaMenuExtensionMapper">
 
-    <resultMap type="com.anji.plus.modules.menuextension.entity.GaeaMenuExtension" id="GaeaMenuExtensionMap">
+    <resultMap type="com.anji.plus.gaea.auth.modules.menuextension.entity.GaeaMenuExtension" id="GaeaMenuExtensionMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="tableCode" column="table_code" jdbcType="VARCHAR"/>
         <result property="menuCode" column="menu_code" jdbcType="VARCHAR"/>
