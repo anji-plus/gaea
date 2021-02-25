@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.anjiplus.gaea.log.config.GaeaAuditLogProperties;
 import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.anjiplus.gaea.log.event.AuditLogApplicationEvent;
-import com.github.anji.plus.gaea.utils.ApplicationContextUtils;
+import com.anji.plus.gaea.utils.ApplicationContextUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;

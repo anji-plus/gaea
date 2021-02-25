@@ -40,7 +40,7 @@ import com.alibaba.excel.converters.string.StringStringConverter;
 import com.alibaba.excel.converters.url.UrlImageConverter;
 import com.anjiplus.gaea.export.config.GaeaExportProperties;
 import com.anjiplus.gaea.export.utils.LocalDateTimeConverter;
-import com.github.anji.plus.gaea.annotation.condition.ConditionalOnGaeaComponent;
+import com.anji.plus.gaea.annotation.condition.ConditionalOnGaeaComponent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

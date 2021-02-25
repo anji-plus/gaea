@@ -1,6 +1,6 @@
 package com.anjiplus.gaea.export.config;
 
-import com.github.anji.plus.gaea.constant.GaeaConstant;
+import com.anji.plus.gaea.constant.GaeaConstant;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**

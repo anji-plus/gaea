@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.github.anji.plus.modules.role.dao.GaeaRoleOrgMapper">
+<mapper namespace="com.anji.plus.modules.role.dao.GaeaRoleOrgMapper">
 
-    <resultMap type="com.github.anji.plus.modules.role.dao.entity.GaeaRoleOrg" id="GaeaRoleOrgMap">
+    <resultMap type="com.anji.plus.modules.role.dao.entity.GaeaRoleOrg" id="GaeaRoleOrgMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="roleCode" column="role_code" jdbcType="VARCHAR"/>
         <result property="orgCode" column="org_code" jdbcType="VARCHAR"/>
@@ -10,7 +10,7 @@
 
 
     <!-- 自定义查询映射结果 -->
-    <resultMap id="ResultMapWithVO" type="com.github.anji.plus.modules.role.controller.dto.RoleOrgDto" extends="GaeaRoleOrgMap">
+    <resultMap id="ResultMapWithVO" type="com.anji.plus.modules.role.controller.dto.RoleOrgDto" extends="GaeaRoleOrgMap">
         <result column="org_name" property="orgName" />
         <result column="role_name" property="roleName" />
     </resultMap>

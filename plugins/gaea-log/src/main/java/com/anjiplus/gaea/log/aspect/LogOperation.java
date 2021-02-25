@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * 日志相关数据
- * @author lirui
+ * @author lr
  */
 public class LogOperation implements Serializable {
 

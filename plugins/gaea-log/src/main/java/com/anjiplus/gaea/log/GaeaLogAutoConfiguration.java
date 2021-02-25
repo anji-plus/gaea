@@ -1,9 +1,7 @@
 package com.anjiplus.gaea.log;
 
-import com.anjiplus.gaea.log.aspect.GaeaAuditLogAspect;
 import com.anjiplus.gaea.log.config.GaeaAuditLogProperties;
-import com.github.anji.plus.gaea.annotation.condition.ConditionalOnGaeaComponent;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import com.anji.plus.gaea.annotation.condition.ConditionalOnGaeaComponent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +16,10 @@ import org.springframework.web.client.RestTemplate;
 @EnableConfigurationProperties(GaeaAuditLogProperties.class)
 @ConditionalOnGaeaComponent(GaeaAuditLogProperties.COMPONENT_NAME)
 public class GaeaLogAutoConfiguration {
-    @Bean
-    public GaeaAuditLogAspect auditLogAspect(){
-        return new GaeaAuditLogAspect();
-    }
+//    @Bean
+//    public GaeaAuditLogAspect auditLogAspect(){
+//        return new GaeaAuditLogAspect();
+//    }
 
     @Bean
     public RestTemplate getRestTemplate(){

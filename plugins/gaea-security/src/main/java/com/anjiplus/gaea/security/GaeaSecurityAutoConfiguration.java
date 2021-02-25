@@ -3,7 +3,9 @@ package com.anjiplus.gaea.security;
 import com.anjiplus.gaea.security.handler.GaeaFilterExceptionHandler;
 import com.anjiplus.gaea.security.security.GaeaUserDetailsService;
 import com.anjiplus.gaea.security.security.JwtTokenAuthenticationFilter;
-import com.github.anji.plus.gaea.annotation.condition.ConditionalOnGaeaComponent;
+import com.anjiplus.gaea.security.security.url.UrlAccessDecisionManager;
+import com.anjiplus.gaea.security.security.url.UrlFilterInvocationSecurityMetadataSource;
+import com.anji.plus.gaea.annotation.condition.ConditionalOnGaeaComponent;
 import com.anjiplus.gaea.security.security.SecurityConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -55,5 +57,16 @@ public class GaeaSecurityAutoConfiguration {
     @Bean
     public UserDetailsService gaeaUserDetailsService() {
         return new GaeaUserDetailsService();
+    }
+
+    @Bean
+    public UrlAccessDecisionManager urlAccessDecisionManager() {
+        return new UrlAccessDecisionManager();
+    }
+
+
+    @Bean
+    public UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() {
+        return new UrlFilterInvocationSecurityMetadataSource();
     }
 }

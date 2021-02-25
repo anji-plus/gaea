@@ -1,9 +1,9 @@
 package com.anjiplus.gaea.security.bean;
 
 
-import com.github.anji.plus.gaea.bean.ResponseBean;
-import com.github.anji.plus.gaea.code.ResponseCode;
-import com.github.anji.plus.gaea.exception.BusinessException;
+import com.anji.plus.gaea.bean.ResponseBean;
+import com.anji.plus.gaea.code.ResponseCode;
+import com.anji.plus.gaea.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
