@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
+import com.github.anji.plus.gaea.utils.GaeaBeanUtils;
 import com.github.anji.plus.modules.export.controller.dto.GaeaExportDTO;
 import com.github.anji.plus.modules.export.controller.param.GaeaExportParam;
 import com.github.anji.plus.modules.export.controller.param.GaeaExportQueryParam;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 导出中心(GaeaExport)实体类
@@ -47,7 +51,17 @@ public class GaeaExportController extends GaeaBaseController<GaeaExportParam, Ga
 
     @PostMapping("/queryAdvanceExport")
     public ResponseBean queryExportInfo(@RequestBody GaeaExportQueryParam param) {
-        return responseSuccessWithData(gaeaExportService.getExportListPage(param));
+        Page<GaeaExport> exportList=gaeaExportService.getExportListPage(param);
+        List<GaeaExportDTO> list = exportList.getRecords().stream()
+                .map(entity -> GaeaBeanUtils.copyAndFormatter(entity, getDTO()))
+                .collect(Collectors.toList());
+        Page<GaeaExportDTO> pageDto = new Page<>();
+        pageDto.setCurrent(exportList.getCurrent());
+        pageDto.setRecords(list);
+        pageDto.setPages(exportList.getPages());
+        pageDto.setTotal(exportList.getTotal());
+        pageDto.setSize(exportList.getSize());
+        return responseSuccessWithData(pageDto);
     }
 
     @PostMapping("/saveExportLog")

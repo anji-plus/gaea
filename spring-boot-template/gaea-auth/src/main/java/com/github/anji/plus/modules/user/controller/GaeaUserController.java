@@ -1,10 +1,9 @@
 package com.github.anji.plus.modules.user.controller;
 
-import com.anji.captcha.model.common.ResponseModel;
+import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.github.anji.plus.gaea.bean.ResponseBean;
 import com.github.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.github.anji.plus.modules.menu.controller.dto.TreeDTO;
-import com.github.anji.plus.modules.role.controller.param.RoleOrgReqParam;
 import com.github.anji.plus.modules.user.controller.param.GaeaUserPasswordParam;
 import com.github.anji.plus.modules.user.controller.param.UserRoleOrgReqParam;
 import com.github.anji.plus.modules.user.dao.entity.GaeaUser;
@@ -13,7 +12,6 @@ import com.github.anji.plus.modules.user.controller.param.GaeaUserParam;
 import com.github.anji.plus.modules.user.service.GaeaUserService;
 import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
 import io.swagger.annotations.Api;
-import lombok.extern.java.Log;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +51,7 @@ public class GaeaUserController extends GaeaBaseController<GaeaUserParam, GaeaUs
 
 
     @PostMapping("/insertUser")
+    @GaeaAuditLog(pageTitle = "新增用户")
     public ResponseBean saveGaeauser(@Validated @RequestBody GaeaUserDTO dto){
         return responseSuccessWithData(gaeaUserService.saveGaeaUser(dto));
     }
@@ -76,6 +75,7 @@ public class GaeaUserController extends GaeaBaseController<GaeaUserParam, GaeaUs
      * @return
      */
     @PostMapping("/saveRoleTree")
+    @GaeaAuditLog(pageTitle = "分配用户角色")
     public ResponseBean saveRoleTree(@RequestBody UserRoleOrgReqParam reqParam) {
         Boolean data = gaeaUserService.saveRoleTree(reqParam);
         return responseSuccessWithData(data);
@@ -87,6 +87,7 @@ public class GaeaUserController extends GaeaBaseController<GaeaUserParam, GaeaUs
      * @return
      */
     @PostMapping("/updatePassword")
+    @GaeaAuditLog(pageTitle = "修改密码")
     public ResponseBean updatePassword(@RequestBody GaeaUserPasswordParam reqParam){
         return responseSuccessWithData(gaeaUserService.updatePassword(reqParam));
     }
@@ -97,6 +98,7 @@ public class GaeaUserController extends GaeaBaseController<GaeaUserParam, GaeaUs
      * @return
      */
     @PostMapping("/resetPwd")
+    @GaeaAuditLog(pageTitle = "重置密码")
     public ResponseBean resetPassword(@RequestBody GaeaUserPasswordParam reqParam){
         return responseSuccessWithData(gaeaUserService.setDefaultPwd(reqParam.getUsername()));
     }
