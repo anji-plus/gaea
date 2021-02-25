@@ -29,5 +29,11 @@
         update_by, update_time, is_disabled, sort_code, sort_order, group_name
     </sql>
 
+    <select id="getByUser" resultType="com.anji.plus.modules.menuextension.controller.dto.GaeaMenuUserExtensionListDTO">
+        select  <include refid="Base_Column_List"></include>
+        from gaea_menu_user_extension where  menu_code = #{menuCode} and username = #{userName} and table_code = #{tableCode}
+        and IS_DISABLED = 0
+        order by SORT_NO asc
+    </select>
 
 </mapper>

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * (GaeaLog)实体类
- *
+ * 操作日志相关
  * @author peiyanni
  * @since 2021-02-18 16:30:25
  */

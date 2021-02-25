@@ -88,7 +88,7 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
     }
 
     @PostMapping("/menuUserInfoByOrg")
-    @GaeaAuditLog(pageTitle="切换组织获取菜单")
+    @GaeaAuditLog(pageTitle="获取菜单")
     public ResponseBean getMenuInfoByOrg(@RequestBody LeftMenuReqParam reqParam){
         String username = UserContentHolder.getContext().getUsername();
         //获取当前用户所在机构
