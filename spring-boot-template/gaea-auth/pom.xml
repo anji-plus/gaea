@@ -34,7 +34,6 @@
         <dependency>
             <groupId>com.anji-plus</groupId>
             <artifactId>spring-boot-starter-gaea-security</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -51,7 +50,6 @@
         <dependency>
             <groupId>com.anji-plus</groupId>
             <artifactId>spring-boot-starter-gaea-export</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
