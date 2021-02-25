@@ -29,8 +29,8 @@ public class GaeaExportEventListener {
     @Async
     public void getExportInfo(GaeaExportApplicationEvent event) {
         ExportOperation exportOperation = event.getExportOperation();
-        log.info("----收到的导出信息--{}", JSON.toJSONString(exportOperation));
+        log.info("--gaea-export:requestData:{}", JSON.toJSONString(exportOperation));
         Boolean isSuccess = businessServiceClient.export(exportOperation);
-        log.info("---save result---{}",isSuccess);
+        log.info("--gaea-export:result---{}",isSuccess);
     }
 }

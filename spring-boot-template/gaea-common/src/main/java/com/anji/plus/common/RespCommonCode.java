@@ -16,6 +16,7 @@ public class RespCommonCode {
     public static final String OLD_PASSWORD_ERROR="1003";
     public static final String USER_ONTEXIST_ORGINFO="1004";
     public static final String USER_ONTEXIST_ROLEINFO="1005";
+    public static final String MENU_TABLE_CODE_EXIST="1006";
 
     /**
      * 文件相关

@@ -43,8 +43,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.anjiplus.gaea</groupId>
-            <artifactId>gaea-log</artifactId>
+            <groupId>com.anji-plus</groupId>
+            <artifactId>spring-boot-starter-gaea-log</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

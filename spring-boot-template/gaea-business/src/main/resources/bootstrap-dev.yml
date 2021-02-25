@@ -11,3 +11,4 @@ spring:
         file-extension: yaml
       discovery:
         namespace: 5c6b6687-ad43-450f-88b6-e704ff78d83f
+
