@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * AccessKey拦截器
  * @author lir
- * @since 2019/7/9
+ * @since 2021-01-12
  **/
 public class AccessKeyInterceptor extends HandlerInterceptorAdapter {
 
@@ -55,17 +55,17 @@ public class AccessKeyInterceptor extends HandlerInterceptorAdapter {
         }
         //如果参数ID值为空
         if(StringUtils.isBlank(id)){
-            throw BusinessExceptionBuilder.build(ResponseCode.FAIL_CODE,"passkey校验失败，缺少参数ID");
+            throw BusinessExceptionBuilder.build(ResponseCode.FAIL_CODE,"accessKey校验失败，缺少参数ID");
         }
 
         String passKey= request.getParameter("accessKey");
         if(StringUtils.isBlank(passKey)){
-            throw BusinessExceptionBuilder.build(ResponseCode.FAIL_CODE,"passkey校验失败，缺少参数passkey");
+            throw BusinessExceptionBuilder.build(ResponseCode.FAIL_CODE,"accessKey校验失败，缺少参数accessKey");
         }
 
         String realPassKey = GaeaUtils.getPassKey(Long.parseLong(id));
         if (!StringUtils.equals(passKey,realPassKey)) {
-            throw BusinessExceptionBuilder.build(ResponseCode.FAIL_CODE,"passkey校验失败，传入的passkey参数值有误");
+            throw BusinessExceptionBuilder.build(ResponseCode.FAIL_CODE,"accessKey校验失败，传入的accessKey参数值有误");
         }
         return true;
     }

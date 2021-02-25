@@ -26,7 +26,7 @@ public class ResponseBeanAdvice implements ResponseBodyAdvice<ResponseBean> {
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return true;
+        return returnType.getParameterType() == ResponseBean.class;
     }
 
     @Override
