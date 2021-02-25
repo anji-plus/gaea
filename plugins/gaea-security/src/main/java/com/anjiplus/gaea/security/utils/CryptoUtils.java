@@ -3,7 +3,7 @@ package com.anjiplus.gaea.security.utils;
 
 /**
  * 加密解密工具类
- * @author lirui
+ * @author lr
  * @since 2021-01-27
  */
 

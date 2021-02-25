@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * 分布式环境中构造本地Security Authentication
  *
- * @author lirui
+ * @author lr
  * @since 2021-01-26
  */
 public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {

@@ -6,7 +6,7 @@ import java.util.Date;
 
 /**
  * 基础数据库实体
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 public class GaeaBaseEntity {

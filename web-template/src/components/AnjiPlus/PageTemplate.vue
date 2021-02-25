@@ -6,6 +6,16 @@
   prop-dialog   --- 弹窗form表单相关
   prop-btn      --- 页面是否存在按钮权限 
   prop-api      --- 增删改查接口
+  
+  增删改查接口部分传输格式如下
+  //                            //     参数说明          必须	   	       类型	           可选值	            默认值   
+  prop-api: {
+    query: getList,             //    查询接口            是           function            -                  -           
+    add: add,                   //    新增接口            否           function            -                  -  
+    edit: edit,                 //    编辑接口            否           function            -                  -      
+    delete: delete,             //    删除接口            否           function            -                  -      
+  },
+  
   查询条件部分传输格式如下
   prop-from:{
     // 所有查询条件列表               //     参数说明         必须	   	      类型	          可选值	          默认值      
@@ -42,7 +52,12 @@
       {
         label: '',                //         列名称           是            string             -                 -
         field: 'actionName',       //        字段名           是            string             -                 -
-        minWidth: '100'            //       列最小宽度         否            string             -                110
+        minWidth: '100',            //       列最小宽度         否            string             -                110
+        operate: true,    // 第一列是否有查看的功能（高亮可操作）  否            boolean         true/false      true
+        custom: false, //是否需要自定义展示内容(处理字段后再展示)  否            boolean         true/false      false
+        renderer: (row)=>{ //自定义的dom custom 字段为true时必有此值 否            function          -               -
+          return 自定义的dom   
+        },
       }
     ],
     border: true,                 //     表格是否带边框        否              boolean            -               true
@@ -131,9 +146,14 @@
       <el-table-column v-if="table.hasIndex" label="序号" type="index" width="50" align="center" />
       <el-table-column v-for="(item, index) in propTable.list" :key="item.field" :label="item.label" :min-width="item.minWidth || 110" align="center">
         <template slot-scope="scope">
-          <!-- 第一列高亮并且可以点击 -->
-          <span v-if="!index" class="view" @click="editDetail('view', scope.row)">{{ scope.row[item.field] }}</span>
-          <span v-else>{{ scope.row[item.field] }}</span>
+          <!-- 正常展示模式 -->
+          <div v-if="!item.custom">
+            <!-- 是第一列数据 && 需要高亮字段不为false 高亮并且可以点击 -->
+            <span v-if="!index && item.operate !== false" class="view" @click="editDetail('view', scope.row)">{{ scope.row[item.field] }}</span>
+            <span v-else>{{ scope.row[item.field] }}</span>
+          </div>
+          <!-- 自定义展示数据 -->
+          <div v-else v-html="item.renderer(scope.row)" />
         </template>
       </el-table-column>
       <!-- <el-table-column prop="enabled" label="启用状态" min-width="90" align="center">
@@ -200,7 +220,7 @@ export default {
       },
     },
     propDialog: {
-      require: true,
+      require: false,
       type: Object,
       default: () => {
         return {}
@@ -247,7 +267,7 @@ export default {
     !this.table.hasOwnProperty('border') && (this.table.border = true)
 
     // 弹窗处理
-    this.dialogList = cloneDeep(this.propDialog.list)
+    this.dialogList = cloneDeep(this.propDialog.list || [])
     this.dialogList.forEach((item) => {
       // 动态添加属性
       this.$set(this.dialogForm, item.field, item.fieldValue || null)

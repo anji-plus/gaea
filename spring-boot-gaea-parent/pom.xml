@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.anji-plus</groupId>
-    <artifactId>spring-boot-gaea-parent</artifactId>
+    <artifactId>spring-boot-gaea-parent-bak</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 

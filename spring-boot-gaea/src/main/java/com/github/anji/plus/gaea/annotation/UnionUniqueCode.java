@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * 聚合索引错误提示
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 

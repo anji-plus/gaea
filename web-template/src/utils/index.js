@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 10:55:54
  * @Last Modified by: zyk
- * @Last Modified time: 2020-08-12 10:03:56
+ * @Last Modified time: 2021-02-24 15:57:43
  */
 
 /**
@@ -439,4 +439,28 @@ export function Encrypt(word) {
   const srcs = CryptoJS.enc.Utf8.parse(word + getUUID())
   const encrypted = CryptoJS.AES.encrypt(srcs, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 })
   return encrypted.ciphertext.toString().toUpperCase()
+}
+
+/**
+ * 导出文件接口请求后的的公用方法
+ * res 请求后返回的response
+ * fileName 文件名
+ */
+export function downloadBlob(res, fileName) {
+  const blob = new Blob([res.data], {
+    type: 'application/vnd.ms-excel;charset=utf-8',
+  })
+  if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+    // ie
+    navigator.msSaveBlob(blob, fileName || '文件' + '.xlsx')
+  } else {
+    const link = document.createElement('a')
+    // let blob = new Blob([res.data], {type: 'application/vnd.ms-excel'})
+    link.style.display = 'none'
+    link.href = URL.createObjectURL(blob)
+    fileName && (link.download = fileName + '.xlsx') // 下载的文件名
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 }

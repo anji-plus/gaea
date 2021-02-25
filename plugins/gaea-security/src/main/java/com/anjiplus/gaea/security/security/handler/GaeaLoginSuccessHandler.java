@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * 登录成功
- * @author lirui
+ * @author lr
  * @since 2021-01-27
  */
 public class GaeaLoginSuccessHandler implements AuthenticationSuccessHandler {

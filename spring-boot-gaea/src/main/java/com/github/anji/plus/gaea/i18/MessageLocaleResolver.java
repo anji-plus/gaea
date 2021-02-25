@@ -28,7 +28,7 @@ public class MessageLocaleResolver implements LocaleResolver {
         String language = request.getHeader(localeHeader);
         //当为空时,采用默认的
         if(StringUtils.isBlank(language)) {
-            return Locale.getDefault();
+            return Locale.SIMPLIFIED_CHINESE;
         }
         Locale locale = Locale.forLanguageTag(language);
         return locale;

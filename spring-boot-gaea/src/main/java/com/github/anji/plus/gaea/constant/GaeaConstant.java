@@ -17,6 +17,11 @@ public interface GaeaConstant {
      */
     String SPLIT = ",";
 
+    /**
+     * 请求头
+     */
+    String Authorization = "Authorization";
+
 
     /**
      * redis分割
@@ -34,18 +39,13 @@ public interface GaeaConstant {
     String CHARSET_UTF8 = "UTF-8";
 
     /**
-     * 存在标识
-     */
-    String EXIST_FLAG = "1";
-
-    /**
      * 表ID
      */
     String ID = "id";
 
 
     /**
-     * 时间格式含毫秒
+     * 日期格式
      */
     String DATE_PATTERN = "yyyy-MM-dd";
 

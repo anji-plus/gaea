@@ -14,12 +14,13 @@
                     </li>
                     <li>
                       <label>更新时间：</label>
-                      <div>{{ dateFormat(templateDetails.updatedTime) }}</div>
+                      <div>{{ dateFormat(templateDetails.updateTime) }}</div>
                     </li>
                     <li>
                       <label>内容：</label>
-                      <div v-if="templateDetails.temolateType == 'mail'" v-html="templateDetails.template" />
-                      <div v-else>{{ templateDetails.template }}</div>
+                      <!--<div v-if="templateDetails.temolateType == 'mail'" v-html="templateDetails.template" />-->
+                      <!--<div v-else>{{ templateDetails.template }}</div>-->
+                      <div>{{ templateDetails.templateShow }}</div>
                     </li>
                     <li>
                       <label>模板参数：</label>

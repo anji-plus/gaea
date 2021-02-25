@@ -11,7 +11,7 @@ import java.util.Date;
 
 /**
  * 基础传输对象
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 public class GaeaBaseDTO {

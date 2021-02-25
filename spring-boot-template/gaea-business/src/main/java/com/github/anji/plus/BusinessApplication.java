@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * 业务模板
- * @author lirui
+ * @author lr
  * @since 2021-02-03
  */
 @SpringBootApplication

@@ -61,6 +61,7 @@ export default {
       table: {
         list: [
           {
+            // operate: false,
             label: '按钮代码', //         列名称           是            string             -                 -
             field: 'actionCode', //        字段名           是            string             -                 -
             // minWidth: '110'        //       列最小宽度         否            string             -                110
@@ -74,6 +75,10 @@ export default {
             label: '按钮状态', //         列名称           是            string             -                 -
             field: 'enabled', //        字段名           是            string             -                 -
             // minWidth: '110'        //       列最小宽度         否            string             -                110
+            custom: true,
+            renderer: function(row) {
+              return `<span>${row.enabled ? '是' : '否'}</span>`
+            },
           },
         ],
         // border: false,                 //     表格是否带边框        否              boolean            -               true

@@ -2,7 +2,7 @@ package com.github.anji.plus.gaea.exception;
 
 /**
  * 业务异常封装类
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 

@@ -1,14 +1,17 @@
 package com.github.anji.plus.modules.dict.service;
 
-import com.github.anji.plus.modules.dict.dao.entity.GaeaDict;
-import com.github.anji.plus.modules.dict.controller.param.GaeaDictParam;
+import com.github.anji.plus.gaea.bean.KeyValue;
 import com.github.anji.plus.gaea.curd.service.GaeaBaseService;
+import com.github.anji.plus.modules.dict.controller.param.GaeaDictParam;
+import com.github.anji.plus.modules.dict.dao.entity.GaeaDict;
+
+import java.util.List;
 
 /**
- * 数组字典(GaeaDict)Service
+ * (GaeaDict)Service
  *
- * @author lirui
- * @since 2021-02-03 12:47:45
+ * @author lr
+ * @since 2021-02-23 10:01:02
  */
 public interface GaeaDictService extends GaeaBaseService<GaeaDictParam, GaeaDict> {
 
@@ -17,5 +20,20 @@ public interface GaeaDictService extends GaeaBaseService<GaeaDictParam, GaeaDict
      * @param dictCode
      */
     void refresh(String dictCode);
+
+    /**
+     * 刷新全部缓存
+     * @param gaeaDicts
+     */
+    void refreshCache(List<GaeaDict> gaeaDicts);
+
+
+    /**
+     * 获取指定字典code下拉
+     * @param dictCode
+     * @param language
+     * @return
+     */
+    List<KeyValue> select(String dictCode, String language);
 
 }

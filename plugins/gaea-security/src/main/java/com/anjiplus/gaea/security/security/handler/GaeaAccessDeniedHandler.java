@@ -19,7 +19,7 @@ import java.io.IOException;
 
 /**
  * 权限不通过
- * @author lirui
+ * @author lr
  * @since 2021-01-26
  */
 public class GaeaAccessDeniedHandler implements AccessDeniedHandler {

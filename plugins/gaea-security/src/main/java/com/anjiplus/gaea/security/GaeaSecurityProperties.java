@@ -4,7 +4,7 @@ import com.github.anji.plus.gaea.constant.GaeaConstant;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author lirui
+ * @author lr
  * @since 2021-01-20
  */
 @ConfigurationProperties(prefix = GaeaConstant.COMPONENT_PREFIX + GaeaSecurityProperties.COMPONENT_NAME)

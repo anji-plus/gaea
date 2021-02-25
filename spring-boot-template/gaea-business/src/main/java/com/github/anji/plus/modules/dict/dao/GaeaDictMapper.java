@@ -5,10 +5,10 @@ import com.github.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 数组字典(GaeaDict)Mapper
+ * (GaeaDict)Mapper
  *
- * @author lirui
- * @since 2021-02-03 12:47:45
+ * @author lr
+ * @since 2021-02-23 10:01:02
  */
 @Mapper
 public interface GaeaDictMapper extends GaeaBaseMapper<GaeaDict> {

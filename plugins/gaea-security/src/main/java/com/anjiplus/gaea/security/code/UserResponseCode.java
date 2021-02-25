@@ -2,7 +2,7 @@ package com.anjiplus.gaea.security.code;
 
 /**
  * 响应码
- * @author lirui
+ * @author lr
  * @since 2021-01-16
  */
 public interface UserResponseCode {

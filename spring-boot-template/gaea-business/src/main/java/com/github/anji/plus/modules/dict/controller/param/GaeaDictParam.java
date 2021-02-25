@@ -2,27 +2,75 @@ package com.github.anji.plus.modules.dict.controller.param;
 
 
 import com.github.anji.plus.gaea.curd.params.PageParam;
+
 import java.io.Serializable;
 
 /**
- * 数组字典(GaeaDict)param
+ * (GaeaDict)param
  *
- * @author lirui
- * @since 2021-02-03 12:47:45
+ * @author lr
+ * @since 2021-02-23 10:01:02
  */
 public class GaeaDictParam extends PageParam implements Serializable {
-
+    /**
+     * 字典名称
+     */
+    private String dictName;
+    /**
+     * 字典描述
+     */
+    private String dictDesc;
+    /**
+     * 代码英文
+     */
+    private String itemName;
+    /**
+     * 代码值，对应select option 值
+     */
+    private String itemValue;
 
     /**
-     * 数据字典编码
+     * 启用状态
      */
-    private String dictCode;
+    private Integer enabled;
 
-    public String getDictCode() {
-        return dictCode;
+    public String getDictName() {
+        return dictName;
     }
 
-    public void setDictCode(String dictCode) {
-        this.dictCode = dictCode;
+    public void setDictName(String dictName) {
+        this.dictName = dictName;
+    }
+
+    public String getDictDesc() {
+        return dictDesc;
+    }
+
+    public void setDictDesc(String dictDesc) {
+        this.dictDesc = dictDesc;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getItemValue() {
+        return itemValue;
+    }
+
+    public void setItemValue(String itemValue) {
+        this.itemValue = itemValue;
+    }
+
+    public Integer getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Integer enabled) {
+        this.enabled = enabled;
     }
 }

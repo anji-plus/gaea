@@ -44,16 +44,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GaeaFileServiceImpl implements GaeaFileService {
 
-    @Value("${file.dist-path}")
+    @Value("${file.dist-path:''}")
     private String dictPath;
 
-    @Value("${file.white-list}")
+    @Value("${file.white-list:''}")
     private String whiteList;
 
-    @Value("${file.excelSuffix}")
+    @Value("${file.excelSuffix:''}")
     private String excelSuffix;
 
-    @Value("${file.downloadPath}")
+    @Value("${file.downloadPath:''}")
     private String fileDownloadPath;
 
     @Autowired

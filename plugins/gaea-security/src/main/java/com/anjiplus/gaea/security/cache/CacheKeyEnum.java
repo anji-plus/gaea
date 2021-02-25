@@ -3,7 +3,7 @@ package com.anjiplus.gaea.security.cache;
 /**
  * 缓存对象key.
  *
- * @author lirui
+ * @author lr
  * @since 2019-07-30 09:28
  */
 public enum CacheKeyEnum {

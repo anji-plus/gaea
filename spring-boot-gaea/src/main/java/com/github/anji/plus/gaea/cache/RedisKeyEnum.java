@@ -3,7 +3,7 @@ package com.github.anji.plus.gaea.cache;
 /**
  * redis中的key
  *
- * @author lirui
+ * @author lr
  * @since 2021-01-12
  */
 public enum RedisKeyEnum {
