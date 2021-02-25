@@ -47,8 +47,8 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.anjiplus.gaea</groupId>
-            <artifactId>gaea-export</artifactId>
+            <groupId>com.anji-plus</groupId>
+            <artifactId>spring-boot-starter-gaea-export</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
