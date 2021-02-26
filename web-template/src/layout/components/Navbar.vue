@@ -6,6 +6,8 @@
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
+        <el-link :underline="false" target="_blank" href="https://github.com/anji-plus/gaea" class="doc">{{ $t('navbar.github') }}</el-link>
+        <!-- <div href="https://github.com/anji-plus/gaea" class="right-menu-item doc">盖亚</div> -->
         <!-- 搜索功能按钮 -->
         <!-- <search id="header-search" class="right-menu-item" /> -->
         <!-- 国际化 -->
@@ -13,9 +15,9 @@
         <!-- 全屏展示功能按钮 -->
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
-        <!-- <el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">
+        <el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip> -->
+        </el-tooltip>
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" placement="bottom-end" :hide-on-click="true" trigger="click">
@@ -49,6 +51,12 @@
                 <el-button type="danger" plain @click.native="logout"> {{ $t('navbar.logOut') }} </el-button>
               </el-dropdown-item>
             </div>
+            <!-- <p class="help_center"> -->
+            <el-link type="info" class="help_center" @click="$router.push('/helpCenList')">帮助中心</el-link>
+            <!-- <router-link to="/helpCenList">
+                帮助中心
+              </router-link> -->
+            <!-- </p> -->
           </div>
           <!-- <router-link to="/change-password">
             <el-dropdown-item>
@@ -71,7 +79,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 // import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
-// import SizeSelect from '@/components/SizeSelect'
+import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 // import Search from '@/components/HeaderSearch'
 
@@ -81,7 +89,7 @@ export default {
     Hamburger,
     // ErrorLog,
     Screenfull,
-    // SizeSelect,
+    SizeSelect,
     LangSelect,
     // Search
   },
@@ -170,6 +178,12 @@ export default {
           background: rgba(0, 0, 0, 0.1);
         }
       }
+    }
+    .doc {
+      display: inline-block;
+      padding: 0 8px;
+      vertical-align: text-bottom;
+      font-size: 12px;
     }
     .user_info {
       position: relative;
@@ -274,6 +288,17 @@ export default {
     li:hover {
       background-color: transparent;
     }
+  }
+  .help_center {
+    display: inline-block;
+    // width: 90px;
+    height: 12px;
+    margin: 0 auto;
+    text-align: center;
+    // a{
+    //   text-decoration: underline;
+    font-size: 12px;
+    // }
   }
 }
 .popper__arrow {
