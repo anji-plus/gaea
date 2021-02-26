@@ -21,6 +21,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -48,7 +49,9 @@ public class GaeaAuditLogAspect {
     private GaeaAuditLogProperties gaeaAuditLogProperties;
 
     @Autowired
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     // 配置织入点
     @Pointcut("@annotation(com.anji.plus.gaea.annotation.log.GaeaAuditLog)")
@@ -93,16 +96,24 @@ public class GaeaAuditLogAspect {
             String className = joinPoint.getTarget().getClass().getName();
             String methodName = joinPoint.getSignature().getName();
             //设置url
-            operLog.setRequestUrl(getRequest().getRequestURI());
+            HttpServletRequest request=getRequest();
+            operLog.setRequestUrl(request.getRequestURI());
             // 设置请求方式
-            operLog.setRequestMethod(getRequest().getMethod());
+            operLog.setRequestMethod(request.getMethod());
             operLog.setRequestTime(new Date());
+            //获取ip
+            operLog.setSourceIp(getSourceIp(request));
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog);
             log.info("--gaeaLog:requestData--{}", JSON.toJSONString(operLog));
-            restTemplateCallback(operLog,getRequest());
             if (gaeaAuditLogProperties.isPublishEvent()) {
                 ApplicationContextUtils.publishEvent(new AuditLogApplicationEvent(this, operLog));
+            }
+            //执行回调
+            if(!StringUtils.isEmpty(gaeaAuditLogProperties.getCallbackUrl())){
+                threadPoolTaskExecutor.execute(()->{
+                    restTemplateCallback(operLog,request);
+                });
             }
         } catch (Exception exp) {
             // 记录本地异常日志
@@ -141,12 +152,6 @@ public class GaeaAuditLogAspect {
         if (HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod)) {
             String params = argsArrayToString(joinPoint.getArgs());
             operLog.setRequestParam(params);
-            try {
-                JSONObject jsonObject = JSONObject.parseObject(params);
-                operLog.setSourceIp(jsonObject.getString("opSourceIP"));
-            } catch (Exception e) {
-                log.warn("--gaeaLog:error--", e);
-            }
         }else if(HttpMethod.GET.name().equals(requestMethod)){
             Map<String,String[]> paramMap= getRequest().getParameterMap();
             operLog.setRequestParam(JSON.toJSONString(paramMap));
@@ -220,9 +225,6 @@ public class GaeaAuditLogAspect {
      */
     private void restTemplateCallback(LogOperation logOperation,HttpServletRequest request) {
         String url = gaeaAuditLogProperties.getCallbackUrl();
-        if (StringUtils.isEmpty(url)) {
-            return;
-        }
         try {
             log.info("--gaeaLog:callBack:url-{}--", url);
             HttpHeaders headers_new = new HttpHeaders();
@@ -235,5 +237,23 @@ public class GaeaAuditLogAspect {
         } catch (Exception e) {
             log.error("--gaeaLog:callBack:error--", e.getMessage());
         }
+    }
+
+    public static String getSourceIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+            //多次反向代理后会有多个ip值，第一个ip才是真实ip
+            int index = ip.indexOf(",");
+            if (index != -1) {
+                return ip.substring(0, index);
+            } else {
+                return ip;
+            }
+        }
+        ip = request.getHeader("X-Real-IP");
+        if (!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+            return ip;
+        }
+        return request.getRemoteAddr();
     }
 }
