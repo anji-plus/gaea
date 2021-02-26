@@ -44,13 +44,6 @@ public class GaeaUserController extends GaeaBaseController<GaeaUserParam, GaeaUs
         return new GaeaUserDTO();
     }
 
-
-    @PostMapping("/insertUser")
-    @GaeaAuditLog(pageTitle = "新增用户")
-    public ResponseBean saveGaeauser(@Validated @RequestBody GaeaUserDTO dto){
-        return responseSuccessWithData(gaeaUserService.saveGaeaUser(dto));
-    }
-
     /**
      * 查询用户关联的机构角色树
      *
