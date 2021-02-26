@@ -4,9 +4,13 @@
       <svg-icon class-name="size-icon" icon-class="size" />
     </div>
     <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item v-for="item of sizeOptions" :key="item.value" :disabled="size === item.value" :command="item.value">
+      <!-- <el-dropdown-item v-for="item of sizeOptions" :key="item.value" :disabled="size === item.value" :command="item.value">
         {{ item.label }}
-      </el-dropdown-item>
+      </el-dropdown-item> -->
+      <el-dropdown-item :disabled="size === 'default'" command="default">{{ $t('navbar.default') }}</el-dropdown-item>
+      <!-- <el-dropdown-item :disabled="size === 'medium'" command="medium">{{ $t('navbar.medium') }}</el-dropdown-item> -->
+      <el-dropdown-item :disabled="size === 'small'" command="small">{{ $t('navbar.small') }}</el-dropdown-item>
+      <el-dropdown-item :disabled="size === 'mini'" command="mini">{{ $t('navbar.mini') }}</el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
 </template>

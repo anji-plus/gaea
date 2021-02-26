@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 16:59:48
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-29 15:50:29
+ * @Last Modified time: 2021-02-26 17:01:15
  */
 export default {
   system: {
@@ -91,11 +91,15 @@ export default {
     github: '项目地址',
     logOut: '退出登录',
     theme: '换肤',
-    size: '布局大小',
     changePassword: '修改密码',
     personal: '个人中心',
     account: '账号',
     organisation: '组织',
+    size: '字体设置',
+    medium: '自动',
+    default: '大号',
+    small: '中号',
+    mini: '小号',
   },
   settings: {
     title: '系统布局配置',

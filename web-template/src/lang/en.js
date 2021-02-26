@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 14:23:33
  * @Last Modified by: zyk
- * @Last Modified time: 2021-01-29 15:50:42
+ * @Last Modified time: 2021-02-26 17:02:27
  */
 export default {
   system: {
@@ -91,11 +91,15 @@ export default {
     github: 'Github',
     logOut: 'Log out',
     theme: 'Theme',
-    size: 'Global size',
     changePassword: 'Change password',
     personal: 'Personal center',
     account: 'Account',
     organisation: 'Organisation',
+    size: 'Size',
+    medium: 'Medium',
+    default: 'Default',
+    small: 'Small',
+    mini: 'Mini',
   },
   settings: {
     title: 'Page style setting',
