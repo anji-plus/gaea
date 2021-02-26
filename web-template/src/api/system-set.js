@@ -169,19 +169,10 @@ export function gaeaHelpDelect(id) {
   })
 }
 
-// 数据字典接口  获取帮助中心所属分类
-export function dataDictionary(dictName) {
+// 操作日志导出
+export function exportLogToFile(data) {
   return request({
-    url: `/business/gaeaDict/select/${dictName}`,
-    method: 'get',
-  })
-}
-
-// 图片上传接口
-// 帮助中心新增
-export function uploadImg(data) {
-  return request({
-    url: '/business/file/upload',
+    url: '/auth/log/exportLogToFile',
     method: 'POST',
     data,
   })

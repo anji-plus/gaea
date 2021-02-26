@@ -28,10 +28,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="启用状态" prop="enableFlag">
-            <el-select v-model="form.enableFlag" :placeholder="$t('placeholder.select')">
+          <el-form-item label="启用状态" prop="enabled">
+            <el-select v-model="form.enabled" :placeholder="$t('placeholder.select')">
               <el-option key="1" label="启用" :value="1" />
               <el-option key="0" label="禁用" :value="0" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="语言" prop="locale">
+            <el-select v-model="form.locale" :placeholder="$t('placeholder.select')">
+              <el-option v-for="(item, i) in language" :key="i" :label="item.text" :value="item.id" />
             </el-select>
           </el-form-item>
         </el-col>
@@ -40,7 +47,7 @@
             <el-input-number v-model="form.sort" :min="1" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="24">
           <el-form-item label="备注">
             <el-input v-model="form.remark" />
           </el-form-item>
@@ -92,6 +99,12 @@ export default {
         return ''
       },
     },
+    language: {
+      type: Array,
+      default: function() {
+        return []
+      },
+    },
     form: {
       type: Object,
       default: function() {
@@ -103,7 +116,8 @@ export default {
           itemValue: '',
           itemDesc: '',
           itemExtend: '',
-          enableFlag: null,
+          enabled: null,
+          locale: '',
           deleteFlag: null,
           sort: null,
           remark: '',
@@ -140,7 +154,8 @@ export default {
         itemName: [{ required: true, message: '请输入字典代码', trigger: 'blur' }],
         itemValue: [{ required: true, message: '请输入代码值', trigger: 'blur' }],
         itemDesc: [{ required: true, message: '请输入代码描述', trigger: 'blur' }],
-        enableFlag: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
+        enabled: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
+        locale: [{ required: true, message: '请选择语言', trigger: 'change' }],
         sort: [
           { required: true, message: '请输入排序', trigger: 'blur' },
           { type: 'number', message: '排序必须为数字值' },

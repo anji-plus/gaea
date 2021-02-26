@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import { dataDictionary } from '@/api/system-set'
+import { dataDictionary } from '@/api/common'
 import { gaeaPushTemplateDelect, gaeaPushTemplateSearch } from '@/api/push-notify'
 import Modal from './component/Modal.vue'
 import Edit from './component/Modal-edit'

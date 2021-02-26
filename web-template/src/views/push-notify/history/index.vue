@@ -74,7 +74,7 @@
 
 <script>
 import { gaeaPushHistorySearch } from '@/api/push-notify'
-import { dataDictionary } from '@/api/system-set'
+import { dataDictionary } from '@/api/common'
 import Modal from '../template/component/Modal'
 // import {queryPushHistoryByPage, queryPushHistoryById} from '@/api/push/notify';
 import Details from './component/Modal-details.vue'
