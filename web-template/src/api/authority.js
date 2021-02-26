@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:14:13
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-07 14:49:08
+ * @Last Modified time: 2021-02-26 12:12:21
  */
 import request from '@/utils/request'
 // 权限菜单中几个页面的接口
@@ -103,7 +103,8 @@ export function getUserList(params) {
 // 新增接口
 export function addUser(data) {
   return request({
-    url: '/auth/user/insertUser',
+    // url: '/auth/user/insertUser',
+    url: '/auth/user',
     method: 'post',
     data,
   })
