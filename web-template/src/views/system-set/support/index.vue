@@ -83,7 +83,8 @@
 </template>
 
 <script>
-import { gaeaHelpPageList, gaeaHelpDelect, dataDictionary } from '@/api/system-set'
+import { gaeaHelpPageList, gaeaHelpDelect } from '@/api/system-set'
+import { dataDictionary } from '@/api/common'
 import AddEdit from './component/index'
 var typeData
 export default {

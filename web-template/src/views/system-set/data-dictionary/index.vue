@@ -25,9 +25,16 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item prop="enableFlag" label="启用状态">
-                <el-select v-model="params.enableFlag" :placeholder="$t('placeholder.select')">
+              <el-form-item prop="enabled" label="启用状态">
+                <el-select v-model="params.enabled" :placeholder="$t('placeholder.select')">
                   <el-option v-for="(item, i) in statusList" :key="i" :label="item.label" :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item prop="locale" label="语言">
+                <el-select v-model="params.locale" :placeholder="$t('placeholder.select')">
+                  <el-option v-for="(item, i) in languageList" :key="i" :label="item.text" :value="item.id" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -78,7 +85,12 @@
       </el-table-column>
       <el-table-column label="启用状态" min-width="90" align="center">
         <template slot-scope="scope">
-          {{ scope.row.enableFlag | filterStatus }}
+          {{ scope.row.enabled | filterStatus }}
+        </template>
+      </el-table-column>
+      <el-table-column label="语言" min-width="90" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.locale | filterLanguage }}
         </template>
       </el-table-column>
       <el-table-column label="备注" min-width="110" align="center">
@@ -115,7 +127,7 @@
     </div>
 
     <el-dialog title="表单" center width="40%" :visible.sync="dialogFormVisible">
-      <add-edit ref="dlg" :form="formData" :click-type="clickType" @cancel="cancel" />
+      <add-edit ref="dlg" :form="formData" :language="languageList" :click-type="clickType" @cancel="cancel" />
     </el-dialog>
   </div>
 </template>
@@ -123,7 +135,8 @@
 <script>
 import AddEdit from './component/index'
 import { gaeaDictpageList, businessGaeaDictDelect } from '@/api/system-set'
-// import { queryByPage, deleteOne } from '@/api/system/dict'
+import { dataDictionary } from '@/api/common'
+var typeData
 export default {
   components: {
     AddEdit,
@@ -132,9 +145,18 @@ export default {
     filterStatus(val) {
       return val === 1 ? '启用' : '禁用'
     },
+    filterLanguage(val) {
+      for (var i = 0; i < typeData.languageList.length; i++) {
+        if (typeData.languageList[i].id == val) {
+          return typeData.languageList[i].text
+        }
+      }
+    },
   },
   data() {
     return {
+      // 语言列表
+      languageList: [],
       clickType: '',
       formData: {},
       // 启用状态数据
@@ -174,7 +196,8 @@ export default {
           { required: false, message: '请输入代码描述', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
         ],
-        enableFlag: [{ required: false, message: '请选择启用状态', trigger: 'change' }],
+        enabled: [{ required: false, message: '请选择启用状态', trigger: 'change' }],
+        locale: [{ required: false, message: '请选择语言', trigger: 'change' }],
       },
       params: {
         currentPage: 1,
@@ -183,7 +206,8 @@ export default {
         dictDesc: '',
         itemName: '',
         itemDesc: '',
-        enableFlag: null,
+        locale: '',
+        enabled: null,
       },
       list: null,
       totalCount: 0,
@@ -199,7 +223,14 @@ export default {
       }
     },
   },
+  // 在生命周期 beforeCreate里面改变this指向
+  beforeCreate: function() {
+    typeData = this
+  },
   created() {
+    dataDictionary('LOCALE').then((res) => {
+      this.languageList = res.data
+    })
     this.queryByPage()
   },
   methods: {
@@ -234,7 +265,8 @@ export default {
       this.params.dictDesc = ''
       this.params.itemName = ''
       this.params.itemDesc = ''
-      this.params.enableFlag = null
+      this.params.locale = ''
+      this.params.enabled = null
       this.queryByPage()
     },
     // 新增or编辑
