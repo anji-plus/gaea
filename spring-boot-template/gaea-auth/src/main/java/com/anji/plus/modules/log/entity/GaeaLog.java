@@ -79,6 +79,9 @@ public class GaeaLog extends GaeaBaseEntity implements Serializable {
         return responseParam;
     }
 
+    public void setResponseParam(String responseParam) {
+        this.responseParam = responseParam;
+    }
 
     public String getSourceIp() {
         return sourceIp;

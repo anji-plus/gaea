@@ -7,7 +7,7 @@ import com.anji.plus.modules.log.controller.dto.GaeaLogDTO;
 import com.anji.plus.modules.log.controller.param.GaeaLogParam;
 import com.anji.plus.modules.log.entity.GaeaLog;
 import com.anji.plus.modules.log.service.GaeaLogService;
-import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
+import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import com.anjiplus.gaea.log.aspect.LogOperation;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;

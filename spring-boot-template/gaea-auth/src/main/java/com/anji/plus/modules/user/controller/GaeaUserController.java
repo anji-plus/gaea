@@ -10,7 +10,7 @@ import com.anji.plus.modules.user.controller.param.GaeaUserPasswordParam;
 import com.anji.plus.modules.user.controller.param.UserRoleOrgReqParam;
 import com.anji.plus.modules.user.dao.entity.GaeaUser;
 import com.anji.plus.modules.user.service.GaeaUserService;
-import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
+import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;

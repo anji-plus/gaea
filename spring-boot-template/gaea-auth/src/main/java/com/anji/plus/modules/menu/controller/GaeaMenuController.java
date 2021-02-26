@@ -1,7 +1,6 @@
 package com.anji.plus.modules.menu.controller;
 
 import com.anji.plus.modules.org.dao.entity.GaeaOrg;
-import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.anji.plus.gaea.bean.ResponseBean;
 import com.anji.plus.gaea.bean.TreeNode;
 import com.anji.plus.gaea.curd.controller.GaeaBaseController;
@@ -18,6 +17,7 @@ import com.anji.plus.modules.menu.service.GaeaMenuService;
 import com.anji.plus.modules.role.service.GaeaRoleService;
 import com.anji.plus.modules.user.dao.entity.GaeaUser;
 import com.anji.plus.modules.user.service.GaeaUserService;
+import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;

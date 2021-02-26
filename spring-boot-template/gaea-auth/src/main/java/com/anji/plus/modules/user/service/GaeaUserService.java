@@ -49,13 +49,6 @@ public interface GaeaUserService extends GaeaBaseService<GaeaUserParam, GaeaUser
     Boolean updatePassword(GaeaUserPasswordParam requestParam);
 
     /**
-     * 管理员-新增用户
-     * @param dto
-     * @return
-     */
-    Boolean saveGaeaUser(GaeaUserDTO dto);
-
-    /**
      * 根据用户查询所属的全部机构信息
      * @param username
      * @return

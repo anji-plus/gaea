@@ -8,6 +8,7 @@ import com.anji.plus.gaea.utils.ApplicationContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -95,15 +96,15 @@ public class ExportUtil {
         try {
             if (exportOperation.getExportType().equals(ExportTypeEnum.SIMPLE_EXCEL.getCodeValue())) {
                 //easyexcel
-                exportOperation.setFilePath(dictPath + fileId + ".xlsx");
+                exportOperation.setFilePath(dictPath+ File.separator + fileId + ".xlsx");
                 EasyExcelUtil.excelExportByFilePath(exportOperation, clazz);
             } else if (exportOperation.getExportType().equals(ExportTypeEnum.JASPER_TEMPLATE_EXCEL.getCodeValue())) {
                 //jasper excel
-                exportOperation.setFilePath(dictPath + fileId + ".xlsx");
+                exportOperation.setFilePath(dictPath+ File.separator + fileId + ".xlsx");
                 JasperUtil.jasperExcelByFilePath(exportOperation);
             } else if (exportOperation.getExportType().equals(ExportTypeEnum.JASPER_TEMPLATE_PDF.getCodeValue())) {
                 //jasper pdf
-                exportOperation.setFilePath(dictPath + fileId + ".pdf");
+                exportOperation.setFilePath(dictPath + File.separator+ fileId + ".pdf");
                 JasperUtil.jasperPDFByFilePath(exportOperation);
             }
             exportOperation.setFileStatus(FileStatusEnum.SUCCESS.getCodeValue());

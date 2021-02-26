@@ -1,4 +1,4 @@
-package com.anjiplus.gaea.log.annotation;
+package com.anji.plus.gaea.annotation.log;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -24,5 +24,6 @@ public @interface GaeaAuditLog {
      * 是否保存请求的参数和响应参数
      */
     boolean isSaveRequestData() default true;
+    boolean isSaveResponseData() default false;
 
 }

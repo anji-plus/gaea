@@ -8,8 +8,8 @@ import com.anji.plus.modules.menuextension.controller.dto.GaeaMenuUserExtensionD
 import com.anji.plus.modules.menuextension.controller.param.GaeaMenuUserExtensionParam;
 import com.anji.plus.modules.menuextension.entity.GaeaMenuUserExtension;
 import com.anji.plus.modules.menuextension.service.GaeaMenuUserExtensionService;
-import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.anji.plus.modules.menuextension.controller.dto.GaeaMenuUserExtensionListDTO;
+import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
