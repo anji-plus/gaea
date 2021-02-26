@@ -1,10 +1,11 @@
-package com.github.anji.plus.modules.export.controller.dto;
+package com.anji.plus.modules.export.controller.dto;
 
 import com.anji.plus.gaea.curd.dto.GaeaBaseDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -29,14 +30,14 @@ public class GaeaExportDTO extends GaeaBaseDTO {
      * 导出前，查询的数据开始时间
      */
     @ApiModelProperty(value = "导出前，查询的数据开始时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date resultStartTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private LocalDateTime resultStartTime;
     /**
      * 导出前，查询的数据结束时间
      */
     @ApiModelProperty(value = "导出前，查询的数据结束时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date resultEndTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private LocalDateTime resultEndTime;
     /**
      * 导出查询结果，数据总条数
      */
@@ -46,14 +47,14 @@ public class GaeaExportDTO extends GaeaBaseDTO {
      * 文件导出触发时间
      */
     @ApiModelProperty(value = "文件导出触发时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date fileCreateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private LocalDateTime fileCreateTime;
     /**
      * 文件生成完成时间
      */
     @ApiModelProperty(value = "文件生成完成时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date fileFinishTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private LocalDateTime fileFinishTime;
     /**
      * 文件状态，creating生成中，success生成成功,failed生成失败
      */
@@ -81,21 +82,7 @@ public class GaeaExportDTO extends GaeaBaseDTO {
         this.fileTitle = fileTitle;
     }
 
-    public Date getResultStartTime() {
-        return resultStartTime;
-    }
 
-    public void setResultStartTime(Date resultStartTime) {
-        this.resultStartTime = resultStartTime;
-    }
-
-    public Date getResultEndTime() {
-        return resultEndTime;
-    }
-
-    public void setResultEndTime(Date resultEndTime) {
-        this.resultEndTime = resultEndTime;
-    }
 
     public Long getResultSize() {
         return resultSize;
@@ -105,19 +92,35 @@ public class GaeaExportDTO extends GaeaBaseDTO {
         this.resultSize = resultSize;
     }
 
-    public Date getFileCreateTime() {
+    public LocalDateTime getResultStartTime() {
+        return resultStartTime;
+    }
+
+    public void setResultStartTime(LocalDateTime resultStartTime) {
+        this.resultStartTime = resultStartTime;
+    }
+
+    public LocalDateTime getResultEndTime() {
+        return resultEndTime;
+    }
+
+    public void setResultEndTime(LocalDateTime resultEndTime) {
+        this.resultEndTime = resultEndTime;
+    }
+
+    public LocalDateTime getFileCreateTime() {
         return fileCreateTime;
     }
 
-    public void setFileCreateTime(Date fileCreateTime) {
+    public void setFileCreateTime(LocalDateTime fileCreateTime) {
         this.fileCreateTime = fileCreateTime;
     }
 
-    public Date getFileFinishTime() {
+    public LocalDateTime getFileFinishTime() {
         return fileFinishTime;
     }
 
-    public void setFileFinishTime(Date fileFinishTime) {
+    public void setFileFinishTime(LocalDateTime fileFinishTime) {
         this.fileFinishTime = fileFinishTime;
     }
 
