@@ -2,12 +2,13 @@ package com.anji.plus.modules.user.service.impl;
 
 import com.anji.plus.common.MagicValueConstants;
 import com.anji.plus.common.RespCommonCode;
+import com.anji.plus.gaea.constant.BaseOperationEnum;
+import com.anji.plus.gaea.exception.BusinessException;
 import com.anji.plus.modules.menu.controller.dto.TreeDTO;
 import com.anji.plus.modules.org.dao.GaeaOrgMapper;
 import com.anji.plus.modules.org.dao.entity.GaeaOrg;
 import com.anji.plus.modules.role.controller.dto.RoleOrgDto;
 import com.anji.plus.modules.role.dao.GaeaRoleOrgMapper;
-import com.anji.plus.modules.user.controller.dto.GaeaUserDTO;
 import com.anji.plus.modules.user.controller.param.GaeaUserPasswordParam;
 import com.anji.plus.modules.user.controller.param.UserRoleOrgReqParam;
 import com.anji.plus.modules.user.dao.GaeaUserRoleOrgMapper;
@@ -25,7 +26,6 @@ import com.anji.plus.modules.user.dao.GaeaUserMapper;
 import com.anji.plus.modules.user.service.GaeaUserService;
 import com.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -146,17 +146,6 @@ public class GaeaUserServiceImpl implements GaeaUserService {
         }
     }
 
-    @Override
-    public Boolean saveGaeaUser(GaeaUserDTO dto) {
-        //设置默认密码
-        String md5Pwd = MD5Util.encryptBySalt(MagicValueConstants.DEFAULT_PASSWORD);
-        String defaultPwd = DecryptUtil.decrypt(md5Pwd);
-        dto.setPassword(defaultPwd);
-        GaeaUser gaeaUser = new GaeaUser();
-        BeanUtils.copyProperties(dto, gaeaUser);
-        gaeaUserMapper.insert(gaeaUser);
-        return MagicValueConstants.TRUE;
-    }
 
     @Override
     public List<GaeaOrg> getOrgByUsername(String username) {
@@ -213,5 +202,19 @@ public class GaeaUserServiceImpl implements GaeaUserService {
         return childList;
     }
 
+    @Override
+    public void processBeforeOperation(GaeaUser entity, BaseOperationEnum operationEnum) throws BusinessException {
+        switch (operationEnum) {
+            case INSERT:
+                setDefaultPwd(entity);
+                break;
+            default:
+        }
+    }
 
+    private void setDefaultPwd(GaeaUser entity){
+        String md5Pwd = MD5Util.encryptBySalt(MagicValueConstants.DEFAULT_PASSWORD);
+        String defaultPwd = DecryptUtil.decrypt(md5Pwd);
+        entity.setPassword(defaultPwd);
+    }
 }

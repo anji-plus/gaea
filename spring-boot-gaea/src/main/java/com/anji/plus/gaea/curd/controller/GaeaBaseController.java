@@ -4,6 +4,7 @@ package com.anji.plus.gaea.curd.controller;
 
 import com.anji.plus.gaea.annotation.AccessKey;
 import com.anji.plus.gaea.annotation.Permission;
+import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import com.anji.plus.gaea.holder.UserContentHolder;
 import com.anji.plus.gaea.utils.GaeaBeanUtils;
 import com.anji.plus.gaea.utils.GaeaUtils;
@@ -68,6 +69,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
      * @return
      */
     @GetMapping("/pageList")
+    @GaeaAuditLog(pageTitle = "查询")
     public ResponseBean pageList(P param) {
         IPage iPage = getService().page(param);
         List<T> records = iPage.getRecords();
@@ -120,6 +122,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
      * @throws Exception
      */
     @PostMapping
+    @GaeaAuditLog(pageTitle = "新增")
     public ResponseBean insert(@Validated @RequestBody D dto) {
         logger.info("{}新增服务开始，参数：{}", this.getClass().getSimpleName(), GaeaUtils.toJSONString(dto));
 
@@ -143,6 +146,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
      * @throws Exception
      */
     @PutMapping
+    @GaeaAuditLog(pageTitle = "修改")
     public ResponseBean update(@Validated @RequestBody D dto) {
         String username = UserContentHolder.getContext().getUsername();
         logger.info("{}更新服务开始,更新人：{}，参数：{}", this.getClass().getSimpleName(), username, GaeaUtils.toJSONString(dto));
@@ -165,6 +169,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
      * @return
      */
     @DeleteMapping("/{id}")
+    @GaeaAuditLog(pageTitle = "删除")
     public ResponseBean deleteById(@PathVariable("id") Long id) {
         logger.info("{}删除服务开始，参数ID：{}", this.getClass().getSimpleName(), id);
         getService().deleteById(id);
@@ -180,6 +185,7 @@ public abstract class GaeaBaseController<P extends PageParam, T extends GaeaBase
      */
     @PostMapping("/delete/batch")
     @Permission(value = "del")
+    @GaeaAuditLog(pageTitle = "批量删除")
     public ResponseBean deleteBatchIds(@RequestBody List<Long> ids) {
         logger.info("{}批量删除服务开始，批量参数Ids：{}", this.getClass().getSimpleName(), GaeaUtils.toJSONString(ids));
         boolean deleteCount = getService().deleteByIds(ids);

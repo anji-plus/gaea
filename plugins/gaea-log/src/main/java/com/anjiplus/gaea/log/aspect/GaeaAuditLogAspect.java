@@ -2,8 +2,8 @@ package com.anjiplus.gaea.log.aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import com.anjiplus.gaea.log.config.GaeaAuditLogProperties;
-import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.anjiplus.gaea.log.event.AuditLogApplicationEvent;
 import com.anji.plus.gaea.utils.ApplicationContextUtils;
 import org.aspectj.lang.JoinPoint;
@@ -16,6 +16,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -40,6 +41,7 @@ import java.util.Map;
  */
 @Aspect
 @Component
+@Order(1)
 public class GaeaAuditLogAspect {
     private static final Logger log = LoggerFactory.getLogger(GaeaAuditLogAspect.class);
     @Autowired
@@ -49,7 +51,7 @@ public class GaeaAuditLogAspect {
     RestTemplate restTemplate;
 
     // 配置织入点
-    @Pointcut("@annotation(com.anjiplus.gaea.log.annotation.GaeaAuditLog)")
+    @Pointcut("@annotation(com.anji.plus.gaea.annotation.log.GaeaAuditLog)")
     public void logPointCut() {
     }
 
@@ -122,7 +124,8 @@ public class GaeaAuditLogAspect {
         if (log.isSaveRequestData()) {
             // 获取参数的信息，传入到数据库中。
             setRequestValue(joinPoint, operLog);
-        } else {
+        }
+        if(!log.isSaveResponseData()){
             operLog.setResponseParam(null);
         }
     }

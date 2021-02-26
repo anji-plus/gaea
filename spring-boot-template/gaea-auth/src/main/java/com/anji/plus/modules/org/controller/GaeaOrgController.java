@@ -2,12 +2,12 @@ package com.anji.plus.modules.org.controller;
 
 import com.anji.plus.modules.org.dao.entity.GaeaOrg;
 import com.anji.plus.modules.org.service.GaeaOrgService;
-import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.anji.plus.gaea.bean.ResponseBean;
 import com.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.anji.plus.gaea.curd.service.GaeaBaseService;
 import com.anji.plus.modules.org.controller.dto.GaeaOrgDTO;
 import com.anji.plus.modules.org.controller.param.GaeaOrgParam;
+import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
