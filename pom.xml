@@ -100,6 +100,6 @@
         <module>service/springcloud</module>
         <!--module>web-template</module-->
         <module>spring-boot-template</module>
-    </modules>
+  </modules>
 
 </project>

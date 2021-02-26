@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-catalog xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-catalog/1.0.0 http://maven.apache.org/xsd/archetype-catalog-1.0.0.xsd"
+                   xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-catalog/1.0.0"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<archetypes>
+    <archetype>
+      <groupId>com.anji-plus</groupId>
+      <artifactId>spring-boot-template-archetype</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <description>web-archetype</description>
+      <repository>
+		http://10.108.10.53:8081/repository/maven-snapshots/
+	  </repository>
+    </archetype>
+    <archetype>
+        <groupId>com.anjiplus.template</groupId>
+        <artifactId>spring-boot-template-archetype</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <description>web-archetype</description>
+        <repository>
+            http://10.108.10.53:8081/repository/maven-snapshots/
+        </repository>
+    </archetype>
+    <archetype>
+        <groupId>com.anjiplus.template</groupId>
+        <artifactId>spring-boot-template-archetype</artifactId>
+        <version>1.0.0</version>
+        <description>web-archetype</description>
+        <repository>
+            http://10.108.10.53:8081/repository/maven-releases/
+        </repository>
+    </archetype>
+  </archetypes>
+</archetype-catalog>

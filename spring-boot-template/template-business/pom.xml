@@ -4,21 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>spring-boot-template</artifactId>
-        <groupId>com.anji-plus</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>com.anjiplus.template</groupId>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>template-business</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <name>template-business</name>
 
     <dependencies>
         <dependency>
-            <groupId>com.anji-plus</groupId>
+            <groupId>com.anjiplus.template</groupId>
             <artifactId>template-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
