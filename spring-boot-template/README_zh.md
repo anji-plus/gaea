@@ -24,9 +24,9 @@ mvn deploy
 ```
   <archetypes>
     <archetype>
-      <groupId>com.anji-plus</groupId>
-      <artifactId>spring-boot-template-archetype</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>com.anjiplus.template</groupId>
+      <artifactId>anjiplus-template-archetype</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
       <description>web-archetype</description>
       <repository>
 		http://10.108.10.53:8081/repository/maven-snapshots/
@@ -48,3 +48,5 @@ https://blog.csdn.net/qq_35448165/article/details/103721481
 a、修改archetype目录下pom.xml，将archetype的名称修改成你喜欢的；
 b、可将文件夹改成_rootArtifactId_，这样生成项目结构时，这个目录名称就会变成新的项目名称了；
 c. pom.xml 依赖包 参数修改
+
+mvn archetype:generate -DarchetypeCatalog=local -DgroupId=com.anjiplustest -DartifactId=demo-proj -Dpackage=com.anjiplus1.demo -Dbasedir=/java/workspace -Dversion=1.0.0-SNAPSHOT -DarchetypeGroupId=com.anjiplus.template -DarchetypeArtifactId=anjiplus-template-archetype -DarchetypeVersion=1.0.0-SNAPSHOT -DinteractiveMode=false

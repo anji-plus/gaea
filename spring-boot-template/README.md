@@ -1,1 +1,3 @@
-mvn archetype:generate -DarchetypeCatalog=local -DgroupId=com.anjiplustest -DartifactId=demo-proj -Dpackage=com.anjiplus1.demo -Dbasedir=/java/workspace -Dversion=1.0.0-SNAPSHOT -DarchetypeGroupId=com.anjiplus.template -DarchetypeArtifactId=spring-boot-template-archetype -DarchetypeVersion=1.0.0-SNAPSHOT -DinteractiveMode=false
+#
+
+# 
