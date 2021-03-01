@@ -1,4 +1,4 @@
-package com.anji.plus.gaea.advice;
+package com.anji.plus.gaea.controller.advice;
 
 import com.anji.plus.gaea.bean.ResponseBean;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 /**
- * 返回结果统一封装
+ * 返回结果统一封装，对响应码进行解析，解析出的信息设置到ResponseBean
  * @author lr
  * @since 2021-01-02
  */
