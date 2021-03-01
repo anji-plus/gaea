@@ -1,8 +1,10 @@
 package com.anji.plus.modules.user.controller;
 
+import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import com.anji.plus.gaea.bean.ResponseBean;
 import com.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.anji.plus.gaea.curd.service.GaeaBaseService;
+import com.anji.plus.gaea.init.InitRequestUrlMappings;
 import com.anji.plus.modules.menu.controller.dto.TreeDTO;
 import com.anji.plus.modules.user.controller.dto.GaeaUserDTO;
 import com.anji.plus.modules.user.controller.param.GaeaUserParam;
@@ -10,11 +12,11 @@ import com.anji.plus.modules.user.controller.param.GaeaUserPasswordParam;
 import com.anji.plus.modules.user.controller.param.UserRoleOrgReqParam;
 import com.anji.plus.modules.user.dao.entity.GaeaUser;
 import com.anji.plus.modules.user.service.GaeaUserService;
-import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 用户表(GaeaUser)实体类
@@ -26,8 +28,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 @Api(value = "/user", tags = "用户表")
 public class GaeaUserController extends GaeaBaseController<GaeaUserParam, GaeaUser, GaeaUserDTO> {
+
     @Autowired
     private GaeaUserService gaeaUserService;
+
+    @Autowired
+    private InitRequestUrlMappings initRequestUrlMappings;
 
     @Override
     public GaeaBaseService<GaeaUserParam, GaeaUser> getService() {
@@ -92,4 +98,22 @@ public class GaeaUserController extends GaeaBaseController<GaeaUserParam, GaeaUs
     }
 
 
+
+    @GetMapping("/demo")
+    public ResponseBean demo() {
+
+        List<InitRequestUrlMappings.RequestInfo> requestInfos = initRequestUrlMappings.getRequestInfos();
+
+        return ResponseBean.builder().data(requestInfos).build();
+    }
+
+
+    /**
+     * 下拉菜单
+     * @return
+     */
+    @GetMapping("/select/{dictCode}")
+    public ResponseBean select(@PathVariable("dictCode") String dictName){
+        return ResponseBean.builder().build();
+    }
 }

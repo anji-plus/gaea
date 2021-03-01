@@ -1,5 +1,6 @@
 package com.anji.plus.modules.user;
 
+import com.anji.plus.gaea.init.InitRequestUrlMappings;
 import com.anjiplus.gaea.security.security.extension.UserDetailsServiceHelper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -11,10 +12,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 实现security的抽象类
@@ -26,6 +24,9 @@ public class AppUserDetailsServiceHelper extends UserDetailsServiceHelper {
 
     @Autowired
     private GaeaUserService gaeaUserService;
+
+    @Autowired
+    private InitRequestUrlMappings initRequestUrlMappings;
 
     @Override
     public UserDetails findByUsername(String username) {
@@ -68,5 +69,14 @@ public class AppUserDetailsServiceHelper extends UserDetailsServiceHelper {
         authorities.add("admin");
         authorities.add("demo");
         return authorities;
+    }
+
+    /**
+     * 实现url对应的角色
+     * @return
+     */
+    @Override
+    public Map<String, Set<String>> getUrlRoleMappings() {
+        return super.getUrlRoleMappings();
     }
 }

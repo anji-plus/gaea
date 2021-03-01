@@ -1,8 +1,10 @@
 package com.anji.plus.modules.role.dao.entity;
 
 import com.anji.plus.gaea.curd.entity.GaeaBaseEntity;
-import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serializable;
+
 /**
  * (GaeaRoleMenuAction)实体类
  *
@@ -11,17 +13,17 @@ import com.baomidou.mybatisplus.annotation.TableName;
  */
 @TableName("gaea_role_menu_action")
 public class GaeaRoleMenuAction extends GaeaBaseEntity implements Serializable {
-            /**
-    * 角色编码
-    */
+    /**
+     * 角色编码
+     */
     private String roleCode;
-        /**
-    * 菜单编码
-    */
+    /**
+     * 菜单编码
+     */
     private String menuCode;
-        /**
-    * 按钮编码
-    */
+    /**
+     * 按钮编码
+     */
     private String actionCode;
 
     public String getRoleCode() {

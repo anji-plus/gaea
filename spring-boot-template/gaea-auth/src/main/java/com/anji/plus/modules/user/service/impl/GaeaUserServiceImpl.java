@@ -2,8 +2,13 @@ package com.anji.plus.modules.user.service.impl;
 
 import com.anji.plus.common.MagicValueConstants;
 import com.anji.plus.common.RespCommonCode;
+import com.anji.plus.gaea.bean.TreeNode;
 import com.anji.plus.gaea.constant.BaseOperationEnum;
+import com.anji.plus.gaea.constant.Enabled;
+import com.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
 import com.anji.plus.gaea.exception.BusinessException;
+import com.anji.plus.gaea.exception.BusinessExceptionBuilder;
+import com.anji.plus.gaea.holder.UserContentHolder;
 import com.anji.plus.modules.menu.controller.dto.TreeDTO;
 import com.anji.plus.modules.org.dao.GaeaOrgMapper;
 import com.anji.plus.modules.org.dao.entity.GaeaOrg;
@@ -11,20 +16,15 @@ import com.anji.plus.modules.role.controller.dto.RoleOrgDto;
 import com.anji.plus.modules.role.dao.GaeaRoleOrgMapper;
 import com.anji.plus.modules.user.controller.param.GaeaUserPasswordParam;
 import com.anji.plus.modules.user.controller.param.UserRoleOrgReqParam;
+import com.anji.plus.modules.user.dao.GaeaUserMapper;
 import com.anji.plus.modules.user.dao.GaeaUserRoleOrgMapper;
+import com.anji.plus.modules.user.dao.entity.GaeaUser;
 import com.anji.plus.modules.user.dao.entity.GaeaUserRoleOrg;
+import com.anji.plus.modules.user.service.GaeaUserService;
 import com.anji.plus.util.DecryptUtil;
 import com.anji.plus.util.MD5Util;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.anji.plus.gaea.bean.TreeNode;
-import com.anji.plus.gaea.constant.Enabled;
-import com.anji.plus.gaea.exception.BusinessExceptionBuilder;
-import com.anji.plus.gaea.holder.UserContentHolder;
-import com.anji.plus.modules.user.dao.entity.GaeaUser;
-import com.anji.plus.modules.user.dao.GaeaUserMapper;
-import com.anji.plus.modules.user.service.GaeaUserService;
-import com.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,7 +91,7 @@ public class GaeaUserServiceImpl implements GaeaUserService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Boolean saveRoleTree(UserRoleOrgReqParam reqParam) {
         String username = reqParam.getUsername();
         List<String> orgRoleCodes = reqParam.getRoleOrgCodes();
@@ -139,11 +139,7 @@ public class GaeaUserServiceImpl implements GaeaUserService {
         gaeaUser.setPassword(password);
         int flag = gaeaUserMapper.updateById(gaeaUser);
         //返回结果
-        if (flag > 0) {
-            return MagicValueConstants.TRUE;
-        } else {
-            return MagicValueConstants.FALSE;
-        }
+        return flag > 0;
     }
 
 
@@ -154,7 +150,14 @@ public class GaeaUserServiceImpl implements GaeaUserService {
 
     @Override
     public List<String> getRoleByUserOrg(String username, String orgCode) {
-        return gaeaUserRoleOrgMapper.getRoleCodeByUser(username, orgCode);
+        LambdaQueryWrapper<GaeaUserRoleOrg> wrapper = Wrappers.lambdaQuery();
+        if (StringUtils.isNotBlank(orgCode)) {
+            wrapper.eq(GaeaUserRoleOrg::getOrgCode, orgCode);
+        }
+
+        List<GaeaUserRoleOrg> gaeaUserRoleOrgList = gaeaUserRoleOrgMapper.selectList(wrapper);
+
+        return gaeaUserRoleOrgList.stream().map(GaeaUserRoleOrg::getRoleCode).collect(Collectors.toList());
     }
 
     @Override
@@ -164,7 +167,7 @@ public class GaeaUserServiceImpl implements GaeaUserService {
         String defaultPwd = DecryptUtil.decrypt(md5Pwd);
         user.setPassword(defaultPwd);
         int flag = gaeaUserMapper.updateById(user);
-        return flag > 0 ? MagicValueConstants.TRUE : MagicValueConstants.FALSE;
+        return flag > 0;
     }
 
     /**
@@ -177,7 +180,7 @@ public class GaeaUserServiceImpl implements GaeaUserService {
     private static List<TreeNode> buildOrgRoleTree(List<GaeaOrg> orgList, List<RoleOrgDto> roleOrgVOS, Object pid) {
         List<TreeNode> childList = new ArrayList<>();
         orgList.forEach(orgPO -> {
-            if (StringUtils.isNotEmpty(orgPO.getOrgParentCode())&&orgPO.getOrgParentCode().equals(pid)) {
+            if (StringUtils.isNotEmpty(orgPO.getOrgParentCode()) && orgPO.getOrgParentCode().equals(pid)) {
                 TreeNode treeVO = new TreeNode();
                 treeVO.setId(orgPO.getOrgCode());
                 treeVO.setLabel(orgPO.getOrgName());
@@ -212,7 +215,7 @@ public class GaeaUserServiceImpl implements GaeaUserService {
         }
     }
 
-    private void setDefaultPwd(GaeaUser entity){
+    private void setDefaultPwd(GaeaUser entity) {
         String md5Pwd = MD5Util.encryptBySalt(MagicValueConstants.DEFAULT_PASSWORD);
         String defaultPwd = DecryptUtil.decrypt(md5Pwd);
         entity.setPassword(defaultPwd);
