@@ -105,7 +105,9 @@ public class GaeaAuditLogAspect {
             operLog.setSourceIp(getSourceIp(request));
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog);
-            log.info("--gaeaLog:requestData--{}", JSON.toJSONString(operLog));
+            log.info("--gaeaLog:requestUrl--{}", operLog.getRequestUrl());
+            log.info("--gaeaLog:requestData--{}", operLog.getRequestParam());
+            log.info("--gaeaLog:requestAllData--{}", JSON.toJSONString(operLog));
             if (gaeaAuditLogProperties.isPublishEvent()) {
                 ApplicationContextUtils.publishEvent(new AuditLogApplicationEvent(this, operLog));
             }
