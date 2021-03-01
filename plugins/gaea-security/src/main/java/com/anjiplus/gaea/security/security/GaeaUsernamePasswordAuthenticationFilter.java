@@ -139,6 +139,9 @@ public class GaeaUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
             return null;
         }
         String username = requestBody.getString(SPRING_SECURITY_FORM_USERNAME_KEY);
+        if (username == null) {
+            return null;
+        }
 //        try {
 //            username = CryptoUtils.desEncrypt(username);
 //        } catch (Exception e) {
@@ -147,6 +150,7 @@ public class GaeaUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
 //        }
 //        username = username.trim();
 
+        username = username.toLowerCase();
         //放入到上下文中
         UserContentHolder.getContext().setUsername(username);
         return username;
