@@ -2,7 +2,6 @@ package com.anji.plus.modules.dict.controller;
 
 import com.anji.plus.gaea.bean.KeyValue;
 import com.anji.plus.gaea.bean.ResponseBean;
-import com.anji.plus.gaea.cache.CacheHelper;
 import com.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.anji.plus.gaea.curd.service.GaeaBaseService;
 import com.anji.plus.modules.dict.controller.dto.GaeaDictDTO;
@@ -34,9 +33,6 @@ public class GaeaDictController extends GaeaBaseController<GaeaDictParam, GaeaDi
     @Autowired
     private GaeaDictService gaeaDictService;
 
-    @Autowired
-    private CacheHelper cacheHelper;
-
     @Override
     public GaeaBaseService<GaeaDictParam, GaeaDict> getService() {
         return gaeaDictService;
@@ -65,6 +61,11 @@ public class GaeaDictController extends GaeaBaseController<GaeaDictParam, GaeaDi
         //刷新
         gaeaDictService.refreshCache(gaeaDicts);
         return responseSuccess();
+    }
+
+    @GetMapping("/demo")
+    public String demo() {
+        return "hello world";
     }
 
 
