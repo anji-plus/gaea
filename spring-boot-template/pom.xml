@@ -9,6 +9,7 @@
         <module>anjiplus-template-gateway</module>
         <module>anjiplus-template-auth</module>
         <module>anjiplus-template-business</module>
+		<module>anjiplus-template-ui</module>
     </modules>
 
     <parent>

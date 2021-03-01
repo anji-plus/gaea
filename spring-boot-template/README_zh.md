@@ -49,4 +49,4 @@ a、修改archetype目录下pom.xml，将archetype的名称修改成你喜欢的
 b、可将文件夹改成_rootArtifactId_，这样生成项目结构时，这个目录名称就会变成新的项目名称了；
 c. pom.xml 依赖包 参数修改
 
-mvn archetype:generate -DarchetypeCatalog=local -DgroupId=com.anjiplustest -DartifactId=demo-proj -Dpackage=com.anjiplus1.demo -Dbasedir=/java/workspace -Dversion=1.0.0-SNAPSHOT -DarchetypeGroupId=com.anjiplus.template -DarchetypeArtifactId=anjiplus-template-archetype -DarchetypeVersion=1.0.0-SNAPSHOT -DinteractiveMode=false
+mvn archetype:generate -DarchetypeCatalog=local -DgroupId=com.anjiplus -DartifactId=anjiplus-lowcode -Dpackage=com.anjiplus.lowcode -Dbasedir=c:/java/workspace -Dversion=1.0.0-SNAPSHOT -DarchetypeGroupId=com.anjiplus.template -DarchetypeArtifactId=anjiplus-template-archetype -DarchetypeVersion=1.0.0-SNAPSHOT -DinteractiveMode=false
