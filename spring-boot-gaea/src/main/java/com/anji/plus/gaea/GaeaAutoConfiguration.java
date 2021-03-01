@@ -1,21 +1,26 @@
 package com.anji.plus.gaea;
 
+import com.alibaba.fastjson.JSONObject;
+import com.anji.plus.gaea.bean.ResponseBean;
+import com.anji.plus.gaea.cache.CacheHelper;
+import com.anji.plus.gaea.code.ResponseCode;
 import com.anji.plus.gaea.config.MybatisPlusMetaObjectHandler;
 import com.anji.plus.gaea.constant.GaeaConstant;
-import com.anji.plus.gaea.holder.UserContentHolder;
-import com.anji.plus.gaea.holder.UserContext;
-import com.anji.plus.gaea.intercept.AccessKeyInterceptor;
-import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
-import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.anji.plus.gaea.cache.CacheHelper;
 import com.anji.plus.gaea.curd.mapper.injected.CustomSqlInjector;
 import com.anji.plus.gaea.event.listener.ExceptionApplicationListener;
 import com.anji.plus.gaea.event.listener.LoginApplicationListener;
+import com.anji.plus.gaea.holder.UserContentHolder;
+import com.anji.plus.gaea.holder.UserContext;
 import com.anji.plus.gaea.i18.MessageLocaleResolver;
 import com.anji.plus.gaea.i18.MessageSourceHolder;
+import com.anji.plus.gaea.init.InitRequestUrlMappings;
+import com.anji.plus.gaea.intercept.AccessKeyInterceptor;
 import com.anji.plus.gaea.utils.ApplicationContextUtils;
 import com.anji.plus.gaea.utils.JwtUtils;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
+import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -73,14 +78,13 @@ public class GaeaAutoConfiguration {
     }
 
     /**
-     * 配置信息加密
+     * 获取当前应用所有的RequestMapping信息，用于权限配置
      * @return
      */
-//    @Bean
-//    @ConditionalOnClass(DataSourceProperties.class)
-//    public EncryptionFactoryPostProcessor datasourcePasswordFactoryPostProcessor(GaeaProperties gaeaProperties) {
-//        return new EncryptionFactoryPostProcessor(gaeaProperties);
-//    }
+    @Bean
+    public InitRequestUrlMappings initRequestUrlMappings() {
+        return new InitRequestUrlMappings();
+    }
 
     /**
      * Web配置
@@ -113,11 +117,19 @@ public class GaeaAutoConfiguration {
                 HttpServletRequest httpServletRequest = (HttpServletRequest) request;
                 String authorization = httpServletRequest.getHeader(GaeaConstant.Authorization);
                 if (StringUtils.isNotBlank(authorization)) {
-                    String username = JwtUtils.getUsername(authorization);
-                    UserContext userContext = new UserContext();
-                    userContext.setUsername(username);
-                    //放入上下文
-                    UserContentHolder.setContext(userContext);
+                    try {
+                        String username = JwtUtils.getUsername(authorization);
+                        UserContext userContext = new UserContext();
+                        userContext.setUsername(username);
+                        //放入上下文
+                        UserContentHolder.setContext(userContext);
+                    } catch (TokenExpiredException tokenExpiredException) {
+
+                        ResponseBean responseBean = ResponseBean.builder().code(ResponseCode.FAIL_CODE).message("The Token has expired").build();
+                        response.getWriter().print(JSONObject.toJSONString(responseBean));
+                        return;
+                    }
+
                 }
             }
             chain.doFilter(request, response);
@@ -187,7 +199,7 @@ public class GaeaAutoConfiguration {
     @Configuration
     @ConditionalOnClass(LocaleResolver.class)
     @ConditionalOnMissingBean(MessageLocaleResolver.class)
-    @ComponentScan(value = {"com.anji.plus.gaea.advice", "com.anji.plus.gaea.exception.advice"})
+    @ComponentScan(value = {"com.anji.plus.gaea.controller", "com.anji.plus.gaea.exception.advice"})
     public class MessageI18AutoConfiguration {
 
         /**

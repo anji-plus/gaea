@@ -1,14 +1,15 @@
 package com.anjiplus.gaea.security.security;
 
-import com.anjiplus.gaea.security.cache.CacheKeyEnum;
-import com.anjiplus.gaea.security.handler.GaeaFilterExceptionHandler;
-import com.auth0.jwt.exceptions.SignatureGenerationException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.anji.plus.gaea.cache.CacheHelper;
 import com.anji.plus.gaea.holder.UserContentHolder;
 import com.anji.plus.gaea.holder.UserContext;
 import com.anji.plus.gaea.utils.JwtUtils;
+import com.anjiplus.gaea.security.cache.CacheKeyEnum;
+import com.anjiplus.gaea.security.code.UserResponseCode;
+import com.anjiplus.gaea.security.handler.GaeaFilterExceptionHandler;
+import com.auth0.jwt.exceptions.SignatureGenerationException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
@@ -67,8 +68,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
             //当token为空或过期时，未登录
             if (StringUtils.isBlank(token)) {
-                filterChain.doFilter(request, response);
-                return;
+                throw new TokenExpiredException(UserResponseCode.USER_TOKEN_EXPIRED);
             }
 
             //判断token是否注销过

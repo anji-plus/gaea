@@ -69,4 +69,28 @@ public interface GaeaConstant {
      */
     String BLANK = "";
 
+
+    /**
+     * 分隔符
+     */
+    String URL_SPLIT = "#";
+
+
+    /**
+     * 正则
+     */
+    String URL_REGEX = "\\{\\w+\\}";
+
+
+    /**
+     * 需要替换的请求标识
+     */
+    String URL_MARK = "{";
+
+
+    /**
+     * 替换的元素
+     */
+    String URL_REPLACEMENT = "**";
+
 }

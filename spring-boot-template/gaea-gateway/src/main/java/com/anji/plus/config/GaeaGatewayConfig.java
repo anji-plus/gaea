@@ -19,7 +19,8 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class GaeaGatewayConfig {
 
-    private static final String ALLOWED_HEADERS = "x-requested-with, Authorization, Content-Type, credential, X-XSRF-TOKEN";
+//    private static final String ALLOWED_HEADERS = "x-requested-with, Authorization, Content-Type, credential, X-XSRF-TOKEN";
+    private static final String ALLOWED_HEADERS = "*";
     private static final String ALLOWED_METHODS = "*";
     private static final String ALLOWED_ORIGIN = "*";
     private static final String ALLOWED_EXPOSE = "*";

@@ -17,6 +17,10 @@ import java.util.function.Consumer;
  */
 public final class ResponseBean implements Serializable {
 
+    public ResponseBean() {
+
+    }
+
     /**
      * 构建线程池
      */
