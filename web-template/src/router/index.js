@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-10 14:23:29
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-19 16:19:50
+ * @Last Modified time: 2021-03-01 12:41:39
  */
 import Vue from 'vue'
 import Router from 'vue-router'
@@ -95,7 +95,7 @@ export const constantRoutes = [
     component: () => import('@/views/help-center/list'),
     children: [
       { path: 'list', component: () => import('@/views/help-center/list-title'), hidden: true },
-      { path: 'detail', component: () => import('@/views/help-center/list-detail'), hidden: true },
+      { path: 'detail', component: () => import('@/views/help-center/list-detail'), hidden: true, name: 'helpDetails' },
       { path: 'search', component: () => import('@/views/help-center/list-search'), hidden: true },
     ],
   },

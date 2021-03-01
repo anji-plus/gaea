@@ -3,6 +3,8 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 import Cookies from 'js-cookie'
 import router, { resetRouter } from '@/router'
 import { transPsw } from '@/utils/encrypted'
+import { Message } from 'element-ui'
+import i18n from '@/lang'
 
 const state = {
   token: getToken(),
@@ -70,6 +72,11 @@ const actions = {
         .then((response) => {
           // 此处需要将菜单返回出去
           if (response.code != '200') {
+            // 此接口设置了跳过统一提示，所以需要单独写错误的提示信息
+            Message({
+              message: response.message || i18n.t(`promptMessage.reqFailed`),
+              type: 'error',
+            })
             reject()
           } else {
             commit('SET_HASMENU', true) // 是否获取过菜单标识

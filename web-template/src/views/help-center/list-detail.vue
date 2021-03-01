@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <el-button type="primary" size="mini" plain @click="goBack">返回</el-button>
-    <h2 class="helpTitle">{{ helpTitle }}</h2>
+    <h2 class="helpTitle">{{ details.helpTitle }}</h2>
     <div class="answer" v-html="helpContent" />
   </div>
 </template>
@@ -10,25 +10,26 @@ import { queryById } from '@/api/help-center'
 export default {
   data() {
     return {
-      id: '',
+      details: {
+        helpTitle: '',
+      },
       helpContent: '',
-      helpTitle: '',
     }
   },
   mounted() {
-    this.id = this.$route.query.id
+    this.details = this.$route.params.item
     this.queryById()
   },
   methods: {
-    queryById() {
-      queryById({ helpId: this.id }).then((res) => {
-        if (res.repCode === '0000') {
-          const helpContent = res.repData.helpContent
-          const helpContentVideo = helpContent.replace(/<oembed url/gi, "<video controls='controls' src").replace(/oembed>/gi, 'video>')
-          this.helpContent = helpContentVideo
-          this.helpTitle = res.repData.helpTitle
-        }
-      })
+    async queryById() {
+      const { code, data } = await queryById({ id: this.details.id, accessKey: this.details.accessKey })
+      if (code != '200') return
+      const helpContent = data.helpContent
+      const helpContentVideo = helpContent.replace(/<oembed url/gi, "<video controls='controls' src").replace(/oembed>/gi, 'video>')
+      this.helpContent = helpContentVideo
+    },
+    goBack() {
+      this.$router.back()
     },
   },
 }
