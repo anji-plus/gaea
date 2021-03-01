@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 10:57:57
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-24 16:41:26
+ * @Last Modified time: 2021-03-01 10:58:08
  */
 import axios from 'axios'
 import { Message, Loading } from 'element-ui'
@@ -111,7 +111,6 @@ service.interceptors.response.use(
     if (response.status == 200) {
       response.headers.authorization && store.commit('user/SET_TOKEN', response.headers.authorization)
       // 处理流文件类型
-      console.log(response)
       if (response.config.responseType === 'blob') {
         // application/vnd.ms-excel
         // application/octet-stream

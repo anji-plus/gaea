@@ -31,21 +31,18 @@ export default {
     this.querytitleByCategory(this.$route.query.val)
   },
   methods: {
-    querytitleByCategory(value) {
-      this.title = this.title ? this.title : this.$store.state.help.title
-      const val = value || this.$store.state.help.val
-      querytitleByCategory({ helpCategory: val }).then((res) => {
-        if (res.repCode === '0000') {
-          this.list = res.repData
-        }
-      })
+    async querytitleByCategory(helpCategory) {
+      const { code, data } = await querytitleByCategory({ helpCategory })
+      if (code != '200') return
+      this.list = data
     },
     // 详情
     itemClick(item) {
       this.$router.push({
-        path: `/helpCenList/detail`,
-        query: {
-          id: item.helpId,
+        // path: `/helpCenList/detail`,
+        name: 'helpDetails',
+        params: {
+          item,
         },
       })
     },

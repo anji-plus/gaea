@@ -18,8 +18,8 @@
     </div>
     <div class="main">
       <div class="slider-left">
-        <div v-for="(item, index) in sliderList" :key="index" class="item" :class="index == active ? 'active' : ''" @click="changeSelect(index, item)">
-          {{ item.label }}
+        <div v-for="(item, index) in sliderList" :key="item.id" class="item" :class="index == active ? 'active' : ''" @click="changeSelect(index, item)">
+          {{ item.text }}
         </div>
       </div>
       <div class="slider-right">
@@ -39,23 +39,22 @@ export default {
     }
   },
   created() {
-    this.queryForCodeSelect()
+    this.queryLeft()
   },
   methods: {
     // 获取所属分类
-    queryForCodeSelect() {
-      queryForCodeSelect().then((res) => {
-        if (res.repCode === '0000') {
-          this.sliderList = res.repData.HELP_CATEGORY
-          this.$store.commit('setCategory', res.repData.HELP_CATEGORY[0])
-        }
-      })
+    async queryLeft() {
+      const { code, data } = await queryForCodeSelect()
+      if (code != '200') return
+      this.sliderList = data
+      this.changeSelect(0, data[0])
+      // this.$store.commit('setCategory', res.repData.HELP_CATEGORY[0])
     },
     changeSelect(index, item) {
       this.active = index
       this.$router.push({
         path: `/helpCenList/list`,
-        query: { id: index, val: item.value, title: item.label },
+        query: { id: index, val: item.id, title: item.text },
       })
     },
     // 搜索

@@ -2,8 +2,8 @@ import request from '@/utils/request'
 // 查询字典
 export function queryForCodeSelect(params = {}) {
   return request({
-    url: '/auth-service/dict/queryForCodeSelect',
-    method: 'post',
+    url: '/business/gaeaDict/select/HELP_CATEGORY',
+    method: 'GET',
     data: params,
   })
 }
@@ -11,9 +11,9 @@ export function queryForCodeSelect(params = {}) {
 // 查询标题
 export function querytitleByCategory(params) {
   return request({
-    url: '/auth-service/help/querytitleByCategory',
-    method: 'post',
-    data: params,
+    url: '/business/gaeaHelp/list',
+    method: 'GET',
+    params,
   })
 }
 
@@ -26,10 +26,10 @@ export function searchKeyWord(params = {}) {
   })
 }
 
-export function queryById(data) {
+export function queryById(params) {
   return request({
-    url: '/auth-service/help/queryById',
-    method: 'post',
-    data,
+    url: `/business/gaeaHelp/${params.id}`,
+    method: 'GET',
+    params,
   })
 }
