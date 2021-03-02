@@ -42,6 +42,68 @@ export function deleteBtn(id) {
 
 // 菜单配置页面接口
 
+// 菜单自定义列查询
+export function queryMenuExtension(menuCode, params) {
+  return request({
+    url: `auth/menuextension/queryMenuExtension/${menuCode}`,
+    method: 'get',
+    params,
+  })
+} 
+// 菜单自定义列查询
+export function queryconditionList(data) {
+  return request({
+    url: `/auth/querycondition/list`,
+    method: 'post',
+    data,
+  })
+}
+// 新增自定义列
+export function addMenuextension(data) {
+  return request({
+    url: `/auth/menuextension`,
+    method: 'post',
+    data,
+  })
+}
+// 编辑自定义列
+export function editMenuextension(data) {
+  return request({
+    url: `/auth/menuextension`,
+    method: 'put',
+    data,
+  })
+}
+// 新增高级搜索
+export function addCondition(data) {
+  return request({
+    url: `/auth/querycondition`,
+    method: 'post',
+    data,
+  })
+}
+// 编辑高级搜索
+export function eidtCondition(data) {
+  return request({
+    url: `/auth/querycondition`,
+    method: 'put',
+    data,
+  })
+}
+// 高级搜索删除
+export function delCondition(id) {
+  return request({
+    url: `/auth/querycondition/${id}`,
+    method: 'delete',
+  })
+}
+// 自定义列删除
+export function delMenuextension(id) {
+  return request({
+    url: `/auth/menuextension/${id}`,
+    method: 'delete',
+  })
+}
 // 列表查询接口
 export function getMenuList(params) {
   return request({

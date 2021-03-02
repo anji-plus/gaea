@@ -10,6 +10,9 @@ export default {
   },
   // 按钮
   btn: {
+    customColumns: '自定义列',
+    advancedSearch: '高级搜索',
+    commonSearch: '常用搜索',
     view: '查看',
     add: '新增',
     edit: '修改',
@@ -66,6 +69,7 @@ export default {
     authority: '权限管理',
     btnConfig: '按钮配置',
     menuConfig: '菜单配置',
+    menuDetail: '自定义菜单',
     role: '角色管理',
     user: '用户管理',
     permission: '权限列表',

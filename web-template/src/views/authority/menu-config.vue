@@ -69,6 +69,11 @@
       <el-table-column prop="createBy" :label="$t('userManage.creator')" align="center" min-width="160" />
       <el-table-column prop="updateTime" :label="$t('userManage.modifyTime')" align="center" min-width="180" />
       <el-table-column prop="updateBy" :label="$t('userManage.modifyUser')" align="center" min-width="140" />
+      <el-table-column fixed="right" label="操作" width="100">
+        <template slot-scope="scope">
+          <el-button type="text" size="mini" @click="toNextView(scope.row)">配置菜单</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination v-show="total > 0" background :current-page.sync="searchForm.pageNumber" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     <el-dialog :title="$t(`btn.${dialogTittle}`)" width="40%" :close-on-click-modal="false" center :visible.sync="basicDialog" @close="closeDialog">
@@ -221,7 +226,14 @@ export default {
       },
     }
   },
+  mounted() {
+    this.getData()
+  },
   methods: {
+    // 跳转进入
+    toNextView(row) {
+      this.$router.push({ path: 'menu-detail', query: { id: row.id }})
+    },
     // 关联按钮操作
     async related() {
       this.form.menuCode = this.selectedList[0].menuCode

@@ -85,6 +85,18 @@ export const baseList = [
         },
       },
       {
+        menuId: '2021',
+        parentMenuId: '20',
+        path: 'menu-detail',
+        hidden: true,
+        component: 'authority/menu-detail',
+        name: 'MenuDetail',
+        meta: {
+          title: 'menuDetail',
+          icon: '',
+        },
+      },
+      {
         menuId: '2030',
         parentMenuId: '20',
         path: 'role',

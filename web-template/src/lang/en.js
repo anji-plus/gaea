@@ -10,6 +10,9 @@ export default {
   },
   // 按钮
   btn: {
+    customColumns: 'Custom Columns',
+    advancedSearch: 'search',
+    commonSearch: 'search',
     view: 'View',
     add: 'Add',
     edit: 'Edit',
@@ -66,6 +69,7 @@ export default {
     authority: 'Authority',
     btnConfig: 'Button',
     menuConfig: 'Menu',
+    menuDetail: 'Menu Detail',
     role: 'Role',
     user: 'User',
     permission: 'Permission',
