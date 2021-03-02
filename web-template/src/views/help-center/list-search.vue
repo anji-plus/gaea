@@ -1,14 +1,15 @@
 <template>
   <div class="container">
     <div class="searchNum">
-      搜索"<font style="color: #c03">{{ searchInput }}</font>",共找到<b>{{ totalCount }}</b>个相关的问题。
+      搜索"<font style="color: #c03">{{ searchForm.helpContent }}</font>",共找到<b>{{ totalCount }}</b>个相关的问题。
     </div>
-    <div v-for="(item, index) in list" :key="index" class="infoBox">
+    <div v-for="item in list" :key="item.id" class="infoBox">
       <div class="infoItem">
         <div class="infoTitle" @click="goDetail(item)">{{ item.helpTitle }}</div>
         <div class="infoCon" v-html="item.helpContent" />
       </div>
     </div>
+    <el-pagination v-show="totalCount > 0" background :current-page.sync="searchForm.pageNumber" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="totalCount" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
   </div>
 </template>
 <script>
@@ -16,7 +17,11 @@ import { searchKeyWord } from '@/api/help-center'
 export default {
   data() {
     return {
-      searchInput: '', // 搜索内容
+      searchForm: {
+        helpContent: '', // 搜索内容
+        pageNumber: 1,
+        pageSize: 10,
+      },
       totalCount: 0,
       list: [],
     }
@@ -25,32 +30,41 @@ export default {
     $route: {
       handler(obj) {
         const val = obj.query.searchInput
-        this.searchInput = val
-        this.searchKeyWord(val)
+        this.searchForm.helpContent = val
+        this.searchKeyWord()
       },
       deep: true,
     },
   },
   mounted() {
-    this.searchInput = this.$route.query.searchInput
-    this.searchKeyWord(this.searchInput)
+    this.searchForm.helpContent = this.$route.query.searchInput
+    this.searchKeyWord()
   },
   methods: {
-    searchKeyWord(val) {
-      searchKeyWord({ keyWord: val }).then((res) => {
-        if (res.repCode === '0000') {
-          this.list = res.repData.list
-          this.totalCount = res.repData.totalCount
-        }
-      })
+    async searchKeyWord() {
+      const { data, code } = await searchKeyWord(this.searchForm)
+      if (code != '200') return
+      this.list = data.records
+      this.totalCount = data.total
     },
     goDetail(item) {
       this.$router.push({
-        path: `/helpCenList/detail`,
-        query: {
-          id: item.helpId,
+        name: 'helpDetails',
+        params: {
+          item,
         },
       })
+    },
+    // 页码改变
+    handleCurrentChange(pageNumber) {
+      this.searchForm.pageNumber = pageNumber
+      this.searchKeyWord()
+    },
+    // 每页size改变时
+    handleSizeChange(val) {
+      this.searchForm.pageNumber = 1
+      this.searchForm.pageSize = val
+      this.searchKeyWord()
     },
   },
 }

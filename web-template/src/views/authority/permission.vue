@@ -4,35 +4,31 @@
       <el-row>
         <el-col :span="19">
           <el-row class="form_table">
-            <el-col :span="8">
-              <el-form-item :label="$t('userManage.type')" prop="type">
-                <el-select v-model="searchForm.type" :placeholder="$t('placeholder.select')">
-                  <el-option v-for="item in permissionTypes" :key="item.bizCode" :label="item.bizCode" :value="item.bizCode" />
-                </el-select>
+            <el-col :span="6">
+              <el-form-item label="权限代码" prop="authCode">
+                <el-input v-model="searchForm.authCode" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$t('userManage.typeName')" prop="type">
-                <el-select v-model="searchForm.type" :placeholder="$t('placeholder.select')" disabled>
-                  <el-option v-for="item in permissionTypes" :key="item.bizCode" :label="item.bizText" :value="item.bizCode" />
-                </el-select>
+            <el-col :span="6">
+              <el-form-item label="权限路径" prop="path">
+                <el-input v-model="searchForm.path" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item :label="$t('businessGlossary.isValid')" prop="isValid">
-                <el-select v-model="searchForm.isValid" :placeholder="$t('placeholder.select')">
-                  <el-option :key="0" :label="$t('businessGlossary.no')" :value="0" />
-                  <el-option :key="1" :label="$t('businessGlossary.yes')" :value="1" />
+            <!-- <el-col :span="6">
+              <el-form-item label="启用状态" prop="enabled">
+                <el-select v-model="searchForm.enabled" :placeholder="$t('placeholder.select')">
+                  <el-option key="1" label="启用" :value="1" />
+                  <el-option key="0" label="禁用" :value="0" />
                 </el-select>
               </el-form-item>
-            </el-col>
+            </el-col> -->
           </el-row>
         </el-col>
         <el-col :span="5" style="text-align: center">
           <el-button
             type="primary"
             @click="
-              searchForm.pageNum = 1
+              searchForm.pageNumber = 1
               getData()
             "
           >{{ $t('btn.query') }}</el-button>
@@ -40,188 +36,139 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button>
-    <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
-    <delete-btn :disabled="selectedList.length == 0" @handleDelete="handleDelete" />
+    <!-- <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button> -->
+    <!-- <permission-btn label="add" icon="el-icon-plus" type="primary" @click.native="openCreateUser" /> -->
+    <!-- <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button> -->
+    <!-- <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" /> -->
     <el-table :data="tableList" border @selection-change="handleSelectionChange">
-      <el-table-column fixed type="selection" width="40" center />
-      <el-table-column :label="$t('userManage.type')" align="center" min-width="180">
+      <!-- <el-table-column fixed type="selection" width="40" center /> -->
+      <!-- <el-table-column label="权限代码" min-width="110" align="center">
         <template slot-scope="scope">
-          <span class="view" @click="editDetail('view', scope.row)">{{ scope.row.type }}</span>
+          <span class="view" @click="editDetail('view', scope.row)">{{ scope.row.authCode }}</span>
         </template>
-      </el-table-column>
-      <el-table-column prop="typeName" :label="$t('userManage.typeName')" align="center" min-width="180" />
-      <el-table-column prop="name" :label="$t('userManage.name')" align="center" min-width="180" />
-      <el-table-column prop="value" :label="$t('userManage.value')" align="center" min-width="180" />
-      <el-table-column prop="attribute" :label="$t('userManage.attribute')" align="center" min-width="180" />
-      <el-table-column prop="isValid" :label="$t('businessGlossary.isValid')" align="center" min-width="160">
+      </el-table-column> -->
+      <el-table-column prop="authCode" label="权限代码" min-width="280" align="center" />
+      <el-table-column prop="path" label="权限路径" min-width="260" align="center" />
+      <el-table-column prop="parentCode" label="父级权限代码" min-width="200" align="center" />
+      <el-table-column prop="applicationName" label="应用名称" min-width="110" align="center" />
+      <!-- <el-table-column prop="sort" label="排序" min-width="110" align="center" /> -->
+      <!-- <el-table-column prop="enabled" label="启用状态" min-width="90" align="center">
         <template slot-scope="scope">
-          {{ $t(`businessGlossary.${scope.row.isValid ? 'yes' : 'no'}`) }}
+          <span>{{ scope.row.enabled ? '启用' : '禁用' }}</span>
         </template>
-      </el-table-column>
-      <el-table-column prop="createTime" :label="$t('userManage.creationTime')" align="center" min-width="180" />
-      <el-table-column prop="createUser" :label="$t('userManage.creator')" align="center" min-width="150" />
-      <el-table-column prop="modifyTime" :label="$t('userManage.modifyTime')" align="center" min-width="140" />
-      <el-table-column prop="modifyUser" :label="$t('userManage.modifyUser')" align="center" min-width="180" />
+      </el-table-column> -->
+      <el-table-column prop="createTime" :label="$t('userManage.creationTime')" align="center" min-width="160" />
+      <el-table-column prop="createBy" :label="$t('userManage.creator')" align="center" min-width="160" />
+      <el-table-column prop="updateTime" :label="$t('userManage.modifyTime')" align="center" min-width="180" />
+      <el-table-column prop="updateBy" :label="$t('userManage.modifyUser')" align="center" min-width="140" />
     </el-table>
-    <el-pagination v-show="total > 0" small background :current-page.sync="searchForm.pageNum" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="40%" :close-on-click-modal="false" center :visible.sync="userDialog" @close="closeDialog">
-      <el-form ref="premissionForm" :model="dialogForm" :rules="userFormRules" label-width="120px" style="padding-right: 15px" :disabled="dialogTittle == 'view'">
+    <el-pagination v-show="total > 0" background :current-page.sync="searchForm.pageNumber" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="50%" :close-on-click-modal="false" center :visible.sync="basicDialog" @close="closeDialog">
+      <el-form ref="userForm" :model="dialogForm" :rules="formRules" label-width="100px" :disabled="dialogTittle == 'view'">
         <el-row class="form_table">
-          <el-col :span="22">
-            <el-form-item :label="$t('userManage.type')" prop="type">
-              <!-- <el-input v-model="dialogForm.type" /> -->
-              <el-select v-model="dialogForm.type" :placeholder="$t('placeholder.select')" :disabled="dialogTittle != 'add'">
-                <el-option v-for="item in permissionTypes" :key="item.bizCode" :label="item.bizCode" :value="item.bizCode" />
-              </el-select>
+          <el-col :span="12">
+            <el-form-item label="按钮代码" prop="authCode">
+              <el-input v-model.trim="dialogForm.authCode" :disabled="dialogTittle != 'add'" />
             </el-form-item>
           </el-col>
-          <el-col :span="22">
-            <el-form-item :label="$t('userManage.typeName')">
-              <!-- <el-input v-model="dialogForm.type" /> -->
-              <el-select v-model="dialogForm.type" :placeholder="$t('placeholder.select')" disabled>
-                <el-option v-for="item in permissionTypes" :key="item.bizCode" :label="item.bizText" :value="item.bizCode" />
-              </el-select>
+          <el-col :span="12">
+            <el-form-item label="按钮名称" prop="path">
+              <el-input v-model.trim="dialogForm.path" />
             </el-form-item>
           </el-col>
-          <el-col :span="22">
-            <el-form-item :label="$t('userManage.name')" prop="name">
-              <!-- <el-select v-model="dialogForm.type" :placeholder="$t('placeholder.select')" disabled>
-                    <el-option v-for="item in permissionTypes" :key="item.bizCode" :label="item.bizText" :value="item.bizCode" />
-                  </el-select> -->
-              <el-input v-model="dialogForm.name" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="22">
-            <el-form-item :label="$t('userManage.value')" prop="value">
-              <el-input v-model="dialogForm.value" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="22">
-            <el-form-item :label="$t('userManage.attribute')" prop="attribute">
-              <el-input v-model="dialogForm.attribute" />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="22">
-            <el-form-item :label="$t('businessGlossary.isValid')" prop="isValid">
-              <el-select v-model="dialogForm.isValid" :placeholder="$t('placeholder.select')">
-                <el-option :key="0" :label="$t('businessGlossary.no')" :value="0" />
-                <el-option :key="1" :label="$t('businessGlossary.yes')" :value="1" />
+          <el-col :span="12">
+            <el-form-item label="启用状态" prop="enabled">
+              <el-select v-model="dialogForm.enabled" :placeholder="$t('placeholder.select')">
+                <el-option key="1" label="启用" :value="1" />
+                <el-option key="0" label="禁用" :value="0" />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer" style="text-align: center">
-        <el-button v-if="dialogTittle != 'view'" type="primary" plain @click="UserConfirm">{{ $t('btn.confirm') }}</el-button>
-        <el-button type="danger" plain @click="userDialog = false">{{ $t('btn.close') }}</el-button>
+        <el-button v-if="dialogTittle != 'view'" type="primary" plain @click="confirm">{{ $t('btn.confirm') }}</el-button>
+        <el-button type="danger" plain @click="basicDialog = false">{{ $t('btn.close') }}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getDictList } from '@/api/dict-data'
-import { permissionAdd, permissionEdit, permissionDelete, getPermissionList } from '@/api/authority'
+import { getPermissionList, permissionAdd, permissionEdit, permissionDelete } from '@/api/authority'
 export default {
   data() {
     return {
-      permissionTypes: [],
       selectedList: [],
       searchForm: {
-        isValid: null,
-        type: '',
+        path: null,
+        authCode: null,
+        enabled: null,
+        pageNumber: 1,
         pageSize: 10,
-        pageNum: 1,
       },
       tableList: [],
       total: 0,
-
       dialogTittle: 'view',
-      userDialog: false,
+      basicDialog: false,
       dialogForm: {
-        type: '', // '权限类型',
-        name: '', // '权限名称',
-        attribute: '', // 权限属性
-        value: '', // '权限值',
-        isValid: 1, // '状态'
+        // actionId: null,
+        authCode: null,
+        path: null,
+        // remark: null,
+        // sort: null,
+        enabled: 1,
       },
-      userFormRules: {
-        type: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-        value: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-        // attribute: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-        name: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-        isValid: [{ required: true, message: this.$t('placeholder.input'), trigger: 'change' }],
+      formRules: {
+        // actionId: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        authCode: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        path: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        // enabled: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
       },
     }
   },
-  created() {
-    this.getTypes()
-  },
   methods: {
-    getTypes() {
-      getDictList('permission_type').then((res) => {
-        if (res.code == '2000') {
-          this.permissionTypes = res.data
-          return
-        }
-      })
-    },
-    UserConfirm() {
-      this.$refs.premissionForm.validate((valid, obj) => {
+    // 提交按钮
+    confirm() {
+      this.$refs.userForm.validate(async(valid, obj) => {
         if (valid) {
           if (this.dialogTittle == 'add') {
-            permissionAdd(this.dialogForm).then((res) => {
-              if (res.code == '2000') {
-                this.getTypes()
-                this.closeDialog(true)
-                return
-              }
-            })
+            const { code } = await permissionAdd(this.dialogForm)
+            if (code != '200') return
+            this.closeDialog(true)
           } else {
-            permissionEdit(this.dialogForm).then((res) => {
-              if (res.code == '2000') {
-                this.closeDialog(true)
-                return
-              }
-            })
+            const { code } = await permissionEdit(this.dialogForm)
+            if (code != '200') return
+            this.closeDialog(true)
           }
         } else {
           return
         }
       })
     },
+    // 关闭弹窗
     closeDialog(bool) {
-      bool && this.getData()
-      ;(this.dialogForm = {
-        type: '', // '权限类型',
-        name: '', // '权限名称',
-        attribute: '', // 权限属性
-        value: '', // '权限值',
-        isValid: 1, // '状态'
-      }),
-      this.$refs.premissionForm.resetFields()
-      this.userDialog = false
+      bool && this.getData() // 点确定关闭弹窗的时候才会刷新列表
+      this.$refs['userForm'].resetFields()
+      this.basicDialog = false
     },
-    // 删除操作 做 提示
-    handleDelete() {
-      permissionDelete(this.selectedList[0].pkId).then((res) => {
-        if (res.code == '2000') {
-          this.getData()
-          return
-        }
-      })
+    // 删除操作
+    async handleDelete() {
+      const { code } = await permissionDelete(this.selectedList[0].id)
+      if (code != '200') return
+      this.getData()
     },
     // 新建操作
     openCreateUser() {
       this.dialogTittle = 'add' // 新建
-      this.userDialog = true
+      this.basicDialog = true
     },
     // 编辑和查看操作
     editDetail(title, row) {
       this.dialogTittle = title
-      this.dialogForm = JSON.parse(JSON.stringify(row || this.selectedList[0]))
-      this.userDialog = true
+      this.basicDialog = true
+      this.$nextTick(() => {
+        this.dialogForm = JSON.parse(JSON.stringify(row || this.selectedList[0]))
+      })
     },
     // 重置
     resetForm(formName) {
@@ -230,33 +177,24 @@ export default {
       this.total = 0
     },
     // 查询
-    getData() {
-      this.$refs.formSearch.validate((valid) => {
-        if (valid) {
-          getPermissionList(this.searchForm).then((res) => {
-            if (res.code == '2000') {
-              this.tableList = res.data.list
-              this.total = res.data.total
-              return
-            }
-          })
-        } else {
-          return
-        }
-      })
+    async getData() {
+      const { data, code } = await getPermissionList(this.searchForm)
+      if (code != '200') return
+      this.tableList = data.records
+      this.total = data.total
     },
     // 选择项改变时
     handleSelectionChange(val) {
       this.selectedList = val
     },
     // 页码改变
-    handleCurrentChange(pageNum) {
-      this.searchForm.pageNum = pageNum
+    handleCurrentChange(pageNumber) {
+      this.searchForm.pageNumber = pageNumber
       this.getData()
     },
     // 每页size改变时
     handleSizeChange(val) {
-      this.searchForm.pageNum = 1
+      this.searchForm.pageNumber = 1
       this.searchForm.pageSize = val
       this.getData()
     },

@@ -18,11 +18,11 @@ export function querytitleByCategory(params) {
 }
 
 // 关键词查询
-export function searchKeyWord(params = {}) {
+export function searchKeyWord(params) {
   return request({
-    url: '/auth-service/help/searchKeyWord',
-    method: 'post',
-    data: params,
+    url: '/business/gaeaHelp/pageList',
+    method: 'GET',
+    params,
   })
 }
 

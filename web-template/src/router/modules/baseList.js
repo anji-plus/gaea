@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:34:51
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-07 16:34:08
+ * @Last Modified time: 2021-03-02 09:46:31
  */
 
 /** 脚手架基础页面路由 **/
@@ -51,14 +51,25 @@ export const baseList = [
       icon: 'authority',
     },
     children: [
+      // {
+      //   menuId: '2010',
+      //   parentMenuId: '20',
+      //   path: 'btn-config',
+      //   component: 'authority/btn-config',
+      //   name: 'btnConfig',
+      //   meta: {
+      //     title: 'btnConfig',
+      //     icon: '',
+      //   },
+      // },
       {
         menuId: '2010',
         parentMenuId: '20',
-        path: 'btn-config',
-        component: 'authority/btn-config',
-        name: 'btnConfig',
+        path: 'permission',
+        component: 'authority/permission',
+        name: 'Permission',
         meta: {
-          title: 'btnConfig',
+          title: 'permission',
           icon: '',
         },
       },
@@ -95,17 +106,6 @@ export const baseList = [
           icon: '',
         },
       },
-      // {
-      //   menuId: '2060',
-      //   parentMenuId: '20',
-      //   path: 'permission',
-      //   component: 'authority/permission',
-      //   name: 'Permission',
-      //   meta: {
-      //     title: 'permission',
-      //     icon: '',
-      //   },
-      // },
     ],
   },
   // 系统设置

@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:21:58
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-02 10:41:58
+ * @Last Modified time: 2021-03-02 17:52:06
  */
 import Vue from 'vue'
 
@@ -22,7 +22,8 @@ import router from './router'
 import i18n from './lang' // 国际化
 import './icons' // icon
 import './permission' // 权限控制
-
+import permission from '@/directive/permission/index'
+Vue.use(permission)
 /**
  * 如果不使用模拟服务器
  * 可用MockJs来模拟api

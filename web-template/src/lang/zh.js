@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 16:59:48
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-26 17:01:15
+ * @Last Modified time: 2021-03-02 15:13:59
  */
 export default {
   system: {
@@ -68,7 +68,7 @@ export default {
     menuConfig: '菜单配置',
     role: '角色管理',
     user: '用户管理',
-    permission: '接口权限',
+    permission: '权限列表',
     systemSet: '系统设置',
     dataDictionary: '字典管理',
     parameter: '参数管理',

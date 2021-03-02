@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:14:13
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-26 12:12:21
+ * @Last Modified time: 2021-03-02 12:46:07
  */
 import request from '@/utils/request'
 // 权限菜单中几个页面的接口
@@ -152,38 +152,38 @@ export function resetPwd(data) {
 
 // // 权限管理
 
-// // 权限列表接口
-// export function getPermissionList(params) {
-//   return request({
-//     url: '/v1/permission',
-//     method: 'get',
-//     params,
-//   })
-// }
-// // 删除接口
-// export function permissionDelete(pkId) {
-//   return request({
-//     url: `/v1/permission/${pkId}`,
-//     method: 'delete',
-//     params: { noTip: false },
-//   })
-// }
-// // 编辑接口
-// export function permissionEdit(data) {
-//   return request({
-//     url: `/v1/permission/${data.pkId}`,
-//     method: 'put',
-//     data,
-//   })
-// }
-// // 新增接口
-// export function permissionAdd(data) {
-//   return request({
-//     url: `/v1/permission`,
-//     method: 'post',
-//     data,
-//   })
-// }
+// 权限配置接口
+export function getPermissionList(params) {
+  return request({
+    url: '/auth/gaeaAuthority/pageList',
+    method: 'get',
+    params,
+  })
+}
+// 删除接口
+export function permissionDelete(id) {
+  return request({
+    url: `/auth/gaeaAuthority/${id}`,
+    method: 'delete',
+    params: { noTip: false },
+  })
+}
+// 编辑接口
+export function permissionEdit(data) {
+  return request({
+    url: `/auth/gaeaAuthority/${data.id}`,
+    method: 'put',
+    data,
+  })
+}
+// 新增接口
+export function permissionAdd(data) {
+  return request({
+    url: `/auth/gaeaAuthority/`,
+    method: 'post',
+    data,
+  })
+}
 
 // // 角色管理
 
@@ -254,6 +254,22 @@ export function getOrgTree(code) {
 export function saveOrgTree(data) {
   return request({
     url: '/auth/role/saveOrgTreeForRole',
+    method: 'post',
+    data,
+  })
+}
+
+// 角色关联组织弹窗查询接口
+export function getAuthTree(orgCode, roleCode) {
+  return request({
+    url: `/auth/gaeaAuthority/authority/tree/${orgCode}/${roleCode}`,
+    method: 'get',
+  })
+}
+// 提交选中的菜单节点
+export function saveAuthTree(data) {
+  return request({
+    url: '/auth/gaeaAuthority/role/authority',
     method: 'post',
     data,
   })
