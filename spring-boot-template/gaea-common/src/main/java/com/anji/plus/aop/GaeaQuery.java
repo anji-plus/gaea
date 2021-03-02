@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * @Author: peiyanni
  * @Date: 2021/2/3 12:34
  */
-@Target({ ElementType.PARAMETER, ElementType.METHOD })
+@Target({ElementType.METHOD })
 @Documented
 public @interface GaeaQuery {
 }
