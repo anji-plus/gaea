@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 10:57:57
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-05 17:33:51
+ * @Last Modified time: 2021-03-01 10:58:08
  */
 import axios from 'axios'
 import { Message, Loading } from 'element-ui'
@@ -112,7 +112,9 @@ service.interceptors.response.use(
       response.headers.authorization && store.commit('user/SET_TOKEN', response.headers.authorization)
       // 处理流文件类型
       if (response.config.responseType === 'blob') {
-        if (res.type.indexOf('application/vnd.ms-excel') != -1) {
+        // application/vnd.ms-excel
+        // application/octet-stream
+        if (res.type.indexOf('application') != -1) {
           return response
         } else {
           Message({
@@ -123,7 +125,7 @@ service.interceptors.response.use(
         }
       }
       // token过期/失效
-      if (res.code == '500-02-0004') {
+      if (res.code == '500-02-0004' || res.code == 'User.credentials.expired') {
         tokenLose()
         return res
       }

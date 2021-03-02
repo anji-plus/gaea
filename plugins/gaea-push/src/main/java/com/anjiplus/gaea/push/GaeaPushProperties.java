@@ -1,6 +1,6 @@
 package com.anjiplus.gaea.push;
 
-import com.github.anji.plus.gaea.constant.GaeaConstant;
+import com.anji.plus.gaea.constant.GaeaConstant;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -20,6 +20,7 @@ public class GaeaPushProperties {
      * 是否发布事件
      */
     private boolean publishEvent = true;
+
 
     public boolean isPublishEvent() {
         return publishEvent;

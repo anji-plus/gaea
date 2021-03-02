@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * 自定义security的UserDetailsService,从数据库获取用户信息
  *
- * @author lirui
+ * @author lr
  * @since 2021-01-25
  */
 public class GaeaUserDetailsService implements UserDetailsService {

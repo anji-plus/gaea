@@ -2,10 +2,10 @@ package com.anjiplus.gaea.log.aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import com.anjiplus.gaea.log.config.GaeaAuditLogProperties;
-import com.anjiplus.gaea.log.annotation.GaeaAuditLog;
 import com.anjiplus.gaea.log.event.AuditLogApplicationEvent;
-import com.github.anji.plus.gaea.utils.ApplicationContextUtils;
+import com.anji.plus.gaea.utils.ApplicationContextUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -16,10 +16,12 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -40,16 +42,19 @@ import java.util.Map;
  */
 @Aspect
 @Component
+@Order(1)
 public class GaeaAuditLogAspect {
     private static final Logger log = LoggerFactory.getLogger(GaeaAuditLogAspect.class);
     @Autowired
     private GaeaAuditLogProperties gaeaAuditLogProperties;
 
     @Autowired
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     // 配置织入点
-    @Pointcut("@annotation(com.anjiplus.gaea.log.annotation.GaeaAuditLog)")
+    @Pointcut("@annotation(com.anji.plus.gaea.annotation.log.GaeaAuditLog)")
     public void logPointCut() {
     }
 
@@ -91,20 +96,30 @@ public class GaeaAuditLogAspect {
             String className = joinPoint.getTarget().getClass().getName();
             String methodName = joinPoint.getSignature().getName();
             //设置url
-            operLog.setRequestUrl(getRequest().getRequestURI());
+            HttpServletRequest request=getRequest();
+            operLog.setRequestUrl(request.getRequestURI());
             // 设置请求方式
-            operLog.setRequestMethod(getRequest().getMethod());
+            operLog.setRequestMethod(request.getMethod());
             operLog.setRequestTime(new Date());
+            //获取ip
+            operLog.setSourceIp(getSourceIp(request));
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog);
-            log.info("---盖亚日志组件---解析数据--{}", JSON.toJSONString(operLog));
-            restTemplateCallback(operLog,getRequest());
+            log.info("--gaeaLog:requestUrl--{}", operLog.getRequestUrl());
+            log.info("--gaeaLog:requestData--{}", operLog.getRequestParam());
+            log.info("--gaeaLog:requestAllData--{}", JSON.toJSONString(operLog));
             if (gaeaAuditLogProperties.isPublishEvent()) {
                 ApplicationContextUtils.publishEvent(new AuditLogApplicationEvent(this, operLog));
             }
+            //执行回调
+            if(!StringUtils.isEmpty(gaeaAuditLogProperties.getCallbackUrl())){
+                threadPoolTaskExecutor.execute(()->{
+                    restTemplateCallback(operLog,request);
+                });
+            }
         } catch (Exception exp) {
             // 记录本地异常日志
-            log.error("==盖亚日志组件异常=={}", e.getMessage());
+            log.error("--gaeaLog:error--{}", e.getMessage());
         }
     }
 
@@ -122,7 +137,8 @@ public class GaeaAuditLogAspect {
         if (log.isSaveRequestData()) {
             // 获取参数的信息，传入到数据库中。
             setRequestValue(joinPoint, operLog);
-        } else {
+        }
+        if(!log.isSaveResponseData()){
             operLog.setResponseParam(null);
         }
     }
@@ -138,12 +154,6 @@ public class GaeaAuditLogAspect {
         if (HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod)) {
             String params = argsArrayToString(joinPoint.getArgs());
             operLog.setRequestParam(params);
-            try {
-                JSONObject jsonObject = JSONObject.parseObject(params);
-                operLog.setSourceIp(jsonObject.getString("opSourceIP"));
-            } catch (Exception e) {
-                log.warn("解析请求json失败", e);
-            }
         }else if(HttpMethod.GET.name().equals(requestMethod)){
             Map<String,String[]> paramMap= getRequest().getParameterMap();
             operLog.setRequestParam(JSON.toJSONString(paramMap));
@@ -217,20 +227,35 @@ public class GaeaAuditLogAspect {
      */
     private void restTemplateCallback(LogOperation logOperation,HttpServletRequest request) {
         String url = gaeaAuditLogProperties.getCallbackUrl();
-        if (StringUtils.isEmpty(url)) {
-            return;
-        }
         try {
-            log.info("--盖亚日志组件--回调方法--url={}", url);
+            log.info("--gaeaLog:callBack:url-{}--", url);
             HttpHeaders headers_new = new HttpHeaders();
             headers_new.setContentType(MediaType.APPLICATION_JSON);
             headers_new.set("Accept", "application/json;charset=UTF-8");
             headers_new.set("Authorization",request.getHeader("Authorization"));
             HttpEntity entity = new HttpEntity(logOperation, headers_new);
             JSONObject responseBody = restTemplate.postForObject(url, entity, JSONObject.class);
-            log.info("--盖亚日志组件--回调方法返回{}", responseBody);
+            log.info("--gaeaLog:callBack:response-{}", responseBody);
         } catch (Exception e) {
-            log.error("----盖亚日志组件回调出现异常{}------", e.getMessage());
+            log.error("--gaeaLog:callBack:error--", e.getMessage());
         }
+    }
+
+    public static String getSourceIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+            //多次反向代理后会有多个ip值，第一个ip才是真实ip
+            int index = ip.indexOf(",");
+            if (index != -1) {
+                return ip.substring(0, index);
+            } else {
+                return ip;
+            }
+        }
+        ip = request.getHeader("X-Real-IP");
+        if (!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+            return ip;
+        }
+        return request.getRemoteAddr();
     }
 }

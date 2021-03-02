@@ -6,12 +6,9 @@ import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
 import com.anjiplus.gaea.security.handler.GaeaFilterExceptionHandler;
 import com.anjiplus.gaea.security.code.UserResponseCode;
-import com.anjiplus.gaea.security.security.handler.GaeaLoginFailureHandler;
-import com.anjiplus.gaea.security.security.handler.GaeaLoginSuccessHandler;
 import com.anjiplus.gaea.security.utils.AuthUtils;
-import com.anjiplus.gaea.security.utils.CryptoUtils;
-import com.github.anji.plus.gaea.exception.BusinessExceptionBuilder;
-import com.github.anji.plus.gaea.holder.UserContentHolder;
+import com.anji.plus.gaea.exception.BusinessExceptionBuilder;
+import com.anji.plus.gaea.holder.UserContentHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -36,7 +32,7 @@ import java.io.IOException;
 /**
  * 重写UsernamePasswordAuthenticationFilter，增加验证码并对用户名密码进行解密
  * 所有信息从请求体中取
- * @author lirui
+ * @author lr
  * @since 2021-01-27
  */
 public class GaeaUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -143,6 +139,9 @@ public class GaeaUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
             return null;
         }
         String username = requestBody.getString(SPRING_SECURITY_FORM_USERNAME_KEY);
+        if (username == null) {
+            return null;
+        }
 //        try {
 //            username = CryptoUtils.desEncrypt(username);
 //        } catch (Exception e) {
@@ -151,6 +150,7 @@ public class GaeaUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
 //        }
 //        username = username.trim();
 
+        username = username.toLowerCase();
         //放入到上下文中
         UserContentHolder.getContext().setUsername(username);
         return username;

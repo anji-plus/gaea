@@ -1,12 +1,11 @@
 package com.anjiplus.gaea.log.aspect;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
  * 日志相关数据
- * @author lirui
+ * @author lr
  */
 public class LogOperation implements Serializable {
 

@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * 功能描述：
- *
+ * 导出信息-事件发布
  * @Author: peiyanni
  * @Date: 2021/1/27 17:26
  */

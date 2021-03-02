@@ -1,2 +1,2 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.github.anji.plus.gaea.GaeaAutoConfiguration
-org.springframework.boot.env.EnvironmentPostProcessor=com.github.anji.plus.gaea.encryption.EncryptionEnvironmentPostProcessor
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.anji.plus.gaea.GaeaAutoConfiguration
+org.springframework.boot.env.EnvironmentPostProcessor=com.anji.plus.gaea.encryption.EncryptionEnvironmentPostProcessor

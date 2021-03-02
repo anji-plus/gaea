@@ -23,6 +23,7 @@
         </el-col>
       </el-row>
     </el-form>
+    <el-button type="primary" icon="el-icon-download" @click="download()">{{ $t('btn.export') }}</el-button>
     <!-- 查询结果列表 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" style="width: 100%" border fit highlight-current-row>
       <el-table-column type="expand">
@@ -89,7 +90,7 @@
 </template>
 
 <script>
-import { logPageList } from '@/api/system-set'
+import { logPageList, exportLogToFile } from '@/api/system-set'
 
 export default {
   data() {
@@ -124,6 +125,20 @@ export default {
     this.queryByPage()
   },
   methods: {
+    // 导出
+    download() {
+      const data = JSON.parse(JSON.stringify(this.params))
+      data.pageSize = 10000
+      data.pageNumber = 1
+      if (data.pageTitle || data.requestUrl || data.userName) {
+        exportLogToFile(data)
+      } else {
+        this.$message({
+          message: '请输入查询条件',
+          type: 'warning',
+        })
+      }
+    },
     // 查询
     search(formName) {
       this.$refs[formName].validate((valid) => {

@@ -2,7 +2,6 @@ package com.anjiplus.gaea.security.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
-import com.github.anji.plus.gaea.holder.UserContentHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +9,7 @@ import java.io.IOException;
 
 /**
  * 用户工具类
- * @author lirui
+ * @author lr
  * @since 2021-01-27
  */
 public class AuthUtils {

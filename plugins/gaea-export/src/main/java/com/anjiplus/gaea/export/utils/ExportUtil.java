@@ -4,10 +4,11 @@ import com.anjiplus.gaea.export.enums.ExportTypeEnum;
 import com.anjiplus.gaea.export.enums.FileStatusEnum;
 import com.anjiplus.gaea.export.event.GaeaExportApplicationEvent;
 import com.anjiplus.gaea.export.vo.ExportOperation;
-import com.github.anji.plus.gaea.utils.ApplicationContextUtils;
+import com.anji.plus.gaea.utils.ApplicationContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -17,13 +18,11 @@ import java.util.UUID;
  * @author
  */
 public class ExportUtil {
-
     private static Logger logger = LoggerFactory.getLogger(ExportUtil.class);
 
     private static ExportUtil exportUtil=null;
 
     private ExportUtil(){
-
     }
 
     public static synchronized ExportUtil getInstance(){
@@ -71,7 +70,7 @@ public class ExportUtil {
     }
 
     /**
-     * asyExcel方式 导出格式为文件流
+     * easyExcel方式 导出格式为文件流
      *
      * @param exportOperation 参数
      * @param clazz           excel中list中的类型
@@ -97,15 +96,15 @@ public class ExportUtil {
         try {
             if (exportOperation.getExportType().equals(ExportTypeEnum.SIMPLE_EXCEL.getCodeValue())) {
                 //easyexcel
-                exportOperation.setFilePath(dictPath + fileId + ".xlsx");
+                exportOperation.setFilePath(dictPath+ File.separator + fileId + ".xlsx");
                 EasyExcelUtil.excelExportByFilePath(exportOperation, clazz);
             } else if (exportOperation.getExportType().equals(ExportTypeEnum.JASPER_TEMPLATE_EXCEL.getCodeValue())) {
                 //jasper excel
-                exportOperation.setFilePath(dictPath + fileId + ".xlsx");
+                exportOperation.setFilePath(dictPath+ File.separator + fileId + ".xlsx");
                 JasperUtil.jasperExcelByFilePath(exportOperation);
             } else if (exportOperation.getExportType().equals(ExportTypeEnum.JASPER_TEMPLATE_PDF.getCodeValue())) {
                 //jasper pdf
-                exportOperation.setFilePath(dictPath + fileId + ".pdf");
+                exportOperation.setFilePath(dictPath + File.separator+ fileId + ".pdf");
                 JasperUtil.jasperPDFByFilePath(exportOperation);
             }
             exportOperation.setFileStatus(FileStatusEnum.SUCCESS.getCodeValue());
@@ -117,9 +116,10 @@ public class ExportUtil {
             exportOperation.setFileStatus(FileStatusEnum.FAILED.getCodeValue());
             exportOperation.setFileFinishTime(LocalDateTime.now());
         } finally {
-            //发布事件
             logger.info("------>导出文件发布事件<-----");
+            exportOperation.setList(null);
             ApplicationContextUtils.publishEvent(new GaeaExportApplicationEvent(ExportUtil.class, exportOperation));
+
         }
     }
 

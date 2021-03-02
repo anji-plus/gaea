@@ -1,1 +1,1 @@
-com.github.anji.plus.gaea.annotation.enabled.EnabledGaeaConfiguration=com.anjiplus.gaea.export.config.GaeaExportAutoConfiguration
+com.anji.plus.gaea.annotation.enabled.EnabledGaeaConfiguration=com.anjiplus.gaea.export.GaeaExportAutoConfiguration

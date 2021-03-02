@@ -1,0 +1,17 @@
+package com.anjiplus.gaea.push.domain.vo;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.List;
+
+/**
+ * @author anji gaea teams
+ * @Date: 2020/10/30
+ * @Description:
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class TreeParamVO {
+    List<TemplateTreeVO> treeList;
+}

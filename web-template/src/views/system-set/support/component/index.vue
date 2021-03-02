@@ -3,13 +3,27 @@
     <el-form ref="helpForm" :model="helpForm" :rules="rules" label-width="100px" class="demo-ruleForm">
       <el-row :gutter="10">
         <el-col :span="6">
+          <el-form-item prop="helpCategory" label="所属分类">
+            <el-select v-model="helpForm.helpCategory" :placeholder="$t('placeholder.select')">
+              <el-option v-for="(item, i) in classificationList" :key="i" :label="item.text" :value="item.id" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
           <el-form-item label="标题" prop="helpTitle">
             <el-input v-model="helpForm.helpTitle" placeholder="请填写标题" @blur="blurInput" />
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="排序" prop="sort">
-            <el-input v-model="helpForm.sort" placeholder="请填写排序" />
+            <el-input v-model="helpForm.sort" type="number" placeholder="请填写排序" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item prop="enabled" label="启用状态">
+            <el-select v-model="helpForm.enabled" :placeholder="$t('placeholder.select')">
+              <el-option v-for="(item, i) in statusList" :key="i" :label="item.label" :value="item.value" />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -25,9 +39,9 @@
       </div>
     </el-form>
 
-    <div slot="footer" style="text-align: center">
-      <el-button type="primary" plain>{{ $t('btn.confirm') }}</el-button>
-      <el-button type="danger" plain>{{ $t('btn.close') }}</el-button>
+    <div v-if="clickType != '查看'" slot="footer" style="text-align: center">
+      <el-button type="primary" plain @click="confirmBtn('helpForm')">{{ $t('btn.confirm') }}</el-button>
+      <el-button type="danger" plain @click="cancel()">{{ $t('btn.close') }}</el-button>
     </div>
   </div>
 </template>
@@ -35,60 +49,106 @@
 <script>
 import CKEditor from '@ckeditor/ckeditor5-build-decoupled-document'
 import '@ckeditor/ckeditor5-build-decoupled-document/build/translations/zh-cn'
-
+import { gaeaHelpAdd, gaeaHelpEdit, uploadImg } from '@/api/system-set'
 export default {
   components: {},
+  props: {
+    helpForm: {
+      type: Object,
+      default: function() {
+        return {
+          helpCategory: '', // 分类
+          helpTitle: '', // 标题
+          sort: null, // 排序
+          enabled: '', // 启用状态
+        }
+      },
+    },
+    clickType: {
+      type: String,
+      default: function() {
+        return ''
+      },
+    },
+    classificationList: {
+      type: Array,
+      default: function() {
+        return []
+      },
+    },
+  },
   data() {
     return {
-      helpForm: {
-        helpCategory: '', // 分类
-        helpTitle: '', // 标题
-        sort: '', // 排序
-        enableFlag: '', // 启用状态
-      },
+      // 所属分类数据
+      // classificationList: [
+      //   // {extend: "", label: "登录注册", labelEng: "login_register", value: "login_register"},
+      //   // {extend: "", label: "权限角色", labelEng: "auth_role", value: "auth_role"},
+      //   // {extend: "", label: "字典管理", labelEng: "dict_manager", value: "dict_manager"},
+      //   // {extend: "", label: "系统设置", labelEng: "system_setting", value: "system_setting"},
+      //   // {extend: "", label: "消息推送", labelEng: "message_push", value: "message_push"},
+      //   // {extend: "", label: "设备管理", labelEng: "device_manager", value: "device_manager"},
+      //   // {extend: "", label: "监控计算", labelEng: "item_calculate", value: "item_calculate"}
+      // ],
+      // 启用状态数据
+      statusList: [
+        {
+          label: '启用',
+          value: 1,
+        },
+        {
+          label: '禁用',
+          value: 0,
+        },
+      ],
       rules: {
         helpCategory: [{ required: true, message: '请选择所属分类', trigger: 'change' }],
         helpTitle: [{ required: true, message: '请输入标题', trigger: 'blur' }],
         sort: [{ required: true, message: '请输入排序', trigger: 'blur' }],
-        enableFlag: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
+        enabled: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
       },
       id: null,
       editor: null,
-      isFind: true,
     }
   },
+  watch: {
+    'helpForm.sort': function(val) {
+      this.helpForm.sort = val != null ? Number(val) : null
+    },
+  },
   mounted() {
-    this.id = this.$route.query.id
-    this.isFind = this.$route.query.val
-    // if(this.id != null) { // 编辑
-    //   this.queryDetail()
-    // }
-    var self = this
-    setTimeout(function() {
-      self.queryDetail()
-    }, 1000)
-
+    const that = this
     this.initCKEditor()
+    setTimeout(function() {
+      if (that.clickType == '查看' || that.clickType == '编辑') {
+        // 编辑
+        that.queryDetail()
+      }
+    }, 100)
   },
   methods: {
     initCKEditor() {
-      console.log(11111)
       class UploadAdapter {
         constructor(loader) {
           this.loader = loader
         }
-        // async upload() {
-        //   // 重置上传路径
-        //   const data = new FormData()
-        //   data.append('file', await this.loader.file)
-        //   return new Promise((resolve, reject) => {
-        //     upload(data).then((res) => {
-        //       resolve({
-        //         default: res.repData,
-        //       })
-        //     })
-        //   })
-        // }
+        async upload() {
+          // 重置上传路径
+          const data = new FormData()
+          data.append('file', await this.loader.file)
+          return new Promise((resolve, reject) => {
+            uploadImg(data)
+              .then((res) => {
+                if (res.code == '200') {
+                  resolve({
+                    default: res.data,
+                  })
+                }
+              })
+              .catch((err) => {
+                reject(err)
+              })
+          })
+        }
       }
       CKEditor.create(document.querySelector('#editor'), {
         language: 'zh-cn',
@@ -118,7 +178,7 @@ export default {
         }
         const toolbarContainer = document.querySelector('#toolbar-container')
         toolbarContainer.appendChild(editor.ui.view.toolbar.element)
-        this.editor = editor
+        this.editor = editor // 将编辑器保存起来，用来随时获取编辑器中的内容等，执行一些操作
       })
     },
     blurInput() {
@@ -136,59 +196,40 @@ export default {
       //   }
       // })
     },
-    queryDetail(id) {
-      // queryById({helpId: id}).then(response => {
-      const response = {
-        repCode: '0000',
-        repMsg: null,
-        repData: {
-          helpId: 25,
-          helpCategory: 'login_register',
-          helpTitle: '1222',
-          helpContent: '<figure class="image"><img src="http://haitongnla.test.anji-plus.com/auth-service/file/download/b9b01955-d20e-434c-ac90-2c25597217a2"></figure><figure class="image"><img src="http://haitongnla.test.anji-plus.com/auth-service/file/download/f8f4a4e4-c156-45c2-b350-2e0c1afe87d4"></figure><p>&nbsp;</p><figure class="image"><img src="http://haitongnla.test.anji-plus.com/auth-service/file/download/3bdda098-8ba6-4a0b-bf2f-9e56550a872e"></figure><p>&nbsp;</p>',
-          enableFlag: 1,
-          sort: 1,
-          remark: null,
-          createdBy: 'aimee',
-          createdTime: '2020-12-22T11:02:40',
-          updatedBy: 'aimee',
-          updatedTime: '2020-12-22T11:05:53',
-        },
-        success: true,
-        error: false,
-      }
-      if (response.repCode == '0000') {
-        this.helpForm = response.repData
-        this.editor.setData('<figure class="image"><img src="http://haitongnla.test.anji-plus.com/auth-service/file/download/b9b01955-d20e-434c-ac90-2c25597217a2"></figure><figure class="image"><img src="http://haitongnla.test.anji-plus.com/auth-service/file/download/f8f4a4e4-c156-45c2-b350-2e0c1afe87d4"></figure><p>&nbsp;</p><figure class="image"><img src="http://haitongnla.test.anji-plus.com/auth-service/file/download/3bdda098-8ba6-4a0b-bf2f-9e56550a872e"></figure><p>&nbsp;</p>')
-      }
-      // })
+    queryDetail() {
+      console.log(1, this.helpForm.helpContent)
+      this.editor.setData(this.helpForm.helpContent)
+      // this.editor.setData("\"<figure class=\"image\"><img src=\"https://gaea.anji-plus.com/auth-service/file/download/80a46139-7e4a-4cbb-9cff-e2485e038d45\"></figure>\"")
+    },
+    cancel() {
+      this.$parent.$parent.colseDialog('no')
+    },
+    // 清空内容
+    clearEdit() {
+      this.editor.setData('')
     },
     // 保存
     confirmBtn(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async(valid) => {
         if (valid) {
           if (!this.editor.getData()) {
-            this.$message.error('请输入富文本框内容')
+            this.$message.warning('请输入富文本框内容')
             return
           }
           const helpForm = this.helpForm
           helpForm.helpContent = this.editor.getData()
-          if (this.id === null) {
+          if (this.clickType == '新增') {
             // 新增
-            // reqCreate(helpForm).then((res) => {
-            //   if (res.repCode === '0000') {
-            //     this.$message({ message: '新增成功', type: 'success', duration: 2 * 1000 })
-            //     // this.goBack()
-            //   }
-            // })
+            const res = await gaeaHelpAdd(helpForm)
+            if (res.code != '200') return
+            this.$parent.$parent.colseDialog('yes')
+            this.clearEdit()
           } else {
             // 编辑
-            // reqUpdate(helpForm).then((res) => {
-            //   if (res.repCode === '0000') {
-            //     this.$message({ message: '编辑成功', type: 'success', duration: 2 * 1000 })
-            //     // this.goBack()
-            //   }
-            // })
+            const res = await gaeaHelpEdit(helpForm)
+            if (res.code != '200') return
+            this.$parent.$parent.colseDialog('yes')
+            this.clearEdit()
           }
         }
       })

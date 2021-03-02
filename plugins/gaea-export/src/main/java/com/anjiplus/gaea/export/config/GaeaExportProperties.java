@@ -1,6 +1,6 @@
 package com.anjiplus.gaea.export.config;
 
-import com.github.anji.plus.gaea.constant.GaeaConstant;
+import com.anji.plus.gaea.constant.GaeaConstant;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -16,16 +16,4 @@ public class GaeaExportProperties {
      */
     public final static String COMPONENT_NAME = "export";
 
-    /**
-     * 是否发布事件
-     */
-    private boolean publishEvent = true;
-
-    public boolean isPublishEvent() {
-        return publishEvent;
-    }
-
-    public void setPublishEvent(boolean publishEvent) {
-        this.publishEvent = publishEvent;
-    }
 }

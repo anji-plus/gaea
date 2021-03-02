@@ -1,9 +1,9 @@
 package com.anjiplus.gaea.security.bean;
 
 
-import com.github.anji.plus.gaea.bean.ResponseBean;
-import com.github.anji.plus.gaea.code.ResponseCode;
-import com.github.anji.plus.gaea.exception.BusinessException;
+import com.anji.plus.gaea.bean.ResponseBean;
+import com.anji.plus.gaea.code.ResponseCode;
+import com.anji.plus.gaea.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * @author lirui
+ * @author lr
  * @since 2021-01-16
  */
 @RestControllerAdvice

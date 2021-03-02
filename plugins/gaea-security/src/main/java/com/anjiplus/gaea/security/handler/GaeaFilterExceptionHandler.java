@@ -3,17 +3,18 @@ package com.anjiplus.gaea.security.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.anjiplus.gaea.security.cache.CacheKeyEnum;
 import com.anjiplus.gaea.security.code.UserResponseCode;
+import com.anjiplus.gaea.security.i18.GaeaMessageSourceAccessor;
+import com.anjiplus.gaea.security.i18.GaeaSecurityMessageSource;
 import com.auth0.jwt.exceptions.SignatureGenerationException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.github.anji.plus.gaea.bean.ResponseBean;
-import com.github.anji.plus.gaea.cache.CacheHelper;
-import com.github.anji.plus.gaea.code.ResponseCode;
-import com.github.anji.plus.gaea.constant.Enabled;
-import com.github.anji.plus.gaea.constant.GaeaConstant;
-import com.github.anji.plus.gaea.exception.BusinessException;
-import com.github.anji.plus.gaea.i18.MessageSourceHolder;
-import com.github.anji.plus.gaea.utils.JwtUtils;
+import com.anji.plus.gaea.bean.ResponseBean;
+import com.anji.plus.gaea.cache.CacheHelper;
+import com.anji.plus.gaea.code.ResponseCode;
+import com.anji.plus.gaea.constant.Enabled;
+import com.anji.plus.gaea.constant.GaeaConstant;
+import com.anji.plus.gaea.exception.BusinessException;
+import com.anji.plus.gaea.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 过滤器异常处理
- * @author lirui
+ * @author lr
  * @since 2021-01-23
  */
 public class GaeaFilterExceptionHandler {
 
-    @Autowired
-    private MessageSourceHolder messageSourceHolder;
+    private GaeaMessageSourceAccessor messages = GaeaSecurityMessageSource.getAccessor();
 
     private Logger logger = LoggerFactory.getLogger(GaeaFilterExceptionHandler.class);
 
@@ -67,7 +67,7 @@ public class GaeaFilterExceptionHandler {
         }
 
         responseBean = builder.code(code).build();
-        responseBean.setMessage(messageSourceHolder.getMessage(code));
+        responseBean.setMessage(messages.getMessage(code,code));
         try {
             response.getWriter().print(JSONObject.toJSONString(responseBean));
         } catch (IOException io) {

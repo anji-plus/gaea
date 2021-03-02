@@ -1,15 +1,15 @@
 package com.anji.mirror.push.service;
 
-import com.anji.mirror.push.domain.po.TemplatePO;
-import com.anji.mirror.push.domain.common.DingTalkParam;
 import com.anji.mirror.push.domain.common.MailParam;
 import com.anji.mirror.common.model.PushParamVO;
 import com.anji.mirror.push.domain.common.SmsParam;
-import com.anji.mirror.push.domain.vo.TemplateVO;
 import com.anji.mirror.common.model.RequestModel;
 import com.anji.mirror.common.model.ResponseModel;
+import com.anjiplus.gaea.push.domain.common.DingTalkParam;
+import com.anjiplus.gaea.push.domain.po.TemplatePO;
+import com.anjiplus.gaea.push.domain.vo.TemplateVO;
+import com.anjiplus.gaea.push.domain.vo.TreeParamVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.anji.mirror.push.domain.vo.TreeParamVO;
 
 /**
  * <p>

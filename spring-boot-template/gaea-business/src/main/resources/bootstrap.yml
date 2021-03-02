@@ -10,6 +10,12 @@ spring:
           aliyun:
             access-key-id:
             secret:
+      audit-log:
+        enabled: true
+        callback-url: http://127.0.0.1:9090/gaea/auth/log/callback
+      export:
+        enabled: true
+
 logging:
   level:
     com.alibaba.cloud.nacos.client.NacosPropertySourceBuilder: debug

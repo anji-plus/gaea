@@ -1,51 +1,88 @@
-# 行为审计
+# 盖亚-审计日志组件
+### 一.组件介绍
+审计日志组件**gaea-log**需要结合盖亚底盘一起使用，通过AOP方式获取每个请求的相关数据（请求和返回数据）。后端直接通过注解方式可以获取对应方法的请求数据。注解中可以指明请求title，是否保存请求参数（默认保存），是否保存返回参数（默认不保存）。
 
-## 基本用法
+单体架构，可以采用事件监听获取请求相关数据。
+微服务架构，可以配置回调路径来获取请求相关数据。
 
-```bash
-vuepress <command> targetDir [options]
+### 二.组件配置
+#### 1.pom.xml添加依赖
+```
+<dependency>
+     <groupId>com.anji-plus</groupId>
+     <artifactId>spring-boot-gaea</artifactId>
+</dependency>
+
+<dependency>
+     <groupId>com.anji-plus</groupId>
+     <artifactId>spring-boot-starter-gaea-log</artifactId>
+     <version>1.0-SNAPSHOT</version>
+</dependency>
 ```
 
-## build
+#### 2.添加配置
+```
+spring:
+  gaea:
+    subscribes:
+      audit-log:
+        enabled: true
+        callback-url: http://*****
+        publish-event: true
+```
 
-在指定的目录生成一个静态站点。
+*注：当微服务架构下，配置callback-url来获取请求日志信息；当单体架构下，只需要配置publish-event:true，需要监听事件来获取日志信息*
 
-### -p, --port `<port>`
-查看 [port](../config/README.md#port)。
+#### 3.启动类添加配置(@EnabledGaeaConfiguration)
+```
+@SpringBootApplication
+@EnableFeignClients
+@EnabledGaeaConfiguration
+public class AuthApplication {
+    public static void main( String[] args ) {
+        SpringApplication.run(AuthApplication.class);
+    }
 
-### -t, --temp `<temp>`
-查看 [temp](../config/README.md#temp)。
+}
+```
 
-### -c, --cache `[cache]`
-### --no-cache
-查看 [cache](../config/README.md#cache)。
+*注：@EnabledGaeaConfiguration表示启用盖亚*
+### 三.组件使用示例
+- 直接在controller层对应方法上引用注解@GaeaAuditLog
+```
+	/**
+     * 用户修改密码
+     * @param reqParam
+     * @return
+     */
+    @PostMapping("/updatePassword")
+    @GaeaAuditLog(pageTitle = "修改密码",isSaveResponseData = true)
+    public ResponseBean updatePassword(@RequestBody GaeaUserPasswordParam reqParam){
+        return responseSuccessWithData(gaeaUserService.updatePassword(reqParam));
+    }
+```
 
-### --dest `<dest>`
-查看 [dest](../config/README.md#dest)。
+- 如果是微服务架构，需要写一个回调的方法，用来获取捕捉到的日志信息,示例代码如下：
+```
+	@RequestMapping("/callback")
+    public ResponseBean callback(@RequestBody LogOperation logOperation){
+        gaeaLogService.saveCallbackInfo(logOperation);
+        return responseSuccess();
+    }
 
-### --debug
-以调试模式启动开发服务器。
+```
 
-### --silent
-以安静模式启动开发服务器。
+- 如果是单体架构，需要监听一个事件，用来获取捕捉到的日志信息，示例代码如下：
+```
+@Component
+@Slf4j
+public class GaeaAuditLogEventListener {
 
-## dev
-
-启动一个开发服务器。来自 `vuepress build` 的所有选项都可用。除此以外，还有几个专门针对 dev 的选项：
-
-### --host `<host>`
-查看 [host](../config/README.md#host)。
-
-### --open
-当服务端准备就绪时自动打开浏览器。
-
-### --no-clear-screen
-当 dev server 就绪时不清除屏幕。请注意 dev server 不会在调试模式下清除屏幕。
-
-## eject
-
-将默认主题复制到 `.vuepress/theme` 目录，以供自定义。
-
-## 更多指令
-
-你可以使用 [extendCli](../plugin/option-api.md#extendcli) 来创建自定义命令。
+    @EventListener
+    @Async
+    public void getExportInfo(AuditLogApplicationEvent event){
+        LogOperation logOperation= event.getLogOperation();
+        log.info("----收到的日志信息--{}", JSON.toJSONString(logOperation));
+    }
+}
+```

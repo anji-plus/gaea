@@ -1,7 +1,8 @@
 package com.anji.mirror.push.utils;
 
 import com.anji.mirror.push.domain.common.SmsParam;
-import com.anji.mirror.push.domain.vo.TemplateVO;
+import com.anjiplus.gaea.push.domain.vo.TemplateVO;
+import com.anjiplus.gaea.push.type.sms.utils.JgSmsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
