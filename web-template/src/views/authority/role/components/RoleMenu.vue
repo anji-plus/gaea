@@ -33,7 +33,8 @@ export default {
       defaultProps: {
         label: (data) => {
           // 按钮权限
-          return this.$t(`route.${data.id}`)
+          return data.label
+          // return this.$t(`route.${data.id}`)
         },
         // disabled: () => {
         //   return this.dialogTittle == 'view'
@@ -77,7 +78,7 @@ export default {
       const hasChildren = data
       // 将一级菜单就是页面的树过滤出来，直接展示
       hasChildren.forEach((item, index) => {
-        if (item.children.length == 1) {
+        if (item.children && item.children.length == 1) {
           hasChildren.splice(index, 1, item.children[0])
         }
       })

@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:34:51
  * @Last Modified by: zyk
- * @Last Modified time: 2021-02-07 18:07:22
+ * @Last Modified time: 2021-03-03 14:23:12
  */
 import router from './router'
 import store from './store'
@@ -41,8 +41,8 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // 此处相当于拿token获取菜单列表
-          // const routerList = await store.dispatch('user/getInfo', Cookies.get('orgCode'))
-          await store.dispatch('user/getInfo', Cookies.get('orgCode'))
+          const routerList = await store.dispatch('user/getInfo', Cookies.get('orgCode'))
+          // await store.dispatch('user/getInfo', Cookies.get('orgCode'))
           // 处理获取到的菜单数据
           // 解决从登录页重定向到其他页面时再次处理component的值的问题，堆污染（真实场景中从接口中拿数据不会出现此情况）
           // const accessRoutes = await store.dispatch('permission/generateRoutes', JSON.parse(JSON.stringify(routerList)))

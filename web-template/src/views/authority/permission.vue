@@ -38,19 +38,20 @@
     </el-form>
     <!-- <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button> -->
     <!-- <permission-btn label="add" icon="el-icon-plus" type="primary" @click.native="openCreateUser" /> -->
-    <!-- <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button> -->
+    <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
     <!-- <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" /> -->
     <el-table :data="tableList" border @selection-change="handleSelectionChange">
-      <!-- <el-table-column fixed type="selection" width="40" center /> -->
+      <el-table-column fixed type="selection" width="40" center />
       <!-- <el-table-column label="权限代码" min-width="110" align="center">
         <template slot-scope="scope">
           <span class="view" @click="editDetail('view', scope.row)">{{ scope.row.authCode }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column prop="authCode" label="权限代码" min-width="280" align="center" />
-      <el-table-column prop="path" label="权限路径" min-width="260" align="center" />
-      <el-table-column prop="parentCode" label="父级权限代码" min-width="200" align="center" />
       <el-table-column prop="applicationName" label="应用名称" min-width="110" align="center" />
+      <el-table-column prop="parentCode" label="父级权限代码" min-width="200" align="center" />
+      <el-table-column prop="authCode" label="权限代码" min-width="280" align="center" />
+      <el-table-column prop="authName" label="权限名称" min-width="100" align="center" />
+      <el-table-column prop="path" label="权限路径" min-width="260" align="center" />
       <!-- <el-table-column prop="sort" label="排序" min-width="110" align="center" /> -->
       <!-- <el-table-column prop="enabled" label="启用状态" min-width="90" align="center">
         <template slot-scope="scope">
@@ -67,21 +68,28 @@
       <el-form ref="userForm" :model="dialogForm" :rules="formRules" label-width="100px" :disabled="dialogTittle == 'view'">
         <el-row class="form_table">
           <el-col :span="12">
-            <el-form-item label="按钮代码" prop="authCode">
-              <el-input v-model.trim="dialogForm.authCode" :disabled="dialogTittle != 'add'" />
+            <el-form-item label="应用名称" prop="applicationName">
+              <el-input v-model.trim="dialogForm.applicationName" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="按钮名称" prop="path">
+            <el-form-item label="父级权限代码" prop="parentCode">
+              <el-input v-model.trim="dialogForm.parentCode" disabled/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="权限代码" prop="authCode">
+              <el-input v-model.trim="dialogForm.authCode" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="权限名称" prop="authName">
+              <el-input v-model.trim="dialogForm.authName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="权限路径" prop="path">
               <el-input v-model.trim="dialogForm.path" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="启用状态" prop="enabled">
-              <el-select v-model="dialogForm.enabled" :placeholder="$t('placeholder.select')">
-                <el-option key="1" label="启用" :value="1" />
-                <el-option key="0" label="禁用" :value="0" />
-              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -111,17 +119,16 @@ export default {
       dialogTittle: 'view',
       basicDialog: false,
       dialogForm: {
-        // actionId: null,
+        parentCode: null,
         authCode: null,
         path: null,
-        // remark: null,
-        // sort: null,
-        enabled: 1,
+        applicationName: null,
+        authName: null,
       },
       formRules: {
         // actionId: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-        authCode: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
-        path: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        // authCode: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
+        // path: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
         // enabled: [{ required: true, message: this.$t('placeholder.input'), trigger: 'blur' }],
       },
     }

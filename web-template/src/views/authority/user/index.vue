@@ -61,9 +61,9 @@
           <span>{{ scope.row.enabled ? '启用' : '禁用' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" :label="$t('userManage.creationTime')" align="center" min-width="120" />
+      <el-table-column prop="createTime" :label="$t('userManage.creationTime')" align="center" min-width="140" />
       <el-table-column prop="createBy" :label="$t('userManage.creator')" align="center" min-width="100" />
-      <el-table-column prop="updateTime" :label="$t('userManage.modifyTime')" align="center" min-width="120" />
+      <el-table-column prop="updateTime" :label="$t('userManage.modifyTime')" align="center" min-width="140" />
       <el-table-column prop="updateBy" :label="$t('userManage.modifyUser')" align="center" min-width="100" />
     </el-table>
     <el-pagination v-show="total > 0" background :current-page.sync="searchForm.pageNumber" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
