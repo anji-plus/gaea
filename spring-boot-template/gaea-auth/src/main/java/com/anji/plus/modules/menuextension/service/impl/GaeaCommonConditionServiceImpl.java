@@ -50,8 +50,8 @@ public class GaeaCommonConditionServiceImpl implements GaeaCommonConditionServic
         queryWrapper.eq(GaeaCommonCondition::getId,commonId);
         try {
             GaeaCommonCondition commonCondition=gaeaCommonConditionMapper.selectOne(queryWrapper);
-            if(null!=commonCondition&& StringUtils.isNotEmpty(commonCondition.getSql())){
-                result=JSON.parseArray(commonCondition.getSql(),DynamicQueryBo.class);
+            if(null!=commonCondition&& StringUtils.isNotEmpty(commonCondition.getCommSql())){
+                result=JSON.parseArray(commonCondition.getCommSql(),DynamicQueryBo.class);
             }
         }catch (Exception e){
            log.error("search error {}",e.getMessage());
@@ -74,7 +74,7 @@ public class GaeaCommonConditionServiceImpl implements GaeaCommonConditionServic
             getDynamicList(dynamicQueryBos, commonConditionReqBO);
         }
         GaeaCommonCondition commonCondition = t.inputBO2Entity();
-        commonCondition.setSql(JSON.toJSONString(dynamicQueryBos));
+        commonCondition.setCommSql(JSON.toJSONString(dynamicQueryBos));
         commonCondition.setLabel(JSON.toJSONString(values));
         gaeaCommonConditionMapper.insert(commonCondition);
         // TODO 常用查询sql,List塞入缓存
