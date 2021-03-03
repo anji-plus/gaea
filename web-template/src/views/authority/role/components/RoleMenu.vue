@@ -33,7 +33,8 @@ export default {
       defaultProps: {
         label: (data) => {
           // 按钮权限
-          return this.$t(`route.${data.id}`)
+          return data.label
+          // return this.$t(`route.${data.id}`)
         },
         // disabled: () => {
         //   return this.dialogTittle == 'view'

@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 16:59:48
  * @Last Modified by: zyk
- * @Last Modified time: 2021-03-02 15:13:59
+ * @Last Modified time: 2021-03-03 14:58:28
  */
 export default {
   system: {
@@ -88,7 +88,7 @@ export default {
     normal: '普通列表页',
     componentCenter: '组件中心',
     advancedList: '高级查询/动态列',
-    demo: 'CRUD组件化实例',
+    demo: 'CRUD组件化案例',
   },
   navbar: {
     dashboard: '首页',
