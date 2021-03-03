@@ -5,8 +5,8 @@
     <resultMap type="com.anji.plus.modules.menuextension.entity.GaeaCommonCondition" id="GaeaCommonConditionMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="menuCode" column="menu_code" jdbcType="INTEGER"/>
-        <result property="sql" column="sql" jdbcType="VARCHAR"/>
-        <result property="lable" column="lable" jdbcType="VARCHAR"/>
+        <result property="commSql" column="comm_sql" jdbcType="VARCHAR"/>
+        <result property="label" column="label" jdbcType="VARCHAR"/>
         <result property="isDisabled" column="is_disabled" jdbcType="INTEGER"/>
         <result property="createBy" column="create_by" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -18,7 +18,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, menu_code, sql, lable, is_disabled, create_by, create_time, update_by, update_time, table_code, search_name,version
+        id, menu_code, comm_sql, label, is_disabled, create_by, create_time, update_by, update_time, table_code, search_name,version
     </sql>
 
     <select id="queryByCondition" resultType="com.anji.plus.modules.menuextension.controller.dto.GaeaCommonConditionDTO">

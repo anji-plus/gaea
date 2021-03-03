@@ -3,6 +3,7 @@ package com.anji.plus.modules.menuextension.service;
 import com.anji.plus.dto.DynamicQueryBo;
 import com.anji.plus.modules.menuextension.controller.dto.GaeaCommonConditionDTO;
 import com.anji.plus.modules.menuextension.controller.param.ComConditionQueryParam;
+import com.anji.plus.modules.menuextension.controller.param.CommonConditionInputBO;
 import com.anji.plus.modules.menuextension.controller.param.GaeaCommonConditionParam;
 import com.anji.plus.modules.menuextension.entity.GaeaCommonCondition;
 import com.anji.plus.gaea.curd.service.GaeaBaseService;
@@ -29,4 +30,11 @@ public interface GaeaCommonConditionService extends GaeaBaseService<GaeaCommonCo
      * @return
      */
     List<DynamicQueryBo> getDynamicQueryBoListById(Long commonId);
+
+    /**
+     * 常用查询新增
+     * @param t
+     * @return
+     */
+    boolean saveCommonCondition(CommonConditionInputBO t);
 }

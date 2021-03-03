@@ -1,11 +1,14 @@
 package com.anji.plus.modules.menuextension.controller;
 
 import com.anji.plus.dto.DynamicQueryBo;
+import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import com.anji.plus.gaea.bean.ResponseBean;
 import com.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.anji.plus.gaea.curd.service.GaeaBaseService;
+import com.anji.plus.gaea.holder.UserContentHolder;
 import com.anji.plus.modules.menuextension.controller.dto.GaeaCommonConditionDTO;
 import com.anji.plus.modules.menuextension.controller.param.ComConditionQueryParam;
+import com.anji.plus.modules.menuextension.controller.param.CommonConditionInputBO;
 import com.anji.plus.modules.menuextension.controller.param.GaeaCommonConditionParam;
 import com.anji.plus.modules.menuextension.entity.GaeaCommonCondition;
 import com.anji.plus.modules.menuextension.service.GaeaCommonConditionService;
@@ -27,8 +30,8 @@ import java.util.List;
  * @since 2021-02-02 14:42:41
  */
 @RestController
-@RequestMapping("/gaeaCommonCondition")
-@Api(value = "/gaeaCommonCondition", tags = "")
+@RequestMapping("/commonCondition")
+@Api(value = "/commonCondition", tags = "")
 public class GaeaCommonConditionController extends GaeaBaseController<GaeaCommonConditionParam, GaeaCommonCondition, GaeaCommonConditionDTO> {
     @Autowired
     private GaeaCommonConditionService gaeaCommonConditionService;
@@ -52,6 +55,7 @@ public class GaeaCommonConditionController extends GaeaBaseController<GaeaCommon
     @ApiOperation("常用查询条件查询")
     @PostMapping("/queryByCondition")
     public ResponseBean queryByCondition(@RequestBody ComConditionQueryParam resquestParam) {
+        resquestParam.setCreateBy(UserContentHolder.getContext().getUsername());
         List<GaeaCommonConditionDTO> result = gaeaCommonConditionService.queryByCondition(resquestParam);
         return responseSuccessWithData(result);
     }
@@ -61,6 +65,13 @@ public class GaeaCommonConditionController extends GaeaBaseController<GaeaCommon
         List<DynamicQueryBo> result = gaeaCommonConditionService.getDynamicQueryBoListById(commonId);
         return result;
     }
+    @ApiOperation("常用查询条件新增")
+    @PostMapping("/saveCondition")
+    @GaeaAuditLog(pageTitle = "新增常用查询")
+    public ResponseBean saveCommonCondition(@RequestBody CommonConditionInputBO requestParam){
+        return responseSuccessWithData(gaeaCommonConditionService.saveCommonCondition(requestParam));
+    }
+
 
 
 

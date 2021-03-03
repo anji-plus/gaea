@@ -9,7 +9,7 @@
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="nameValue" column="name_value" jdbcType="VARCHAR"/>
         <result property="valueType" column="value_type" jdbcType="INTEGER"/>
-        <result property="condition" column="condition" jdbcType="INTEGER"/>
+        <result property="queryCondition" column="query_condition" jdbcType="INTEGER"/>
         <result property="type" column="type" jdbcType="INTEGER"/>
         <result property="place" column="place" jdbcType="INTEGER"/>
         <result property="dataSource" column="data_source" jdbcType="INTEGER"/>
@@ -24,7 +24,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, table_code, menu_code, name, name_value, value_type, condition, type, place, data_source, data_source_value,
+        id, table_code, menu_code, name, name_value, value_type, query_condition, type, place, data_source, data_source_value,
         is_disabled, create_by, create_time, update_by, update_time, date_precision, version
     </sql>
 

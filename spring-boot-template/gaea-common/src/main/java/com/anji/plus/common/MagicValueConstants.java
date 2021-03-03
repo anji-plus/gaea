@@ -35,6 +35,8 @@ public final class MagicValueConstants {
 
     //魔法值 1
     public static final int ONE = 1;
+    //魔法值 1
+    public static final int TWO = 2;
 
     //魔法值 10
     public static final int TEN = 10;

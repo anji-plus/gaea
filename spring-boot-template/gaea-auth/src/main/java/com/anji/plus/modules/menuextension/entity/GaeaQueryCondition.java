@@ -36,7 +36,7 @@ public class GaeaQueryCondition extends GaeaBaseEntity implements Serializable {
     /**
      * 查询条件(1:>、2:<、3:>=、4:<=、5:LIKE)(暂时不使用此字段)
      */
-    private Integer condition;
+    private Integer queryCondition;
     /**
      * 条件类型(1:文本框、2:下拉框、3:联想控件、4:日期控件、5:数字、6:多记录文本)(1:文本框、2:下拉框、3:日期控件、4:多记录文本、5:数字、6:联想控件)（此处只取前四种类型，下拉框和联想控件合并，数字类型归为文本）
      */
@@ -102,12 +102,12 @@ public class GaeaQueryCondition extends GaeaBaseEntity implements Serializable {
         this.valueType = valueType;
     }
 
-    public Integer getCondition() {
-        return condition;
+    public Integer getQueryCondition() {
+        return queryCondition;
     }
 
-    public void setCondition(Integer condition) {
-        this.condition = condition;
+    public void setQueryCondition(Integer queryCondition) {
+        this.queryCondition = queryCondition;
     }
 
     public Integer getType() {

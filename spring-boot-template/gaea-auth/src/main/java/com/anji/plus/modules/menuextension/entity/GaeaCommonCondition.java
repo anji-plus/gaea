@@ -20,11 +20,11 @@ public class GaeaCommonCondition extends GaeaBaseEntity implements Serializable 
     /**
      * 查询sql
      */
-    private String sql;
+    private String commSql;
     /**
      * 查询条件名称label
      */
-    private String lable;
+    private String label;
     /**
      * 0:可用,1:已作废
      */
@@ -46,20 +46,20 @@ public class GaeaCommonCondition extends GaeaBaseEntity implements Serializable 
         this.menuCode = menuCode;
     }
 
-    public String getSql() {
-        return sql;
+    public String getCommSql() {
+        return commSql;
     }
 
-    public void setSql(String sql) {
-        this.sql = sql;
+    public void setCommSql(String commSql) {
+        this.commSql = commSql;
     }
 
-    public String getLable() {
-        return lable;
+    public String getLabel() {
+        return label;
     }
 
-    public void setLable(String lable) {
-        this.lable = lable;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public Integer getIsDisabled() {
