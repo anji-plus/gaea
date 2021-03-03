@@ -26,7 +26,7 @@ public interface AuthServiceClient {
      * @param commonId
      * @return List<DynamicQueryBo>
      */
-    @RequestMapping(value = "/gaeaCommonCondition/getDynamicQueryBoListById", method = RequestMethod.POST)
+    @RequestMapping(value = "/commonCondition/getDynamicQueryBoListById", method = RequestMethod.POST)
     List<DynamicQueryBo> getDynamicQueryBoListById(@RequestParam("commonId") Long commonId);
 
 

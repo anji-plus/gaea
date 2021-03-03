@@ -108,7 +108,7 @@
           {{ scope.row.createTime }}
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" min-width="115" align="center">
+      <el-table-column fixed="right" label="操作" min-width="160" align="center">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="查看" placement="top">
             <el-button :circle="true" :plain="true" type="success" icon="el-icon-view" size="mini" @click="edit(scope.row, 'see')" />

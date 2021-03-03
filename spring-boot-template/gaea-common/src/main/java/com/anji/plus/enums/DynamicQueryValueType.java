@@ -35,9 +35,12 @@ public enum DynamicQueryValueType {
      * @param v
      * @return
      */
-    public static DynamicQueryValueType getEnum(int v) {
+    public static DynamicQueryValueType getEnum(Integer v) {
+        if (v == null) {
+            return null;
+        }
         for (DynamicQueryValueType p : VALUES) {
-            if (p.value == v) {
+            if (p.value == v.intValue()) {
                 return p;
             }
         }

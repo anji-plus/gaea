@@ -13,5 +13,6 @@ const getters = {
   hasMenu: (state) => state.user.hasMenu,
   permission_routes: (state) => state.permission.routes,
   orgList: (state) => state.user.orgList,
+  authorities: (state) => state.user.authorities,
 }
 export default getters

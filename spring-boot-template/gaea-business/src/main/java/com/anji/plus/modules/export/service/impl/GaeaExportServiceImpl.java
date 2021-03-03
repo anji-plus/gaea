@@ -40,7 +40,7 @@ public class GaeaExportServiceImpl implements GaeaExportService {
     @Override
     @GaeaQuery
     public Page<GaeaExport> getExportListPage(GaeaExportQueryParam queryParam) {
-        Page<GaeaExport> page=new Page<>(queryParam.getPageNo(),queryParam.getPageSize());
+        Page<GaeaExport> page=new Page<>(queryParam.getPageNumber(),queryParam.getPageSize());
         List<GaeaExport> gaeaExports=gaeaExportMapper.queryExportInfo(page,queryParam,queryParam.getQueryWrapper());
         page.setRecords(gaeaExports);
         return page;

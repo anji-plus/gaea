@@ -21,7 +21,7 @@ public class GaeaCommonConditionDTO extends GaeaBaseDTO {
      * 查询sql
      */
     @ApiModelProperty(value = "查询sql")
-    private String sql;
+    private String commSql;
     /**
      * 查询条件名称label
      */
@@ -51,12 +51,12 @@ public class GaeaCommonConditionDTO extends GaeaBaseDTO {
         this.menuCode = menuCode;
     }
 
-    public String getSql() {
-        return sql;
+    public String getCommSql() {
+        return commSql;
     }
 
-    public void setSql(String sql) {
-        this.sql = sql;
+    public void setCommSql(String commSql) {
+        this.commSql = commSql;
     }
 
     public String getLable() {

@@ -16,5 +16,8 @@ import java.io.Serializable;
 @Getter
 public class GaeaExportQueryParam extends BaseQueryBO implements Serializable{
 
+    /**
+     * 文件标题
+     */
     private String fileTitle;
 }

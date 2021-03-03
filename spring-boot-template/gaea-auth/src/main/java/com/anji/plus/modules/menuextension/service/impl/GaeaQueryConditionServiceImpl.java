@@ -43,28 +43,11 @@ public class GaeaQueryConditionServiceImpl implements GaeaQueryConditionService 
     public List<GaeaQueryCondition> queryCondition(GaeaQueryConditionDTO requestParam) {
         String menuCode = requestParam.getMenuCode();
         String tableCode = requestParam.getTableCode();
-        StringBuffer cacheKeyStr = new StringBuffer(CacheConstants.QUERY_CONDITION);
-        cacheKeyStr.append(menuCode).append(":").append(tableCode);
-        Object obj = cacheService.get(cacheKeyStr.toString());
-        if (null == obj) {
-            LambdaQueryWrapper<GaeaQueryCondition> queryWrapper= Wrappers.lambdaQuery();
-            queryWrapper.eq(GaeaQueryCondition::getMenuCode,menuCode)
-                    .and(StringUtils.isNotEmpty(tableCode),e->e.eq(GaeaQueryCondition::getTableCode,tableCode))
-                    .and(e->e.eq(GaeaQueryCondition::getIsDisabled, Enabled.NO.getValue()));
-            List<GaeaQueryCondition> list=gaeaQueryConditionMapper.selectList(queryWrapper);
-            if(CollectionUtils.isNotEmpty(list)){
-                cacheService.add(cacheKeyStr.toString(), JSON.toJSONString(list), CacheTimeConstants.CHCHE_VALID_TIME_ONE_DAYS, TimeUnit.DAYS);
-                return list;
-            }else{
-                //如果没有缓存一个空字符串，时间为3分钟
-                cacheService.add(cacheKeyStr.toString(),"",CacheTimeConstants.CHCHE_VALID_TIME_THREE_MINUTE,TimeUnit.MINUTES);
-            }
-        }else{
-            if(StringUtils.isNotEmpty(obj.toString())){
-                return JSON.parseArray(obj.toString(), GaeaQueryCondition.class);
-            }
-        }
-        return null;
+        LambdaQueryWrapper<GaeaQueryCondition> queryWrapper= Wrappers.lambdaQuery();
+        queryWrapper.eq(GaeaQueryCondition::getMenuCode,menuCode)
+                .and(StringUtils.isNotEmpty(tableCode),e->e.eq(GaeaQueryCondition::getTableCode,tableCode))
+                .and(e->e.eq(GaeaQueryCondition::getIsDisabled, Enabled.NO.getValue()));
+        return gaeaQueryConditionMapper.selectList(queryWrapper);
     }
 
 }
