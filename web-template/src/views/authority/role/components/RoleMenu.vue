@@ -33,16 +33,12 @@ export default {
       defaultProps: {
         label: (data) => {
           // 按钮权限
-          var index = data.label.indexOf(':')
-          if (index >= 0) {
-            return this.$t(`btn.${data.label.substr(index + 1)}`)
-          }
-          return this.$t(`route.${data.label}`)
+          return this.$t(`route.${data.id}`)
         },
-        disabled: () => {
-          return this.dialogTittle == 'view'
-        },
-      },
+        // disabled: () => {
+        //   return this.dialogTittle == 'view'
+        // },
+      }, 
     }
   },
   watch: {
@@ -71,6 +67,13 @@ export default {
     async getAllMenus() {
       const { code, data } = await allMenu()
       if (code != '200') return
+      // 数据结构
+      /**
+       [
+         id:'菜单配置中的菜单代码',
+         label:'菜单配置中的菜单名称'
+       ]
+       */
       const hasChildren = data
       // 将一级菜单就是页面的树过滤出来，直接展示
       hasChildren.forEach((item, index) => {
