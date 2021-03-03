@@ -43,8 +43,25 @@
             <el-button type="danger" @click="resetForm('formSearch')">{{ $t('btn.reset') }}</el-button>
           </el-col>
           <el-col :span="24">
+            <el-dropdown>
+              <el-button type="primary" class="buttonItem btnSpan">{{ $t('btn.commonSearch') }}</el-button>
+              <el-dropdown-menu slot="dropdown">
+                <!-- icon="el-icon-delete" -->
+                <el-dropdown-item v-for="(o,index) in commonList" :key="index" :command="o.id" @click="commonSearch(o)">
+                  <div class="dropdown-item">
+                    <i class="icon el-icon-delete" @click.stop="delItemCommon(o)" />
+                    <el-link class="link" type="info" @click.stop="openCommonSearch(o)">{{ o.searchName }}</el-link>
+                  </div>
+                </el-dropdown-item>
+                <el-dropdown-item command="add">
+                  <div class="dropdown-item">
+                    <i class="icon el-icon-circle-plus-outline" />
+                    <el-link class="link" type="primary" @click.stop="openAdvancedSearch('commonSearch')">新增查询条件</el-link>
+                  </div>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
             <el-button plain @click="openAdvancedSearch">{{ $t('btn.advancedSearch') }}</el-button>
-            <el-button plain type="primary" @click="openCommonSearch">{{ $t('btn.commonSearch') }}</el-button>
           </el-col>
         </el-col>
       </el-row>
@@ -74,6 +91,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
+    <!-- 自定义列弹窗 -->
     <el-dialog :visible.sync="setTabelDialog.dialog" width="800px" title="自定义列" @closed="closedSetTabel">
       <div v-if="setTabelDialog.show" ref="dragBody" class="dragBody">
         <div ref="dragTable" class="dragTable">
@@ -101,15 +119,138 @@
         <el-button type="primary" @click="submitTabelConfig">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 高级搜索弹窗 -->
+    <el-dialog :title="advanced.title" :visible.sync="advanced.dialog" width="600px">
+      <div class="main">
+        <el-form
+          v-if="advanced.type==='commonSearch'"
+          ref="baseQueryForm"
+          :model="advanced"
+          :rules="{
+            name: [
+              { required: true, message: '请输入名称', trigger: 'blur' },
+              { max: 12, message: '长度最多 12 个字符', trigger: 'blur' }
+            ]}"
+          label-width="50px"
+          class="demo-ruleForm"
+        >
+          <el-form-item label="名称" prop="name">
+            <el-input v-model="advanced.name" maxlength="12" show-word-limit />
+          </el-form-item>
+        </el-form>
+        <div class="list baseQueryItems">
+          <el-row v-for="(row,idx) in advanced.addConfig" :key="idx" class="item" type="flex" align="middle">
+            <el-col :span="8">
+              <el-select v-model="row.prop" value-key="id" placeholder="请选择" @change="updateAdvancedOption($event,advanced.addConfig[idx])">
+                <el-option v-for="item in advanced.templateOption" :key="item.id" :label="item.nameValue" :value="item" />
+              </el-select>
+            </el-col>
+            <el-col :span="5">
+              <el-select v-model="row.operator" placeholder="请选择">
+                <el-option v-for="item in advanced.options" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-col>
+            <el-col :span="8">
+              <!-- // type: 1, //  条件类型(1:文本框、2:下拉框、3:日期控件、4:时间控件、5:日期时间控件、6:多记录文本、) -->
+              <el-input v-if="!row.prop" v-model="row.value" class="formItem" placeholder="请填写" />
+              <el-select v-else-if="row.prop.type===2" v-model="row.value" class="formItem" clearable placeholder="请选择" @change="updateValueName($event,row)">
+                <el-option v-for="item in row.option" :key="item.id" :label="item.text" :value="item.id">
+                  <span style="float: left">{{ item.id }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.text }}</span>
+                </el-option>
+              </el-select>
+              <el-date-picker v-else-if="row.prop.type===3" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" type="date" placeholder="选择日期" />
+              <el-time-select v-else-if="row.prop.type===4" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" placeholder="选择时间" />
+              <el-date-picker v-else-if="row.prop.type===5" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" type="datetime" placeholder="选择日期时间" />
+              <el-input v-else-if="row.prop.type===6" v-model="row.value" class="formItem" type="textarea" placeholder="请填写" @focus="getHigh($event)" @blur="getNormal($event)" />
+              <el-input v-else v-model="row.value" placeholder="请填写" class="formItem" />
+            </el-col>
+            <el-col v-if="idx!==0" :span="3">
+              <i class="el-icon-delete" title="删除" :style="{color:'red', fontSize: '20px',margin: '0 10px'}" @click="delAdvancedItem(idx)" />
+              <!-- <el-button type="danger" icon="el-icon-delete-solid">搜索</el-button> -->
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addAdvancedQuery">新增搜索项</el-button>
+        <el-button type="primary" @click="saveOtherSearch">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { queryTableColumn, queryconditionList, queryAdvanceExport, saveUserMenuExtensionsBatchSave } from '@/api/advanced'
+import { queryTableColumn, queryconditionList, queryAdvanceExport, saveUserMenuExtensionsBatchSave, queryDictSelect, queryCommonCondition, 
+  saveCommonCondition, deleteCommonCondition } from '@/api/advanced'
 import Sortable from 'sortablejs'
 
 export default {
   data() {
     return {
+      visible: false,
+      advancedSearchForm: [],
+      commonList: [],
+      commonId: null,
+      advanced: {
+        dialog: false,
+        name: '',
+        type: '',
+        title: '',
+        templateOption: [],
+        template: {
+          prop: null,
+          option: [],
+          valueName: '',
+          queryApiOption: this.queryApiOption,
+          operator: 'EQ',
+          value: '',
+        },
+        addConfig: [],
+        options: [
+          {
+            value: 'EQ',
+            label: '等于',
+          },
+          {
+            value: 'NE',
+            label: '不等于',
+          },
+          {
+            value: 'GT',
+            label: '大于',
+          },
+          {
+            value: 'GE',
+            label: '大于等于',
+          },
+          {
+            value: 'LT',
+            label: '小于',
+          },
+          {
+            value: 'LE',
+            label: '小于等于',
+          },
+          {
+            value: 'LIKE',
+            label: '类似',
+          },
+          {
+            value: 'IN',
+            label: '包含',
+          },
+        ],
+        list: [
+          {
+            name: '常用搜索1',
+            id: 1,
+          },
+          {
+            name: '常用搜索2',
+            id: 2,
+          },
+        ],
+      },
       pagination: {
         total: 0,
         pageNumber: 1,
@@ -141,8 +282,95 @@ export default {
   },
   mounted() {
     this.queryColumns()
+    this.queryCommonCondition()
   },
   methods: {
+    delItemCommon(o) {
+      deleteCommonCondition(o.id).then((res) => {
+        this.queryCommonCondition()
+      })
+    },
+    updateValueName(val, row) {
+      row.valueName = row.option.find((item) => item.id === val).text
+    },
+    commonSearch(o) {},
+    delCommonList(o) {},
+    getHigh(el) {
+      el.target.style.height = '100px'
+      el.target.style.width = '200%'
+      el.target.style.position = 'absolute'
+    },
+    getNormal(el) {
+      // const str = el.target.value
+      el.target.style.height = '100%'
+      el.target.style.width = '100%'
+      el.target.style.position = 'relative'
+    },
+    queryApiOption(val, row) {
+      console.log(val, row)
+    },
+    updateAdvancedOption(data, item) {
+      if (data.type === 2) {
+        queryDictSelect({ url: data.dataSourceValue }).then((res) => {
+          item.option = res.data || []
+        })
+      }
+      item.value = null
+    },
+    searchVariousQuery(params) {
+      if (!this.advanced.name) {
+        this.$message.error('请填写常用查询名称')
+        return false
+      }
+      const data = {
+        commonConditionReqBOList: params,
+        menuCode: this.tableConfig.menuCode,
+        tableCode: this.tableConfig.tableCode,
+        searchName: this.advanced.name,
+      }
+      saveCommonCondition(data).then((res) => {
+        this.queryCommonCondition()
+        this.advanced.dialog = false
+      })
+    },
+    saveOtherSearch() {
+      const params = this.advanced.addConfig
+        .filter((item) => item.prop && item.value)
+        .map((item) => {
+          return {
+            name: item.prop.name,
+            value: item.value,
+            type: item.prop.type,
+            valueName: item.valueName,
+            valueType: item.prop.valueType,
+            datePrecision: item.prop.datePrecision,
+            operator: item.operator,
+          }
+        })
+      console.log(params)
+      if (!params.length) {
+        this.$message.error('至少选择填写一条筛选条件')
+        return
+      }
+      if (this.advanced.type === 'advancedSearch') {
+        this.advancedSearchForm = params
+        this.getData()
+        this.advanced.dialog = false
+        // console.log()
+      } else {
+        this.searchVariousQuery(params)
+      }
+    },
+    addAdvancedQuery() {
+      const data = {
+        ...this.advanced.template,
+      }
+      this.advanced.addConfig.push(data)
+    },
+    delAdvancedItem(index) {
+      console.log(index)
+      this.advanced.addConfig.splice(index, 1)
+    },
     submitTabelConfig() {
       const arr = this.$refs.dragTable.querySelectorAll('.item')
       const list = this.setTabelDialog.list
@@ -200,18 +428,47 @@ export default {
       })
     },
     openCustomColumns() {},
-    openAdvancedSearch() {},
-    openCommonSearch() {},
+    initAdvancedSearch(type = 'advancedSearch') {
+      this.advanced.title = this.$t('btn.advancedSearch')
+      this.advanced.type = type
+      this.advanced.name = ''
+      this.advanced.addConfig = [
+        {
+          ...this.advanced.template,
+        },
+      ]
+      this.advanced.dialog = true
+    },
+    openAdvancedSearch(type) {
+      if (!this.advanced.templateOption.length) {
+        queryconditionList({ menuCode: this.tableConfig.menuCode, tableCode: this.tableConfig.tableCode }).then((res) => {
+          this.advanced.templateOption = res.data || []
+          this.initAdvancedSearch(type)
+        })
+      } else {
+        this.initAdvancedSearch(type)
+      }
+    },
+    queryCommonCondition() {
+      queryCommonCondition({ menuCode: this.tableConfig.menuCode, tableCode: this.tableConfig.tableCode }).then((res) => {
+        this.commonList = res.data || []
+      })
+    },
+    openCommonSearch(o) {
+      this.commonId = o.id
+      this.getData()
+    },
     queryColumns() {
       queryTableColumn({ menuCode: this.tableConfig.menuCode, tableCode: this.tableConfig.tableCode }).then((res) => {
-        console.log(res.data)
         this.columns = res.data || []
         this.getData()
       })
     },
     getData() {
       const params = {
+        dynamicQueryBos: this.advancedSearchForm,
         pageNumber: this.pagination.pageNumber,
+        commonId: this.commonId ? this.commonId : '',
         pageSize: this.pagination.pageSize,
       }
       this.tableConfig.loading = true
@@ -292,6 +549,17 @@ export default {
       width: 120px;
       margin-left: 10px;
     }
+  }
+}
+.formItem {
+  display: block;
+  width: 100%;
+}
+.dropdown-item{
+  display: flex;
+  align-items: center;
+  .icon{
+    margin-right: 5px;
   }
 }
 </style>

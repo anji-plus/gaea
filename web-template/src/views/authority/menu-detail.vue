@@ -41,11 +41,11 @@
             <span>{{ types.find(item=>item.value===scope.row.type)?types.find(item=>item.value===scope.row.type).label:'空' }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataSource" label="数据源">
+        <!-- <el-table-column prop="dataSource" label="数据源">
           <template slot-scope="scope">
             <span>{{ dataSource.find(item=>item.value===scope.row.dataSource)?dataSource.find(item=>item.value===scope.row.dataSource).label:'空' }}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="dataSourceValue" label="接口地址" />
         <el-table-column prop="valueType" label="条件值类型">
           <template slot-scope="scope">
@@ -66,16 +66,16 @@
     <el-dialog :visible.sync="setColumnDialog.dialog" :title="setColumnDialog.title" width="600px">
       <el-form ref="setColumnForm" :model="setColumnDialog.form" :rules="setColumnDialog.rules" label-width="100px" label-suffix=":">
         <el-form-item label="表编码" prop="tableCode">
-          <el-input v-model.trim="setColumnDialog.form.tableCode" :disabled="!!setColumnDialog.id" :maxlength="100" />
+          <el-input v-model.trim="setColumnDialog.form.tableCode" :maxlength="100" />
         </el-form-item>
-        <el-form-item label="组名" prop="groupName">
+        <!-- <el-form-item label="组名" prop="groupName">
           <el-input v-model.trim="setColumnDialog.form.groupName" :maxlength="100" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="列名" prop="name">
           <el-input v-model.trim="setColumnDialog.form.name" :maxlength="100" />
         </el-form-item>
         <el-form-item label="列编码" prop="code">
-          <el-input v-model.trim="setColumnDialog.form.code" :maxlength="100" :disabled="!!setColumnDialog.id" />
+          <el-input v-model.trim="setColumnDialog.form.code" :maxlength="100" />
         </el-form-item>
         <el-form-item label="排序号" prop="sortNo">
           <el-input-number v-model.number="setColumnDialog.form.sortNo" :min="0" />
@@ -116,11 +116,11 @@
             <el-option v-for="item in types" :key="item.value" :value="item.value" :label="item.label" />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="setSearchConfig.form.type===2" label="数据源" prop="dataSource">
+        <!-- <el-form-item v-if="setSearchConfig.form.type===2" label="数据源" prop="dataSource">
           <el-select v-model="setSearchConfig.form.dataSource" placeholder="请选择">
             <el-option v-for="item in dataSource" :key="item.value" :value="item.value" :label="item.label" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item v-if="setSearchConfig.form.dataSource===1" label="接口地址" prop="dataSourceValue">
           <el-input v-model.trim="setSearchConfig.form.dataSourceValue" :maxlength="100" />
         </el-form-item>
@@ -302,7 +302,11 @@ export default {
     },
     updateSearchType(value) {
       // (1:文本框、2:下拉框、3:日期控件、4:时间控件、5:日期时间控件、6:多记录文本、)
-      this.setSearchConfig.form.dataSource = null
+      if (value === 2) {
+        this.setSearchConfig.form.dataSource = 1
+      } else {
+        this.setSearchConfig.form.dataSource = null
+      }
       this.setSearchConfig.form.datePrecision = null
       this.setSearchConfig.form.valueType = null
       this.setSearchConfig.form.dataSourceValue = ''
