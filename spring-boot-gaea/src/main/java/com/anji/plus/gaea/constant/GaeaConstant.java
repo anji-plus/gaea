@@ -75,7 +75,6 @@ public interface GaeaConstant {
      */
     String URL_SPLIT = "#";
 
-
     /**
      * 正则
      */

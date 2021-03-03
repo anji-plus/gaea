@@ -24,6 +24,7 @@ import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -55,8 +56,95 @@ public class GaeaAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnClass(RedisAutoConfiguration.class)
     public CacheHelper cacheHelper() {
         return new CacheHelper();
+    }
+
+
+    /**
+     * web服务器环境,网关不加载
+     */
+    @Configuration
+    @ConditionalOnClass(WebMvcConfigurer.class)
+    @ComponentScan(value = {"com.anji.plus.gaea.controller", "com.anji.plus.gaea.exception.advice"})
+    public static class WebGaeaAutoConfiguration {
+        /**
+         * 获取当前应用所有的RequestMapping信息，用于权限配置
+         * @return
+         */
+        @Bean
+        public InitRequestUrlMappings initRequestUrlMappings() {
+            return new InitRequestUrlMappings();
+        }
+
+        /**
+         * 解析token用户名
+         * @return
+         */
+        @Bean
+        public FilterRegistrationBean registrationBean() {
+            FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+            registrationBean.setFilter((request, response, chain) -> {
+
+                if (request instanceof HttpServletRequest) {
+                    HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+                    String authorization = httpServletRequest.getHeader(GaeaConstant.Authorization);
+                    if (StringUtils.isNotBlank(authorization)) {
+                        try {
+                            String username = JwtUtils.getUsername(authorization);
+                            UserContext userContext = new UserContext();
+                            userContext.setUsername(username);
+                            //放入上下文
+                            UserContentHolder.setContext(userContext);
+                        } catch (TokenExpiredException tokenExpiredException) {
+
+                            ResponseBean responseBean = ResponseBean.builder().code(ResponseCode.FAIL_CODE).message("The Token has expired").build();
+                            response.getWriter().print(JSONObject.toJSONString(responseBean));
+                            return;
+                        }
+
+                    }
+                }
+                chain.doFilter(request, response);
+            });
+            registrationBean.addUrlPatterns("/*");
+            registrationBean.setName("LogCostFilter");
+            registrationBean.setOrder(1);
+            return registrationBean;
+        }
+
+        /**
+         * 国际化
+         *
+         * @author lr
+         * @since 2021-01-01
+         */
+        @Configuration
+        @ConditionalOnClass(LocaleResolver.class)
+        @ConditionalOnMissingBean(MessageLocaleResolver.class)
+        public class MessageI18AutoConfiguration {
+
+            /**
+             * 根据请求头识别国际化locale
+             *
+             * @return
+             */
+            @Bean
+            public MessageLocaleResolver localeResolver() {
+                return new MessageLocaleResolver();
+            }
+
+            /**
+             * 国际化
+             *
+             * @return
+             */
+            @Bean
+            public MessageSourceHolder messageSourceHolder() {
+                return new MessageSourceHolder();
+            }
+        }
     }
 
     /**
@@ -78,15 +166,6 @@ public class GaeaAutoConfiguration {
     }
 
     /**
-     * 获取当前应用所有的RequestMapping信息，用于权限配置
-     * @return
-     */
-    @Bean
-    public InitRequestUrlMappings initRequestUrlMappings() {
-        return new InitRequestUrlMappings();
-    }
-
-    /**
      * Web配置
      */
     @Configuration
@@ -102,42 +181,6 @@ public class GaeaAutoConfiguration {
             InterceptorRegistration interceptorRegistration = registry.addInterceptor(new AccessKeyInterceptor());
             interceptorRegistration.addPathPatterns("/**");
         }
-    }
-
-    /**
-     * 解析token用户名
-     * @return
-     */
-    @Bean
-    public FilterRegistrationBean registrationBean() {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-        registrationBean.setFilter((request, response, chain) -> {
-
-            if (request instanceof HttpServletRequest) {
-                HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-                String authorization = httpServletRequest.getHeader(GaeaConstant.Authorization);
-                if (StringUtils.isNotBlank(authorization)) {
-                    try {
-                        String username = JwtUtils.getUsername(authorization);
-                        UserContext userContext = new UserContext();
-                        userContext.setUsername(username);
-                        //放入上下文
-                        UserContentHolder.setContext(userContext);
-                    } catch (TokenExpiredException tokenExpiredException) {
-
-                        ResponseBean responseBean = ResponseBean.builder().code(ResponseCode.FAIL_CODE).message("The Token has expired").build();
-                        response.getWriter().print(JSONObject.toJSONString(responseBean));
-                        return;
-                    }
-
-                }
-            }
-            chain.doFilter(request, response);
-        });
-        registrationBean.addUrlPatterns("/*");
-        registrationBean.setName("LogCostFilter");
-        registrationBean.setOrder(1);
-        return registrationBean;
     }
 
     /**
@@ -187,39 +230,6 @@ public class GaeaAutoConfiguration {
         @Bean
         public MybatisPlusMetaObjectHandler mybatisPlusMetaObjectHandler() {
             return new MybatisPlusMetaObjectHandler();
-        }
-    }
-
-    /**
-     * 国际化
-     *
-     * @author lr
-     * @since 2021-01-01
-     */
-    @Configuration
-    @ConditionalOnClass(LocaleResolver.class)
-    @ConditionalOnMissingBean(MessageLocaleResolver.class)
-    @ComponentScan(value = {"com.anji.plus.gaea.controller", "com.anji.plus.gaea.exception.advice"})
-    public class MessageI18AutoConfiguration {
-
-        /**
-         * 根据请求头识别国际化locale
-         *
-         * @return
-         */
-        @Bean
-        public MessageLocaleResolver localeResolver() {
-            return new MessageLocaleResolver();
-        }
-
-        /**
-         * 国际化
-         *
-         * @return
-         */
-        @Bean
-        public MessageSourceHolder messageSourceHolder() {
-            return new MessageSourceHolder();
         }
     }
 }

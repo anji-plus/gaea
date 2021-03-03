@@ -21,7 +21,7 @@
         <additionalparam>-Xdoclint:none</additionalparam>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <mybatis.plus.version>3.2.0</mybatis.plus.version>
+        <mybatis.plus.version>3.3.2</mybatis.plus.version>
         <commons.lang3.version>3.10</commons.lang3.version>
         <fastjson.version>1.2.70</fastjson.version>
         <jwt.version>3.10.3</jwt.version>

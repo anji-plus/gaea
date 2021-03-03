@@ -1,6 +1,9 @@
 package com.anji.plus.gaea;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+
+import java.util.List;
 
 /**
  * 盖亚配置信息
@@ -8,6 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 2021-01-11
  */
 @ConfigurationProperties(prefix = "spring.gaea")
+@RefreshScope
 public class GaeaProperties {
 
     /**
@@ -24,6 +28,11 @@ public class GaeaProperties {
      * 订阅了哪些组件
      */
     private String subscribes;
+
+    /**
+     * 白名单，跳过
+     */
+    private List<String> whileList;
 
     public String getSecret() {
         return secret;
@@ -47,6 +56,14 @@ public class GaeaProperties {
 
     public void setEnabled(Enabled enabled) {
         this.enabled = enabled;
+    }
+
+    public List<String> getWhileList() {
+        return whileList;
+    }
+
+    public void setWhileList(List<String> whileList) {
+        this.whileList = whileList;
     }
 
     /**
