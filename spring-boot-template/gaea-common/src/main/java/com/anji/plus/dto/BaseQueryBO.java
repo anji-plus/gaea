@@ -16,7 +16,7 @@ import java.util.List;
 public class BaseQueryBO implements Serializable {
     private static final long serialVersionUID = -8871507943274741637L;
 
-    private int pageNo = 1;
+    private int pageNumber = 1;
 
     private int pageSize = 10;
 
@@ -64,12 +64,13 @@ public class BaseQueryBO implements Serializable {
         this.dynamicQueryBos = dynamicQueryBos;
     }
 
-    public int getPageNo() {
-        return pageNo;
+
+    public int getPageNumber() {
+        return pageNumber;
     }
 
-    public void setPageNo(int pageNo) {
-        this.pageNo = pageNo;
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
     }
 
     public int getPageSize() {

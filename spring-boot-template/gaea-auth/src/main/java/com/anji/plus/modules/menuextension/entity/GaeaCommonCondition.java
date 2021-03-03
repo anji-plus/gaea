@@ -24,7 +24,7 @@ public class GaeaCommonCondition extends GaeaBaseEntity implements Serializable 
     /**
      * 查询条件名称label
      */
-    private String lable;
+    private String label;
     /**
      * 0:可用,1:已作废
      */
@@ -53,13 +53,12 @@ public class GaeaCommonCondition extends GaeaBaseEntity implements Serializable 
     public void setSql(String sql) {
         this.sql = sql;
     }
-
-    public String getLable() {
-        return lable;
+    public String getLabel() {
+        return label;
     }
 
-    public void setLable(String lable) {
-        this.lable = lable;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public Integer getIsDisabled() {
