@@ -5,6 +5,7 @@ import com.anji.plus.gaea.annotation.log.GaeaAuditLog;
 import com.anji.plus.gaea.bean.ResponseBean;
 import com.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.anji.plus.gaea.curd.service.GaeaBaseService;
+import com.anji.plus.gaea.holder.UserContentHolder;
 import com.anji.plus.modules.menuextension.controller.dto.GaeaCommonConditionDTO;
 import com.anji.plus.modules.menuextension.controller.param.ComConditionQueryParam;
 import com.anji.plus.modules.menuextension.controller.param.CommonConditionInputBO;
@@ -54,6 +55,7 @@ public class GaeaCommonConditionController extends GaeaBaseController<GaeaCommon
     @ApiOperation("常用查询条件查询")
     @PostMapping("/queryByCondition")
     public ResponseBean queryByCondition(@RequestBody ComConditionQueryParam resquestParam) {
+        resquestParam.setCreateBy(UserContentHolder.getContext().getUsername());
         List<GaeaCommonConditionDTO> result = gaeaCommonConditionService.queryByCondition(resquestParam);
         return responseSuccessWithData(result);
     }

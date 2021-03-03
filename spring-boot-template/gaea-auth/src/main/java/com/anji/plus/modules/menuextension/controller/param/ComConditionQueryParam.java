@@ -26,5 +26,5 @@ public class ComConditionQueryParam implements Serializable {
     /**
      * 创建人
      */
-    private Long createBy;
+    private String createBy;
 }
