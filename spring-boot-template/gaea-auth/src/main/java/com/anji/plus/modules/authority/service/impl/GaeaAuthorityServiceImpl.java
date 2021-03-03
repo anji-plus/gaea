@@ -2,13 +2,13 @@ package com.anji.plus.modules.authority.service.impl;
 
 import com.anji.plus.gaea.bean.TreeNode;
 import com.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
-import com.anji.plus.gaea.holder.UserContentHolder;
 import com.anji.plus.modules.authority.dao.GaeaAuthorityMapper;
-import com.anji.plus.modules.authority.dao.GaeaRoleAuthorityMapper;
 import com.anji.plus.modules.authority.dao.entity.GaeaAuthority;
-import com.anji.plus.modules.authority.dao.entity.GaeaRoleAuthority;
 import com.anji.plus.modules.authority.service.GaeaAuthorityService;
-import com.anji.plus.modules.user.service.GaeaUserService;
+import com.anji.plus.modules.menu.dao.GaeaMenuAuthorityMapper;
+import com.anji.plus.modules.menu.dao.entity.GaeaMenuAuthority;
+import com.anji.plus.modules.role.dao.GaeaRoleMenuAuthorityMapper;
+import com.anji.plus.modules.role.dao.entity.GaeaRoleMenuAuthority;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.commons.lang3.StringUtils;
@@ -35,10 +35,10 @@ public class GaeaAuthorityServiceImpl implements GaeaAuthorityService {
     private GaeaAuthorityMapper  gaeaAuthorityMapper;
 
     @Autowired
-    private GaeaRoleAuthorityMapper gaeaRoleAuthorityMapper;
+    private GaeaRoleMenuAuthorityMapper gaeaRoleMenuAuthorityMapper;
 
     @Autowired
-    private GaeaUserService gaeaUserService;
+    private GaeaMenuAuthorityMapper gaeaMenuAuthorityMapper;
 
     @Override
     public GaeaBaseMapper<GaeaAuthority> getMapper() {
@@ -107,21 +107,15 @@ public class GaeaAuthorityServiceImpl implements GaeaAuthorityService {
     /**
      * 获取指定角色的权限
      * @param org
+     * @param roles
      * @return
      */
     @Override
-    public List<GaeaRoleAuthority> userAuthorities(String org) {
+    public List<GaeaRoleMenuAuthority> userAuthorities(String org, List<String> roles) {
 
-        String username = UserContentHolder.getContext().getUsername();
-        //查询当前用户指定机构的角色
-        List<String> roles = gaeaUserService.getRoleByUserOrg(username, org);
-        if (CollectionUtils.isEmpty(roles)) {
-            return new ArrayList<>();
-        }
-
-        LambdaQueryWrapper<GaeaRoleAuthority> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(GaeaRoleAuthority::getRoleCode, roles);
-        List<GaeaRoleAuthority> gaeaRoleAuthorities = gaeaRoleAuthorityMapper.selectList(wrapper);
+        LambdaQueryWrapper<GaeaRoleMenuAuthority> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(GaeaRoleMenuAuthority::getRoleCode, roles);
+        List<GaeaRoleMenuAuthority> gaeaRoleAuthorities = gaeaRoleMenuAuthorityMapper.selectList(wrapper);
         return gaeaRoleAuthorities;
     }
 
@@ -130,25 +124,30 @@ public class GaeaAuthorityServiceImpl implements GaeaAuthorityService {
     public void insertRoleAuthority(String role, List<String> authorities) {
         List<GaeaAuthority> gaeaAuthorities = list(Wrappers.emptyWrapper());
 
+        List<GaeaMenuAuthority> gaeaMenuAuthorities = gaeaMenuAuthorityMapper.selectList(Wrappers.emptyWrapper());
+
+        Map<String, String> menuAuthorityMap = gaeaMenuAuthorities.stream().collect(Collectors.toMap(GaeaMenuAuthority::getAuthCode, GaeaMenuAuthority::getMenuCode));
+
         Map<String, String> pathCodeMap = gaeaAuthorities.stream().collect(Collectors.toMap(GaeaAuthority::getPath, GaeaAuthority::getAuthCode, (v1, v2) -> v2));
 
-
-        List<GaeaRoleAuthority> GaeaRoleAuthorities = authorities.stream().map(authority -> {
-            GaeaRoleAuthority gaeaRoleAuthority = new GaeaRoleAuthority();
-            gaeaRoleAuthority.setRoleCode(role);
-            gaeaRoleAuthority.setAuthorityPath(authority);
-            gaeaRoleAuthority.setAuthCode(pathCodeMap.get(authority));
-
-            return gaeaRoleAuthority;
-        }).collect(Collectors.toList());
-
-        LambdaQueryWrapper<GaeaRoleAuthority> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(GaeaRoleAuthority::getRoleCode, role);
+        LambdaQueryWrapper<GaeaRoleMenuAuthority> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(GaeaRoleMenuAuthority::getRoleCode, role);
         //先删除指定角色的权限
-        gaeaRoleAuthorityMapper.delete(wrapper);
+        gaeaRoleMenuAuthorityMapper.delete(wrapper);
 
         //保存
-        gaeaRoleAuthorityMapper.insertBatch(GaeaRoleAuthorities);
+        if(!CollectionUtils.isEmpty(authorities)) {
+            List<GaeaRoleMenuAuthority> GaeaRoleAuthorities = authorities.stream().map(authority -> {
+                GaeaRoleMenuAuthority gaeaRoleMenuAuthority = new GaeaRoleMenuAuthority();
+                gaeaRoleMenuAuthority.setRoleCode(role);
+                gaeaRoleMenuAuthority.setAuthPath(authority);
+                gaeaRoleMenuAuthority.setMenuCode(menuAuthorityMap.get(authority));
+                gaeaRoleMenuAuthority.setAuthCode(pathCodeMap.get(authority));
+
+                return gaeaRoleMenuAuthority;
+            }).collect(Collectors.toList());
+            gaeaRoleMenuAuthorityMapper.insertBatch(GaeaRoleAuthorities);
+        }
 
     }
 }

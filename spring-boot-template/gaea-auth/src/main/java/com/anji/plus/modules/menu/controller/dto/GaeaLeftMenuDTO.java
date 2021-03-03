@@ -169,19 +169,20 @@ public class GaeaLeftMenuDTO {
         this.meta = meta;
     }
 
-    public Set<String> getPermission() {
-        return permission;
-    }
-
-    public void setPermission(Set<String> permission) {
-        this.permission = permission;
-    }
-
     public Integer getSort() {
         return sort;
     }
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+
+    public Set<String> getPermission() {
+        return permission;
+    }
+
+    public void setPermission(Set<String> permission) {
+        this.permission = permission;
     }
 }

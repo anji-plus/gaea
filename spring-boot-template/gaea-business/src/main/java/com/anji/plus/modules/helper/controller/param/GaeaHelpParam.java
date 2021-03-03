@@ -1,6 +1,8 @@
 package com.anji.plus.modules.helper.controller.param;
 
 
+import com.anji.plus.gaea.curd.dto.Query;
+import com.anji.plus.gaea.curd.dto.QueryEnum;
 import com.anji.plus.gaea.curd.params.PageParam;
 
 import java.io.Serializable;
@@ -18,6 +20,9 @@ public class GaeaHelpParam extends PageParam implements Serializable {
     private String helpTitle;
 
     private Integer enabled;
+
+    @Query(QueryEnum.LIKE)
+    private String helpContent;
 
 
     public String getHelpCategory() {
@@ -42,5 +47,13 @@ public class GaeaHelpParam extends PageParam implements Serializable {
 
     public void setEnabled(Integer enabled) {
         this.enabled = enabled;
+    }
+
+    public String getHelpContent() {
+        return helpContent;
+    }
+
+    public void setHelpContent(String helpContent) {
+        this.helpContent = helpContent;
     }
 }
