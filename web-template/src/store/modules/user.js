@@ -14,6 +14,7 @@ const state = {
   roles: [], // 如果不需要前端通过role来判断显示哪些菜单，可无视此变量
   hasMenu: false, // 是否已经获取过菜单
   orgList: [], // 用户组织列表
+  authorities: [], // 用户权限列表
 }
 
 const mutations = {
@@ -38,6 +39,9 @@ const mutations = {
   },
   SET_ORGLIST: (state, orgs) => {
     state.orgList = orgs
+  },
+  SET_AUTHORITIES: (state, auths) => {
+    state.authorities = auths
   },
 }
 
@@ -80,12 +84,13 @@ const actions = {
             reject()
           } else {
             commit('SET_HASMENU', true) // 是否获取过菜单标识
-            resolve()
             Cookies.set('displayName', response.data.nickname)
             // 将用户的组织code存入cookie
             Cookies.set('orgCode', response.data.currentOrgCode || '')
             // 将用户的组织列表存入store
             commit('SET_ORGLIST', response.data.orgs || [])
+            // 将用户的权限列表存入store
+            commit('SET_AUTHORITIES', response.data.authorities || [])
             resolve(response.data.menus || [])
           }
         })

@@ -2,7 +2,7 @@
  * @Author: zyk
  * @Date: 2020-07-22 10:57:57
  * @Last Modified by: zyk
- * @Last Modified time: 2021-03-01 10:58:08
+ * @Last Modified time: 2021-03-03 10:13:46
  */
 import axios from 'axios'
 import { Message, Loading } from 'element-ui'
@@ -37,8 +37,8 @@ let n = 0 // 附加标识
 let loadingInstance
 // 定义国际化对象
 const lang = {
-  en: 'en-US;q=0.8',
-  zh: 'zh-CN;q=0.8',
+  en: 'en-US',
+  zh: 'zh-CN',
 }
 
 // token过期失效方法
@@ -78,7 +78,8 @@ service.interceptors.request.use(
       })
     })
     // 2、给每个请求加上token和语言
-    config.headers['Accept-Language'] = lang[i18n.locale]
+    config.headers['locale'] = lang[i18n.locale]
+    // config.headers['Accept-Language'] = lang[i18n.locale]
     store.getters.token && (config.headers['Authorization'] = getToken())
     // 3、loading
     if (!((config.data && config.data.loading == false) || (config.params && config.params.loading == false))) {

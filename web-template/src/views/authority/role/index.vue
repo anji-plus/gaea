@@ -36,10 +36,12 @@
         </el-col>
       </el-row>
     </el-form>
+    <!-- <el-button type="primary" icon="el-icon-plus" v-permission = '"gaeaMenuontroller#queryActionTreeForMenu"' @click="openCreateUser">{{ $t('btn.add') }}</el-button> -->
     <el-button type="primary" icon="el-icon-plus" @click="openCreateUser">{{ $t('btn.add') }}</el-button>
     <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="editDetail('edit', null)">{{ $t('btn.edit') }}</el-button>
-    <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="openMenu">设定菜单</el-button>
+    <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="setMenu">设定菜单</el-button>
     <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="setOrg">设定组织</el-button>
+    <el-button type="primary" icon="el-icon-edit" :disabled="selectedList.length != 1" @click="setAuth">设定权限</el-button>
     <delete-btn :disabled="selectedList.length != 1" @handleDelete="handleDelete" />
     <el-table :data="tableList" border @selection-change="handleSelectionChange">
       <el-table-column fixed type="selection" width="40" center />
@@ -60,15 +62,15 @@
       <el-table-column prop="updateBy" :label="$t('userManage.modifyUser')" align="center" min-width="140" />
     </el-table>
     <el-pagination v-show="total > 0" background :current-page.sync="searchForm.pageNumber" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="80%" :close-on-click-modal="false" center :visible.sync="userDialog" @close="closeDialog">
+    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="60%" :close-on-click-modal="false" center :visible.sync="userDialog" @close="closeDialog">
       <el-form ref="roleForm" :model="dialogForm" :rules="userFormRules" label-width="110px" style="padding-right: 15px" :disabled="dialogTittle == 'view'">
         <el-row class="form_table">
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="角色编号" prop="roleCode">
               <el-input v-model="dialogForm.roleCode" :disabled="dialogTittle != 'add'" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item :label="$t('userManage.roleName')" prop="roleName">
               <el-input v-model="dialogForm.roleName" />
             </el-form-item>
@@ -95,6 +97,7 @@
     </el-dialog>
     <role-org :id="id" :visib="orgDialog" @handleClose="orgDialog = false" />
     <role-menu :id="id" :visib="menuDialog" @handleClose="menuDialog = false" />
+    <role-auth :id="id" :visib="authDialog" @handleClose="authDialog = false" />
   </div>
 </template>
 <script>
@@ -103,11 +106,13 @@ export default {
   components: {
     RoleMenu: require('./components/RoleMenu').default,
     RoleOrg: require('./components/RoleOrg').default,
+    RoleAuth: require('./components/RoleAuth').default,
   },
   data() {
     return {
       orgDialog: false,
       menuDialog: false,
+      authDialog: false,
       id: '',
       selectedList: [],
       searchForm: {
@@ -145,9 +150,13 @@ export default {
       this.id = this.selectedList[0].roleCode
       this.orgDialog = true
     },
-    openMenu() {
+    setMenu() {
       this.id = this.selectedList[0].roleCode
       this.menuDialog = true
+    },
+    setAuth() {
+      this.id = this.selectedList[0].roleCode
+      this.authDialog = true
     },
     // 提交
     UserConfirm() {
