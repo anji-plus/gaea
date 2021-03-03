@@ -255,7 +255,7 @@ export default {
       columns: [],
       tableConfig: {
         menuCode: 1118,
-        tableCode: 'test01',
+        tableCode: 'advanceTable',
         show: true,
         loading: false,
       },
