@@ -2,43 +2,42 @@
   <div class="app-container">
     <el-card shadow="always" class="card">
       <div slot="header" class="clearfix">
-        <span>自定义列</span>
+        <span>{{ $t('setColumnTable.customColumns') }}}</span>
         <el-button style="float: right; padding: 3px 0" type="text" @click="openAddColumn">{{ $t('btn.add') }}</el-button>
       </div>
       <el-table :data="columnTableData" border style="width: 100%">
-        <el-table-column prop="tableCode" label="表编码" />
-        <el-table-column prop="name" label="列名" />
-        <el-table-column prop="code" label="列编码" />
-        <el-table-column prop="width" label="宽度（px）">
-          <template slot-scope="scope">{{ scope.row.width?scope.row.width:'自适应' }}</template>
+        <el-table-column prop="tableCode" :label="$t('setColumnTable.tableCode')" />
+        <el-table-column prop="name" :label="$t('setColumnTable.name')" />
+        <el-table-column prop="code" :label="$t('setColumnTable.code')" />
+        <el-table-column prop="width" :label="$t('setColumnTable.width')">
+          <template slot-scope="scope">{{ scope.row.width?scope.row.width:$t('table.auto') }}</template>
         </el-table-column>
-        <el-table-column prop="sortable" label="是否排序">
-          <template slot-scope="scope">{{ scope.row.sortable?'是':'否' }}</template>
+        <el-table-column prop="sortable" :label="$t('setColumnTable.sortable')">
+          <template slot-scope="scope">{{ scope.row.sortable?$t('table.yes'):$t('table.no') }}</template>
         </el-table-column>
-        <el-table-column prop="visible" label="是否可见">
-          <template slot-scope="scope">{{ scope.row.visible?'是':'否' }}</template>
+        <el-table-column prop="visible" :label="$t('setColumnTable.visible')">
+          <template slot-scope="scope">{{ scope.row.visible?$t('table.yes'):$t('table.no') }}</template>
         </el-table-column>
-        <el-table-column prop="tableCode" label="表编码" />
-        <el-table-column fixed="right" label="操作" width="150">
+        <el-table-column fixed="right" :label="$t('table.operation')" width="150">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="editColumn(scope.row)">编辑</el-button>
-            <el-button type="danger" size="small" @click="delColumn(scope.row)">删除</el-button>
+            <el-button type="primary" size="small" @click="editColumn(scope.row)">{{ $t('table.edit') }}</el-button>
+            <el-button type="danger" size="small" @click="delColumn(scope.row)">{{ $t('table.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
     <el-card shadow="always" class="card">
       <div slot="header" class="clearfix">
-        <span>高级搜索</span>
+        <span>{{ $t('setSearchConfig.advancedSearch') }}</span>
         <el-button style="float: right; padding: 3px 0" type="text" @click="openAddSearch">{{ $t('btn.add') }}</el-button>
       </div>
       <el-table :data="searchTableData" border style="width: 100%">
-        <el-table-column prop="tableCode" label="表编码" />
-        <el-table-column prop="nameValue" label="名称" />
-        <el-table-column prop="name" label="编码" />
-        <el-table-column prop="type" label="条件类型">
+        <el-table-column prop="tableCode" :label="$t('setSearchConfig.tableCode')" />
+        <el-table-column prop="nameValue" :label="$t('setSearchConfig.nameValue')" />
+        <el-table-column prop="name" :label="$t('setSearchConfig.name')" />
+        <el-table-column prop="type" :label="$t('setSearchConfig.type')">
           <template slot-scope="scope">
-            <span>{{ types.find(item=>item.value===scope.row.type)?types.find(item=>item.value===scope.row.type).label:'空' }}</span>
+            <span>{{ types.find(item=>item.value===scope.row.type)?types.find(item=>item.value===scope.row.type).label:'' }}</span>
           </template>
         </el-table-column>
         <!-- <el-table-column prop="dataSource" label="数据源">
@@ -46,73 +45,71 @@
             <span>{{ dataSource.find(item=>item.value===scope.row.dataSource)?dataSource.find(item=>item.value===scope.row.dataSource).label:'空' }}</span>
           </template>
         </el-table-column> -->
-        <el-table-column prop="dataSourceValue" label="接口地址" />
-        <el-table-column prop="valueType" label="条件值类型">
+        <el-table-column prop="dataSourceValue" :label="$t('setSearchConfig.dataSourceValue')" />
+        <el-table-column prop="valueType" :label="$t('setSearchConfig.valueType')">
           <template slot-scope="scope">
             <span>{{ valueType.find(item=>item.value===scope.row.valueType)?valueType.find(item=>item.value===scope.row.valueType).label:'空' }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="datePrecision" label="日期精度" />
-        <el-table-column fixed="right" label="操作" width="150">
+        <el-table-column prop="datePrecision" :label="$t('setSearchConfig.datePrecision')" />
+        <el-table-column fixed="right" :label="$t('table.operation')" width="150">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="openEditSearch(scope.row)">编辑</el-button>
-            <el-button type="danger" size="small" @click="delSearch(scope.row)">删除</el-button>
+            <el-button type="primary" size="small" @click="openEditSearch(scope.row)">{{ $t('table.edit') }}</el-button>
+            <el-button type="danger" size="small" @click="delSearch(scope.row)">{{ $t('table.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
-
     <!-- 设置列表单 -->
     <el-dialog :visible.sync="setColumnDialog.dialog" :title="setColumnDialog.title" width="600px">
       <el-form ref="setColumnForm" :model="setColumnDialog.form" :rules="setColumnDialog.rules" label-width="100px" label-suffix=":">
-        <el-form-item label="表编码" prop="tableCode">
+        <el-form-item :label="$t('setColumnTable.tableCode')" prop="tableCode">
           <el-input v-model.trim="setColumnDialog.form.tableCode" :maxlength="100" />
         </el-form-item>
         <!-- <el-form-item label="组名" prop="groupName">
           <el-input v-model.trim="setColumnDialog.form.groupName" :maxlength="100" />
         </el-form-item> -->
-        <el-form-item label="列名" prop="name">
+        <el-form-item :label="$t('setColumnTable.name')" prop="name">
           <el-input v-model.trim="setColumnDialog.form.name" :maxlength="100" />
         </el-form-item>
-        <el-form-item label="列编码" prop="code">
+        <el-form-item :label="$t('setColumnTable.code')" prop="code">
           <el-input v-model.trim="setColumnDialog.form.code" :maxlength="100" />
         </el-form-item>
-        <el-form-item label="排序号" prop="sortNo">
+        <el-form-item :label="$t('setColumnTable.sortNo')" prop="sortNo">
           <el-input-number v-model.number="setColumnDialog.form.sortNo" :min="0" />
         </el-form-item>
-        <el-form-item label="是否排序" prop="sortable">
+        <el-form-item :label="$t('setColumnTable.sortable')" prop="sortable">
           <el-switch v-model="setColumnDialog.form.sortable" :active-value="1" :inactive-value="0" active-text="是" inactive-text="否" />
         </el-form-item>
-        <el-form-item v-if="setColumnDialog.form.sortable===1" label="排序字段" prop="sortCode">
+        <el-form-item v-if="setColumnDialog.form.sortable===1" :label="$t('setColumnTable.sortCode')" prop="sortCode">
           <el-input v-model.trim="setColumnDialog.form.sortCode" :maxlength="100" />
         </el-form-item>
-        <el-form-item label="是否可见" prop="visible">
+        <el-form-item :label="$t('setColumnTable.visible')" prop="visible">
           <el-switch v-model="setColumnDialog.form.visible" :active-value="1" :inactive-value="0" active-text="是" inactive-text="否" />
         </el-form-item>
-        <el-form-item label="宽度(0为自适应宽度)" prop="width">
+        <el-form-item :label="$t('setColumnTable.width')" prop="width">
           <el-input-number v-model.number="setColumnDialog.form.width" :min="0" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="setColumnDialog.dialog = false">取 消</el-button>
-        <el-button type="primary" @click="validateForm('setColumnForm',submitSetColumn)">确 定</el-button>
+        <el-button @click="setColumnDialog.dialog = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="validateForm('setColumnForm',submitSetColumn)">{{ $t('table.ok') }}</el-button>
       </div>
     </el-dialog>
-
     <!-- 高级搜索 -->
     <el-dialog :visible.sync="setSearchConfig.dialog" :title="setSearchConfig.title" width="600px">
       <el-form ref="setSearchConfigForm" :model="setSearchConfig.form" :rules="setSearchConfig.rules" label-width="100px" label-suffix=":">
-        <el-form-item label="表编码" prop="tableCode">
+        <el-form-item :label="$t('setSearchConfig.tableCode')" prop="tableCode">
           <el-input v-model.trim="setSearchConfig.form.tableCode" :maxlength="100" />
         </el-form-item>
-        <el-form-item label="名称" prop="nameValue">
+        <el-form-item :label="$t('setSearchConfig.nameValue')" prop="nameValue">
           <el-input v-model.trim="setSearchConfig.form.nameValue" :maxlength="100" />
         </el-form-item>
-        <el-form-item label="编码" prop="name">
+        <el-form-item :label="$t('setSearchConfig.name')" prop="name">
           <el-input v-model.trim="setSearchConfig.form.name" :maxlength="100" />
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="setSearchConfig.form.type" placeholder="请选择" @change="updateSearchType">
+        <el-form-item :label="$t('setSearchConfig.type')" prop="type">
+          <el-select v-model="setSearchConfig.form.type" :placeholder="$t('table.pleaseSelect')" @change="updateSearchType">
             <el-option v-for="item in types" :key="item.value" :value="item.value" :label="item.label" />
           </el-select>
         </el-form-item>
@@ -121,28 +118,27 @@
             <el-option v-for="item in dataSource" :key="item.value" :value="item.value" :label="item.label" />
           </el-select>
         </el-form-item> -->
-        <el-form-item v-if="setSearchConfig.form.dataSource===1" label="接口地址" prop="dataSourceValue">
+        <el-form-item v-if="setSearchConfig.form.dataSource===1" :label="$t('setSearchConfig.dataSourceValue')" prop="dataSourceValue">
           <el-input v-model.trim="setSearchConfig.form.dataSourceValue" :maxlength="100" />
         </el-form-item>
-        <el-form-item v-if="setSearchConfig.form.type===3||setSearchConfig.form.type===4||setSearchConfig.form.type===5" label="日期精度" prop="datePrecision">
-          <el-select v-model="setSearchConfig.form.datePrecision" placeholder="请选择">
+        <el-form-item v-if="setSearchConfig.form.type===3||setSearchConfig.form.type===4||setSearchConfig.form.type===5" :label="$t('setSearchConfig.datePrecision')" prop="datePrecision">
+          <el-select v-model="setSearchConfig.form.datePrecision" :placeholder="$t('table.pleaseSelect')">
             <el-option v-for="item in datePrecision" :key="item.value" :value="item.value" :label="item.label" />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="setSearchConfig.form.type===1" label="值类型" prop="valueType">
-          <el-select v-model="setSearchConfig.form.valueType" placeholder="请选择">
+        <el-form-item v-if="setSearchConfig.form.type===1" :label="$t('setSearchConfig.valueType')" prop="valueType">
+          <el-select v-model="setSearchConfig.form.valueType" :placeholder="$t('table.pleaseSelect')">
             <el-option v-for="item in valueType" :key="item.value" :value="item.value" :label="item.label" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button @click="setSearchConfig.dialog = false">取 消</el-button>
-          <el-button type="primary" @click="validateForm('setSearchConfigForm',submitSetSearchConfig)">确 定</el-button>
+          <el-button @click="setSearchConfig.dialog = false">{{ $t('table.cancel') }}</el-button>
+          <el-button type="primary" @click="validateForm('setSearchConfigForm',submitSetSearchConfig)">{{ $t('table.ok') }}</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
   </div>
 </template>
-      
 <script>
 import { queryconditionList, queryMenuExtension, addMenuextension, editMenuextension, addCondition, eidtCondition, delCondition, delMenuextension } from '@/api/authority'
 const setColumnForm = {
@@ -174,65 +170,64 @@ export default {
       searchTableData: [],
       setColumnDialog: {
         dialog: false,
-        title: '自定义列',
+        title: '',
         id: null,
         form: {},
         rules: {
-          sortNo: [{ required: true, message: '请输入排序号', trigger: 'blur' }],
-          // sortCode: [{ required: true, message: '请输入排序字段', trigger: 'blur' }],
-          tableCode: [{ required: true, message: '请输入表编码', trigger: 'blur' }],
-          name: [{ required: true, message: '请输入列名', trigger: 'blur' }],
-          code: [{ required: true, message: '请输入列编码', trigger: 'blur' }],
+          sortNo: [{ required: true, message: this.$t('table.pleaseFillIn'), trigger: 'blur' }],
+          tableCode: [{ required: true, message: this.$t('table.pleaseFillIn'), trigger: 'blur' }],
+          name: [{ required: true, message: this.$t('table.pleaseFillIn'), trigger: 'blur' }],
+          code: [{ required: true, message: this.$t('table.pleaseFillIn'), trigger: 'blur' }],
         },
       },
       setSearchConfig: {
         dialog: false,
-        title: '高级搜索',
+        title: '',
         id: null,
         form: {},
         rules: {
-          tableCode: [{ required: true, message: '请输入表编码', trigger: 'blur' }],
-          name: [{ required: true, message: '编码', trigger: 'blur' }],
-          nameValue: [{ required: true, message: '名称', trigger: 'blur' }],
-          dataSource: [{ required: true, message: '请选择数据源', trigger: 'change' }],
-          datePrecision: [{ required: true, message: '请选择日期精度', trigger: 'change' }],
-          valueType: [{ required: true, message: '请选择条件值类型', trigger: 'change' }],
-          dataSourceValue: [{ required: true, message: '联想控件接口地址', trigger: 'blur' }],
+          tableCode: [{ required: true, message: this.$t('table.pleaseSelect'), trigger: 'blur' }],
+          name: [{ required: true, message: this.$t('table.pleaseFillIn'), trigger: 'blur' }],
+          nameValue: [{ required: true, message: this.$t('table.pleaseFillIn'), trigger: 'blur' }],
+          dataSource: [{ required: true, message: this.$t('table.pleaseSelect'), trigger: 'change' }],
+          datePrecision: [{ required: true, message: this.$t('table.pleaseSelect'), trigger: 'change' }],
+          valueType: [{ required: true, message: this.$t('table.pleaseSelect'), trigger: 'change' }],
+          dataSourceValue: [{ required: true, message: this.$t('table.pleaseFillIn'), trigger: 'blur' }],
         },
       },
       types: [
         {
-          label: '文本框',
+          label: this.$t('setSearchConfig.input'),
           value: 1,
         },
         {
-          label: '下拉框',
+          label: this.$t('setSearchConfig.sclect'),
           value: 2,
         },
         {
-          label: '日期控件',
+          label: this.$t('setSearchConfig.dateInput'),
           value: 3,
         },
         {
-          label: '时间控件',
+          label: this.$t('setSearchConfig.timeInput'),
           value: 4,
         },
         {
-          label: '日期时间控件',
+          label: this.$t('setSearchConfig.dateTimeInput'),
           value: 5,
         },
         {
-          label: '多记录文本',
+          label: this.$t('setSearchConfig.textarea'),
           value: 6,
         },
       ],
       valueType: [
         {
-          label: '数字',
+          label: this.$t('setSearchConfig.number'),
           value: 2,
         },
         {
-          label: '字符串',
+          label: this.$t('setSearchConfig.string'),
           value: 1,
         },
       ],
@@ -248,40 +243,39 @@ export default {
       ],
       datePrecision: [
         {
-          label: '年',
+          label: this.$t('setSearchConfig.y'),
           value: 'yyyy',
         },
         {
-          label: '年-月',
+          label: this.$t('setSearchConfig.yM'),
           value: 'yyyy-MM',
         },
         {
-          label: '年-月-日',
+          label: this.$t('setSearchConfig.yMd'),
           value: 'yyyy-MM-dd',
         },
         {
-          label: '时',
+          label: this.$t('setSearchConfig.H'),
           value: 'HH',
         },
         {
-          label: '时:分',
+          label: this.$t('setSearchConfig.Hm'),
           value: 'HH:mm',
         },
         {
-          label: '时:分:秒',
+          label: this.$t('setSearchConfig.Hms'),
           value: 'HH:mm:ss',
         },
-
         {
-          label: '年-月-日 时',
+          label: this.$t('setSearchConfig.yMdH'),
           value: 'yyyy-MM-dd HH',
         },
         {
-          label: '年-月-日 时:分',
+          label: this.$t('setSearchConfig.yMdHm'),
           value: 'yyyy-MM-dd HH:mm',
         },
         {
-          label: '年-月-日 时:分:秒',
+          label: this.$t('setSearchConfig.yMdHms'),
           value: 'yyyy-MM-dd HH:mm:ss',
         },
       ],
@@ -314,7 +308,7 @@ export default {
     openAddSearch() {
       this.setSearchConfig.id = null
       this.setSearchConfig.form = { ...setSearchConfigForm }
-      this.setSearchConfig.title = '新增高级搜索'
+      this.setSearchConfig.title = this.$t('table.add')
       this.setSearchConfig.dialog = true
     },
     openEditSearch(row) {
@@ -327,7 +321,7 @@ export default {
       }
       this.setSearchConfig.form = opt
       this.setSearchConfig.id = row.id
-      this.setSearchConfig.title = '编辑高级搜索'
+      this.setSearchConfig.title = this.$t('table.edit')
       this.setSearchConfig.dialog = true
     },
     editColumn(row) {
@@ -339,7 +333,7 @@ export default {
         opt[key] = row[key]
       }
       this.setColumnDialog.form = opt
-      this.setColumnDialog.title = '编辑自定义列'
+      this.setColumnDialog.title = this.$t('table.edit')
       this.setColumnDialog.dialog = true
     },
     async delSearch(row) {
@@ -355,7 +349,7 @@ export default {
     openAddColumn() {
       this.setColumnDialog.id = null
       this.setColumnDialog.form = { ...setColumnForm }
-      this.setColumnDialog.title = '新增自定义列'
+      this.setColumnDialog.title = this.$t('table.edit')
       this.setColumnDialog.dialog = true
     },
     validateForm(name, callback) {

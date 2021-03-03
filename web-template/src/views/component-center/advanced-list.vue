@@ -47,7 +47,7 @@
               <el-button type="primary" class="buttonItem btnSpan">{{ $t('btn.commonSearch') }}</el-button>
               <el-dropdown-menu slot="dropdown">
                 <!-- icon="el-icon-delete" -->
-                <el-dropdown-item v-for="(o,index) in commonList" :key="index" :command="o.id" @click="commonSearch(o)">
+                <el-dropdown-item v-for="(o,index) in commonList" :key="index" :command="o.id">
                   <div class="dropdown-item">
                     <i class="icon el-icon-delete" @click.stop="delItemCommon(o)" />
                     <el-link class="link" type="info" @click.stop="openCommonSearch(o)">{{ o.searchName }}</el-link>
@@ -56,7 +56,7 @@
                 <el-dropdown-item command="add">
                   <div class="dropdown-item">
                     <i class="icon el-icon-circle-plus-outline" />
-                    <el-link class="link" type="primary" @click.stop="openAdvancedSearch('commonSearch')">新增查询条件</el-link>
+                    <el-link class="link" type="primary" @click.stop="openAdvancedSearch('commonSearch')">{{ $t('setSearchConfig.newQuery') }}</el-link>
                   </div>
                 </el-dropdown-item>
               </el-dropdown-menu>
@@ -68,7 +68,7 @@
     </el-form>
     <div class="buttonList">
       <div class="list">
-        <el-button type="primary" size="small">按钮一</el-button>
+        <el-button type="primary" size="small">button</el-button>
       </div>
       <div class="config">
         <el-button plain type="primary" @click="openSetColumn">{{ $t('btn.customColumns') }}</el-button>
@@ -92,7 +92,7 @@
       @current-change="handleCurrentChange"
     />
     <!-- 自定义列弹窗 -->
-    <el-dialog :visible.sync="setTabelDialog.dialog" width="800px" title="自定义列" @closed="closedSetTabel">
+    <el-dialog :visible.sync="setTabelDialog.dialog" width="800px" :title="$t('setColumnTable.customColumns')" @closed="closedSetTabel">
       <div v-if="setTabelDialog.show" ref="dragBody" class="dragBody">
         <div ref="dragTable" class="dragTable">
           <div v-for="item in setTabelDialog.list" :key="item.code" class="item" :data-code="item.code">
@@ -104,7 +104,7 @@
               <span class="bg" :style="{width: (item.widthStr/setTabelDialog.max*100 +'%')}" />
             </div>
             <div class="width">
-              <span>宽度</span>
+              <span>{{ $t('setColumnTable.width') }}</span>
               <div class="input">
                 <el-input v-model="item.width" placeholder="auto">
                   <template slot="append">px</template>
@@ -115,8 +115,8 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="setTabelDialog.dialog = false">取 消</el-button>
-        <el-button type="primary" @click="submitTabelConfig">确 定</el-button>
+        <el-button @click="setTabelDialog.dialog = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="submitTabelConfig">{{ $t('table.ok') }}</el-button>
       </span>
     </el-dialog>
     <!-- 高级搜索弹窗 -->
@@ -128,53 +128,52 @@
           :model="advanced"
           :rules="{
             name: [
-              { required: true, message: '请输入名称', trigger: 'blur' },
-              { max: 12, message: '长度最多 12 个字符', trigger: 'blur' }
+              { required: true, message: $t('table.pleaseFillIn'), trigger: 'blur' },
+              { max: 12, message: $t('table.maxLength12'), trigger: 'blur' }
             ]}"
           label-width="50px"
           class="demo-ruleForm"
         >
-          <el-form-item label="名称" prop="name">
+          <el-form-item :label="$t('setSearchConfig.label')" prop="name">
             <el-input v-model="advanced.name" maxlength="12" show-word-limit />
           </el-form-item>
         </el-form>
         <div class="list baseQueryItems">
           <el-row v-for="(row,idx) in advanced.addConfig" :key="idx" class="item" type="flex" align="middle">
             <el-col :span="8">
-              <el-select v-model="row.prop" value-key="id" placeholder="请选择" @change="updateAdvancedOption($event,advanced.addConfig[idx])">
+              <el-select v-model="row.prop" value-key="id" :placeholder="$t('table.pleaseSelect')" @change="updateAdvancedOption($event,advanced.addConfig[idx])">
                 <el-option v-for="item in advanced.templateOption" :key="item.id" :label="item.nameValue" :value="item" />
               </el-select>
             </el-col>
             <el-col :span="5">
-              <el-select v-model="row.operator" placeholder="请选择">
+              <el-select v-model="row.operator" :placeholder="$t('table.pleaseSelect')">
                 <el-option v-for="item in advanced.options" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-col>
             <el-col :span="8">
               <!-- // type: 1, //  条件类型(1:文本框、2:下拉框、3:日期控件、4:时间控件、5:日期时间控件、6:多记录文本、) -->
-              <el-input v-if="!row.prop" v-model="row.value" class="formItem" placeholder="请填写" />
-              <el-select v-else-if="row.prop.type===2" v-model="row.value" class="formItem" clearable placeholder="请选择" @change="updateValueName($event,row)">
+              <el-input v-if="!row.prop" v-model="row.value" class="formItem" :placeholder="$t('table.pleaseFillIn')" />
+              <el-select v-else-if="row.prop.type===2" v-model="row.value" class="formItem" clearable :placeholder="$t('table.pleaseSelect')" @change="updateValueName($event,row)">
                 <el-option v-for="item in row.option" :key="item.id" :label="item.text" :value="item.id">
                   <span style="float: left">{{ item.id }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.text }}</span>
                 </el-option>
               </el-select>
-              <el-date-picker v-else-if="row.prop.type===3" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" type="date" placeholder="选择日期" />
-              <el-time-select v-else-if="row.prop.type===4" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" placeholder="选择时间" />
-              <el-date-picker v-else-if="row.prop.type===5" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" type="datetime" placeholder="选择日期时间" />
-              <el-input v-else-if="row.prop.type===6" v-model="row.value" class="formItem" type="textarea" placeholder="请填写" @focus="getHigh($event)" @blur="getNormal($event)" />
-              <el-input v-else v-model="row.value" placeholder="请填写" class="formItem" />
+              <el-date-picker v-else-if="row.prop.type===3" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" type="date" :placeholder="$t('table.pleaseSelect')" />
+              <el-time-select v-else-if="row.prop.type===4" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" :placeholder="$t('table.pleaseSelect')" />
+              <el-date-picker v-else-if="row.prop.type===5" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" type="datetime" :placeholder="$t('table.pleaseSelect')" />
+              <el-input v-else-if="row.prop.type===6" v-model="row.value" class="formItem" type="textarea" :placeholder="$t('table.pleaseFillIn')" @focus="getHigh($event)" @blur="getNormal($event)" />
+              <el-input v-else v-model="row.value" :placeholder="$t('table.pleaseFillIn')" class="formItem" />
             </el-col>
             <el-col v-if="idx!==0" :span="3">
-              <i class="el-icon-delete" title="删除" :style="{color:'red', fontSize: '20px',margin: '0 10px'}" @click="delAdvancedItem(idx)" />
-              <!-- <el-button type="danger" icon="el-icon-delete-solid">搜索</el-button> -->
+              <i class="el-icon-delete" :title="$t('table.delete')" :style="{color:'red', fontSize: '20px',margin: '0 10px'}" @click="delAdvancedItem(idx)" />
             </el-col>
           </el-row>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addAdvancedQuery">新增搜索项</el-button>
-        <el-button type="primary" @click="saveOtherSearch">确 定</el-button>
+        <el-button @click="addAdvancedQuery">{{ $t('setSearchConfig.addItem') }}</el-button>
+        <el-button type="primary" @click="saveOtherSearch">{{ $t('table.ok') }}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -209,47 +208,38 @@ export default {
         options: [
           {
             value: 'EQ',
-            label: '等于',
+            label: this.$('setSearchConfig.EQ'),
           },
           {
             value: 'NE',
-            label: '不等于',
+            label: this.$('setSearchConfig.NE'),
           },
           {
             value: 'GT',
-            label: '大于',
+            label: this.$('setSearchConfig.GT'),
           },
           {
             value: 'GE',
-            label: '大于等于',
+            label: this.$('setSearchConfig.GE'),
           },
           {
             value: 'LT',
-            label: '小于',
+            label: this.$('setSearchConfig.LT'),
           },
           {
             value: 'LE',
-            label: '小于等于',
+            label: this.$('setSearchConfig.ELEQ'),
           },
           {
             value: 'LIKE',
-            label: '类似',
+            label: this.$('setSearchConfig.LIKE'),
           },
           {
             value: 'IN',
-            label: '包含',
+            label: this.$('setSearchConfig.IN'),
           },
         ],
-        list: [
-          {
-            name: '常用搜索1',
-            id: 1,
-          },
-          {
-            name: '常用搜索2',
-            id: 2,
-          },
-        ],
+        list: [],
       },
       pagination: {
         total: 0,
@@ -293,8 +283,6 @@ export default {
     updateValueName(val, row) {
       row.valueName = row.option.find((item) => item.id === val).text
     },
-    commonSearch(o) {},
-    delCommonList(o) {},
     getHigh(el) {
       el.target.style.height = '100px'
       el.target.style.width = '200%'
@@ -306,9 +294,6 @@ export default {
       el.target.style.width = '100%'
       el.target.style.position = 'relative'
     },
-    queryApiOption(val, row) {
-      console.log(val, row)
-    },
     updateAdvancedOption(data, item) {
       if (data.type === 2) {
         queryDictSelect({ url: data.dataSourceValue }).then((res) => {
@@ -319,7 +304,7 @@ export default {
     },
     searchVariousQuery(params) {
       if (!this.advanced.name) {
-        this.$message.error('请填写常用查询名称')
+        this.$message.error(this.$t('setSearchConfig.pleaseFillInName'))
         return false
       }
       const data = {
@@ -347,9 +332,8 @@ export default {
             operator: item.operator,
           }
         })
-      console.log(params)
       if (!params.length) {
-        this.$message.error('至少选择填写一条筛选条件')
+        this.$message.error(this.$t('table.selectAtLeastOne'))
         return
       }
       if (this.advanced.type === 'advancedSearch') {
@@ -427,7 +411,6 @@ export default {
         this.setSort()
       })
     },
-    openCustomColumns() {},
     initAdvancedSearch(type = 'advancedSearch') {
       this.advanced.title = this.$t('btn.advancedSearch')
       this.advanced.type = type
