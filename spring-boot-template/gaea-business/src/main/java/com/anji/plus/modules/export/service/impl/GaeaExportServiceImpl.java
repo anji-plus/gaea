@@ -6,6 +6,7 @@ import com.anji.plus.modules.export.service.GaeaExportService;
 import com.anji.plus.modules.file.dao.GaeaFileMapper;
 import com.anji.plus.modules.file.entity.GaeaFile;
 import com.anjiplus.gaea.export.vo.ExportOperation;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.anji.plus.aop.GaeaQuery;
 import com.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
@@ -39,9 +40,9 @@ public class GaeaExportServiceImpl implements GaeaExportService {
 
     @Override
     @GaeaQuery
-    public Page<GaeaExport> getExportListPage(GaeaExportQueryParam queryParam) {
+    public Page<GaeaExport> getExportListPage(GaeaExportQueryParam queryParam,QueryWrapper...qe) {
         Page<GaeaExport> page=new Page<>(queryParam.getPageNumber(),queryParam.getPageSize());
-        List<GaeaExport> gaeaExports=gaeaExportMapper.queryExportInfo(page,queryParam,queryParam.getQueryWrapper());
+        List<GaeaExport> gaeaExports=gaeaExportMapper.queryExportInfo(page,queryParam,qe[0]);
         page.setRecords(gaeaExports);
         return page;
     }

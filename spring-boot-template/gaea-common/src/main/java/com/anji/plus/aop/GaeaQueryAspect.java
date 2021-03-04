@@ -18,7 +18,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -27,6 +26,7 @@ import java.util.List;
 /**
  * 功能描述：
  * 高级查询相关
+ *
  * @Author: peiyanni
  * @Date: 2021/2/3 12:42
  */
@@ -50,17 +50,15 @@ public class GaeaQueryAspect {
             if (StringUtils.isEmpty(jsonObj)) {
                 return joinPoint.proceed(joinPoint.getArgs());
             }
-            JSONObject jsonObject=JSONObject.parseObject(jsonObj);
-            Long commonId =jsonObject.getLong(MagicValueConstants.COMMONID);
-            BaseQueryBO baseQueryBO=JSON.parseObject(jsonObj,BaseQueryBO.class);
+            BaseQueryBO baseQueryBO = JSON.parseObject(jsonObj, BaseQueryBO.class);
+            Long commonId = baseQueryBO.getCommonId();
             //是否有常用查询条件
             if (null != commonId) {
-                List<DynamicQueryBo> dynamicQueryBoList= commonConditionService.getDynamicQueryBoListById(commonId,null);
+                List<DynamicQueryBo> dynamicQueryBoList = commonConditionService.getDynamicQueryBoListById(commonId, null);
                 baseQueryBO.setDynamicQueryBos(dynamicQueryBoList);
             }
             QueryWrapper queryWrapper = DynamicQueryUtil.getSortQueryWrapper(baseQueryBO);
-            jsonObject.put(MagicValueConstants.QUERYWRAPPER,queryWrapper);
-            Object[] args=getArg(joinPoint.getArgs(),jsonObject);
+            Object[] args = getArg(joinPoint.getArgs(), queryWrapper);
             return joinPoint.proceed(args);
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,18 +97,15 @@ public class GaeaQueryAspect {
         return jsonObj;
     }
 
-    private Object[] getArg(Object[] paramsArray,JSONObject newQueryObj){
-        Object[] resultObject=new Object[paramsArray.length];
-        if (paramsArray != null && paramsArray.length > 0) {
+    private Object[] getArg(Object[] paramsArray, QueryWrapper queryWrapper) {
+        if (null != paramsArray && paramsArray.length > 0) {
             for (int i = 0; i < paramsArray.length; i++) {
-                if (paramsArray[i] instanceof BaseQueryBO) {
-                    resultObject[i]=JSON.parseObject(newQueryObj.toJSONString(),paramsArray[i].getClass());
-                }else{
-                    resultObject[i]=paramsArray[i];
+                if(paramsArray[i] instanceof  QueryWrapper[]){
+                    paramsArray[i]=new QueryWrapper[]{queryWrapper};
                 }
             }
         }
-        return resultObject;
+        return paramsArray;
     }
 
 }
