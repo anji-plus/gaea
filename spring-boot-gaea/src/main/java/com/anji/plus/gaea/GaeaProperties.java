@@ -34,6 +34,11 @@ public class GaeaProperties {
      */
     private List<String> whileList;
 
+    /**
+     * 用于获取请求信息的服务applicationName值
+     */
+    private List<String> requestInfoServiceIds;
+
     public String getSecret() {
         return secret;
     }
@@ -64,6 +69,14 @@ public class GaeaProperties {
 
     public void setWhileList(List<String> whileList) {
         this.whileList = whileList;
+    }
+
+    public List<String> getRequestInfoServiceIds() {
+        return requestInfoServiceIds;
+    }
+
+    public void setRequestInfoServiceIds(List<String> requestInfoServiceIds) {
+        this.requestInfoServiceIds = requestInfoServiceIds;
     }
 
     /**
