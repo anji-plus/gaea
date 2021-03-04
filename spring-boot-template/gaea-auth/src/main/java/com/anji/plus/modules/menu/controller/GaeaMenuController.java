@@ -109,16 +109,23 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
             List<GaeaLeftMenuDTO> userMenus = gaeaMenuService.getMenus(userRoles);
 
             List<String> roles = gaeaUserService.getRoleByUserOrg(username, orgCode);
-
-            //按钮权限
-            List<GaeaRoleMenuAuthority> gaeaRoleAuthorities = gaeaAuthorityService.userAuthorities(orgCode, roles);
-            //路径
-            List authorities  = gaeaRoleAuthorities.stream().map(GaeaRoleMenuAuthority::getAuthCode).collect(Collectors.toList());
-            userInfo.put("menus",userMenus);
-            userInfo.put("roles",userRoles);
-            userInfo.put("orgs",orgList);
-            userInfo.put("currentOrgCode",orgCode);
-            userInfo.put("authorities", authorities);
+            if(!CollectionUtils.isEmpty(roles)){
+                //按钮权限
+                List<GaeaRoleMenuAuthority> gaeaRoleAuthorities = gaeaAuthorityService.userAuthorities(orgCode, roles);
+                //路径
+                List authorities  = gaeaRoleAuthorities.stream().map(GaeaRoleMenuAuthority::getAuthCode).collect(Collectors.toList());
+                userInfo.put("menus",userMenus);
+                userInfo.put("roles",userRoles);
+                userInfo.put("orgs",orgList);
+                userInfo.put("currentOrgCode",orgCode);
+                userInfo.put("authorities", authorities);
+            }else{
+                userInfo.put("menus",userMenus);
+                userInfo.put("roles",null);
+                userInfo.put("orgs",orgList);
+                userInfo.put("currentOrgCode",orgCode);
+                userInfo.put("authorities", null);
+            }
         }else{
             userInfo.put("menus",null);
             userInfo.put("roles",null);
@@ -127,9 +134,6 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
         GaeaUser gaeaUser = gaeaUserService.getUserByUsername(username);
         userInfo.put("username",username);
         userInfo.put("nickname",gaeaUser.getNickname());
-
-
-
         ResponseBean listResponseBean = ResponseBean.builder().data(userInfo).build();
         return listResponseBean;
     }
