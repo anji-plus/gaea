@@ -2,11 +2,78 @@
  * @Author: zyk
  * @Date: 2020-07-22 16:59:48
  * @Last Modified by: zyk
- * @Last Modified time: 2021-03-02 15:13:59
+ * @Last Modified time: 2021-03-03 14:58:28
  */
 export default {
   system: {
     name: '盖亚',
+  },
+  setColumnTable: {
+    customColumns: '自定义列',
+    tableCode: '表编码',
+    name: '列名',
+    code: '列编码',
+    sortNo: '排序号',
+    sortable: '是否排序',
+    sortCode: '排序字段',
+    visible: '是否可见',
+    width: '宽度',
+
+  },
+  table: {
+    yes: '是',
+    no: '否',
+    auto: '自适应',
+    operation: '操作',
+    edit: '编辑',
+    delete: '删除',
+    add: '新增',
+    cancel: '取 消',
+    ok: '确 定',
+    maxLength12: '长度最多 12 个字符',
+    pleaseSelect: '请选择',
+    pleaseFillIn: '请输入',
+    selectAtLeastOne: '至少选择填写一条'
+  },
+  // 高级搜索
+  setSearchConfig: {
+    EQ: '等于',
+    NE: '不等于',
+    GT: '大于',
+    GE: '大于等于',
+    LT: '小于',
+    LE: '小于等于',
+    LIKE: '类似',
+    IN: '包含',
+    pleaseFillInName: '请输入常用查询名称',
+    addItem: '新增搜索项',
+    newQuery: '新增查询条件',
+    advancedSearch: '高级搜索',
+    tableCode: '表编码',
+    nameValue: '名称',
+    label: '名称',
+    name: '编码',
+    type: '条件类型',
+    dataSourceValue: '接口地址',
+    valueType: '条件值类型',
+    datePrecision: '日期精度',
+    input: '文本框',
+    sclect: '下拉框',
+    dateInput: '日期控件',
+    timeInput: '时间控件',
+    dateTimeInput: '日期时间控件',
+    textarea: '多记录文本',
+    number: '数字',
+    string: '字符串',
+    y: '年',
+    yM: '年-月',
+    yMd: '年-月-日',
+    H: '时',
+    Hm: '时-分',
+    Hms: '时-分-秒',
+    yMdH: '年-月-日 时',
+    yMdHm: '年-月-日 时:分',
+    yMdHms: '年-月-日 时:分:秒',
   },
   // 按钮
   btn: {
@@ -88,7 +155,7 @@ export default {
     normal: '普通列表页',
     componentCenter: '组件中心',
     advancedList: '高级查询/动态列',
-    demo: 'CRUD组件化实例',
+    demo: 'CRUD组件化案例',
   },
   navbar: {
     dashboard: '首页',

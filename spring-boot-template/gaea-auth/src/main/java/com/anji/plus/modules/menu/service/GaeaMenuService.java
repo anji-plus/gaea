@@ -1,12 +1,10 @@
 package com.anji.plus.modules.menu.service;
 
 import com.anji.plus.gaea.bean.TreeNode;
-import com.anji.plus.modules.menu.controller.param.GaeaMenuParam;
-import com.anji.plus.modules.menu.controller.dto.GaeaLeftMenuDTO;
-import com.anji.plus.modules.menu.controller.dto.TreeDTO;
-import com.anji.plus.modules.menu.controller.param.MenuActionReqParam;
-import com.anji.plus.modules.menu.dao.entity.GaeaMenu;
 import com.anji.plus.gaea.curd.service.GaeaBaseService;
+import com.anji.plus.modules.menu.controller.dto.GaeaLeftMenuDTO;
+import com.anji.plus.modules.menu.controller.param.GaeaMenuParam;
+import com.anji.plus.modules.menu.dao.entity.GaeaMenu;
 
 import java.util.List;
 
@@ -40,18 +38,13 @@ public interface GaeaMenuService extends GaeaBaseService<GaeaMenuParam, GaeaMenu
      */
     List<String> getSelectActions(String roleCode);
 
-    /**
-     * 获取菜单所分批的按钮树
-     * @param menuCode
-     * @return
-     */
-    TreeDTO queryActionTreeForMenu(String menuCode);
 
     /**
-     * 保存菜单按钮信息
-     * @param requestModel
+     * 设置菜单跟权限对应关系
+     * @param menuCode
+     * @param authorities
      * @return
      */
-    Boolean saveActionTreeForMenu(MenuActionReqParam requestModel);
+    boolean saveMenuAuthorities(String menuCode, List<String> authorities);
 
 }

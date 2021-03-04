@@ -2,58 +2,51 @@
  * @Author: zyk
  * @Date: 2020-07-13 15:34:51
  * @Last Modified by: zyk
- * @Last Modified time: 2021-03-02 09:46:31
+ * @Last Modified time: 2021-03-03 14:44:47
  */
 
 /** 脚手架基础页面路由 **/
 export const baseList = [
   // 组织机构
   {
-    menuId: '10',
-    parentMenuId: '',
-    path: '/organization',
-    redirect: '/organization/index',
-    alwaysShow: 0,
+    name: 'org', // 菜单代码 && 路由名称              （必填）
+    sort: '10',  // 菜单排序              
+    parentCode: '', // 父级菜单代码               （有父级时必填）
+    path: '/organization', // 路由                    （必填）
+    component: '', // 组件地址从相对view文件夹的路径  (页面级时必填)
+    redirect: '/organization/index', // 默认的重定向路径   
+    alwaysShow: 0,  // 默认情况下只有一个子级菜单的时候不展示父级菜单
+    meta: {                             
+      title: '组织机构', // 菜单名 
+      icon: 'organization',       // svg图标
+    },
     children: [
       {
-        menuId: '1010',
-        parentMenuId: '10',
+        sort: '1010',
         path: 'index',
-        component: 'organization/index',
-        name: 'Organization',
-        meta: {
-          title: 'organization',
+        component: 'organization/index', 
+        name: 'organization',
+        meta: {                         
+          title: '组织机构',
           icon: 'organization',
-        },
-        permission: [
-          {
-            btnId: '10-add',
-            btnName: 'add',
-          },
-          {
-            btnId: '10-edit',
-            btnName: 'edit',
-          },
-        ],
+        }
       },
     ],
   },
   // 权限管理
   {
-    menuId: '20',
-    parentMenuId: '',
+    sort: '20',
     path: '/authority',
     redirect: '/authority/role',
-    name: 'Authority',
+    name: 'authority',
     alwaysShow: true,
     meta: {
-      title: 'authority',
+      title: '权限管理',
       icon: 'authority',
     },
     children: [
       // {
-      //   menuId: '2010',
-      //   parentMenuId: '20',
+      //   sort: '2010',
       //   path: 'btn-config',
       //   component: 'authority/btn-config',
       //   name: 'btnConfig',
@@ -63,58 +56,53 @@ export const baseList = [
       //   },
       // },
       {
-        menuId: '2010',
-        parentMenuId: '20',
+        sort: '2010',
         path: 'permission',
         component: 'authority/permission',
-        name: 'Permission',
+        name: 'permission',
         meta: {
-          title: 'permission',
+          title: '权限列表',
           icon: '',
         },
       },
       {
-        menuId: '2020',
-        parentMenuId: '20',
+        sort: '2020',
         path: 'menu-config',
         component: 'authority/menu-config',
-        name: 'MenuConfig',
+        name: 'menuConfig',
         meta: {
-          title: 'menuConfig',
+          title: '菜单配置',
           icon: '',
         },
       },
       {
-        menuId: '2021',
-        parentMenuId: '20',
+        sort: '2030',
         path: 'menu-detail',
-        hidden: true,
+        hidden: 1,
         component: 'authority/menu-detail',
-        name: 'MenuDetail',
+        name: 'menuDetail',
         meta: {
-          title: 'menuDetail',
+          title: '页面配置',
           icon: '',
         },
       },
       {
-        menuId: '2030',
-        parentMenuId: '20',
+        sort: '2040',
         path: 'role',
         component: 'authority/role/index',
-        name: 'Role',
+        name: 'role',
         meta: {
-          title: 'role',
+          title: '角色管理',
           icon: '',
         },
       },
       {
-        menuId: '2040',
-        parentMenuId: '20',
+        sort: '2050',
         path: 'user',
         component: 'authority/user/index',
-        name: 'User',
+        name: 'user',
         meta: {
-          title: 'user',
+          title: '用户管理',
           icon: '',
         },
       },
@@ -122,45 +110,41 @@ export const baseList = [
   },
   // 系统设置
   {
-    menuId: '30',
-    parentMenuId: '',
+    sort: '30',
     path: '/system-set',
     redirect: '/system-set/data-dictionary',
-    name: 'SystemSet',
+    name: 'systemSet',
     alwaysShow: 1,
     meta: {
-      title: 'systemSet',
+      title: '系统设置',
       icon: 'systemSet',
     },
     children: [
       // 字典管理
       {
-        menuId: '3010',
-        parentMenuId: '30',
+        sort: '3010',
         path: 'data-dictionary',
         component: 'system-set/data-dictionary/index',
-        name: 'DataDictionary',
+        name: 'dataDictionary',
         meta: {
-          title: 'dataDictionary',
+          title: '字典管理',
           icon: '',
         },
       },
       // 参数管理
       {
-        menuId: '3020',
-        parentMenuId: '30',
+        sort: '3020',
         path: 'parameter',
         component: 'system-set/parameter/index',
-        name: 'Parameter',
+        name: 'parameter',
         meta: {
-          title: 'parameter',
+          title: '参数管理',
           icon: '',
         },
       },
       // 参数管理
       {
-        menuId: '3021',
-        parentMenuId: '30',
+        sort: '3030',
         path: '/system-set/parameter/edit',
         // component: () => import('@/views/system-set/parameter/component/edit'),
         component: 'system-set/parameter/component/edit',
@@ -170,25 +154,23 @@ export const baseList = [
       },
       // 帮助中心
       {
-        menuId: '3030',
-        parentMenuId: '30',
+        sort: '3040',
         path: 'support',
         component: 'system-set/support/index',
-        name: 'Support',
+        name: 'support',
         meta: {
-          title: 'support',
+          title: '帮助中心',
           icon: '',
         },
       },
       // 操作日志
       {
-        menuId: '3040',
-        parentMenuId: '30',
+        sort: '3050',
         path: 'operation-log',
         component: 'system-set/operation-log',
-        name: 'OperationLog',
+        name: 'operationLog',
         meta: {
-          title: 'operationLog',
+          title: '操作日志',
           icon: '',
         },
       },
@@ -196,86 +178,80 @@ export const baseList = [
   },
   // 消息管理
   {
-    menuId: '40',
-    parentMenuId: '',
+    sort: '40',
     path: '/push-notify',
     redirect: '/push-notify/history',
-    name: 'PushNotify',
+    name: 'pushNotify',
     alwaysShow: 1,
     meta: {
-      title: 'pushNotify',
+      title: '消息管理',
       icon: 'pushNotify',
     },
     children: [
       // 收发概况
       {
-        menuId: '4010',
-        parentMenuId: '40',
+        sort: '4010',
         path: 'situation',
         component: 'push-notify/situation',
-        name: 'Situation',
+        name: 'situation',
         meta: {
-          title: 'situation',
+          title: '收发概况',
           icon: '',
         },
       },
       // 推送模板
       {
-        menuId: '4020',
-        parentMenuId: '40',
+        sort: '4020',
         path: 'template',
         component: 'push-notify/template/index',
-        name: 'Template',
+        name: 'template',
         meta: {
-          title: 'template',
+          title: '推送模板',
           icon: '',
         },
       },
       // 推送历史
       {
-        menuId: '4030',
-        parentMenuId: '40',
+        sort: '4030',
         path: 'history',
         component: 'push-notify/history/index',
-        name: 'History',
+        name: 'history',
         meta: {
-          title: 'history',
+          title: '推送历史',
           icon: '',
         },
       },
     ],
   },
-  // 权限管理
+  // 组件中心
   {
-    menuId: '50',
-    parentMenuId: '',
+    sort: '50',
     path: '/component-center',
     redirect: '/component-center/advanced-list',
+    name: 'componentCenter',
     meta: {
-      title: 'componentCenter',
+      title: '组件中心',
       icon: 'componentCenter',
     },
     alwaysShow: true,
     children: [
       {
-        menuId: '5010',
-        parentMenuId: '50',
+        sort: '5010',
         path: 'advanced-list',
         component: 'component-center/advanced-list',
-        name: 'AdvancedList',
+        name: 'advancedList',
         meta: {
-          title: 'advancedList',
+          title: '高级查询/动态列',
           icon: '',
         },
       },
       {
-        menuId: '5020',
-        parentMenuId: '50',
+        sort: '5020',
         path: 'demo',
         component: 'component-center/demo',
-        name: 'Demo',
+        name: 'demo',
         meta: {
-          title: 'demo',
+          title: 'CRUD组件化案例',
           icon: '',
         },
       },
@@ -283,20 +259,19 @@ export const baseList = [
   },
   // 导出中心
   {
-    menuId: '60',
-    parentMenuId: '',
+    sort: '60',
     path: '/download',
     redirect: '/download/index',
     alwaysShow: 0,
+    name:'downloadMenu',
     children: [
       {
-        menuId: '6010',
-        parentMenuId: '60',
+        sort: '6010',
         path: 'index',
         component: 'download/index',
-        name: 'Download',
+        name: 'download',
         meta: {
-          title: 'download',
+          title: '导出中心',
           icon: 'download',
         },
       },

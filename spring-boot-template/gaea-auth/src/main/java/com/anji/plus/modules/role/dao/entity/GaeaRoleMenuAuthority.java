@@ -11,8 +11,8 @@ import java.io.Serializable;
  * @author lr
  * @since 2021-02-02 13:43:52
  */
-@TableName("gaea_role_menu_action")
-public class GaeaRoleMenuAction extends GaeaBaseEntity implements Serializable {
+@TableName("gaea_role_menu_authority")
+public class GaeaRoleMenuAuthority extends GaeaBaseEntity implements Serializable {
     /**
      * 角色编码
      */
@@ -21,10 +21,16 @@ public class GaeaRoleMenuAction extends GaeaBaseEntity implements Serializable {
      * 菜单编码
      */
     private String menuCode;
+
     /**
-     * 按钮编码
+     * 权限编码
      */
-    private String actionCode;
+    private String authCode;
+
+    /**
+     * 权限路径
+     */
+    private String authPath;
 
     public String getRoleCode() {
         return roleCode;
@@ -42,13 +48,19 @@ public class GaeaRoleMenuAction extends GaeaBaseEntity implements Serializable {
         this.menuCode = menuCode;
     }
 
-    public String getActionCode() {
-        return actionCode;
+    public String getAuthCode() {
+        return authCode;
     }
 
-    public void setActionCode(String actionCode) {
-        this.actionCode = actionCode;
+    public void setAuthCode(String authCode) {
+        this.authCode = authCode;
     }
 
+    public String getAuthPath() {
+        return authPath;
+    }
 
+    public void setAuthPath(String authPath) {
+        this.authPath = authPath;
+    }
 }

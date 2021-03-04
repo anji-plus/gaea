@@ -60,11 +60,12 @@
           <span class="view" @click="editDetail('view', scope.row)">{{ scope.row.menuCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="父级菜单代码" prop="parentCode" min-width="110" align="center" />
+      <el-table-column label="排序" prop="sort" min-width="110" align="center" />
+      <el-table-column label="父级菜单代码" prop="parentCode" min-width="140" align="center" />
 
       <el-table-column prop="menuName" label="菜单名称" min-width="140" align="center" />
       <el-table-column prop="sysCode" label="系统终端代码" min-width="110" align="center" />
-      <el-table-column prop="path" label="路由地址" min-width="110" align="center" />
+      <el-table-column prop="path" label="路由地址" min-width="200" align="center" />
       <el-table-column prop="createTime" :label="$t('userManage.creationTime')" align="center" min-width="160" />
       <el-table-column prop="createBy" :label="$t('userManage.creator')" align="center" min-width="160" />
       <el-table-column prop="updateTime" :label="$t('userManage.modifyTime')" align="center" min-width="180" />
@@ -76,17 +77,17 @@
       </el-table-column>
     </el-table>
     <el-pagination v-show="total > 0" background :current-page.sync="searchForm.pageNumber" :page-sizes="$pageSizeAll" :page-size="searchForm.pageSize" layout="total, prev, pager, next, jumper, sizes" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="40%" :close-on-click-modal="false" center :visible.sync="basicDialog" @close="closeDialog">
+    <el-dialog :title="$t(`btn.${dialogTittle}`)" width="60%" :close-on-click-modal="false" center :visible.sync="basicDialog" @close="closeDialog">
       <el-form ref="userForm" :model="dialogForm" :rules="formRules" label-width="100px" style="padding-right: 15px" :disabled="dialogTittle == 'view'">
         <el-row class="form_table">
           <el-col :span="12">
             <el-form-item label="菜单代码" prop="menuCode">
-              <el-input v-model="dialogForm.menuCode" :disabled="dialogTittle != 'add'" placeholder="方便关联,唯一值" />
+              <el-input v-model="dialogForm.menuCode" :disabled="dialogTittle != 'add'" placeholder="路由的name值" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="排序" prop="sort">
-              <el-input v-model="dialogForm.sort" type="Number" placeholder="决定顺序" />
+              <el-input v-model="dialogForm.sort" type="Number" placeholder="如：10,1010等" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -96,7 +97,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="菜单名称" prop="menuName">
-              <el-input v-model="dialogForm.menuName" placeholder="title和name字段" />
+              <el-input v-model="dialogForm.menuName" placeholder="菜单真实名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -115,20 +116,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="重定向地址" prop="redirectUrl">
-              <el-input v-model="dialogForm.redirectUrl" placeholder="redirect" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="系统终端" prop="sysCode">
-              <el-select v-model="dialogForm.sysCode" :placeholder="$t('placeholder.select')">
-                <el-option key="1" label="PC端" value="PC" />
-                <el-option key="2" label="APP端" value="APP" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="12">
             <el-form-item label="隐藏菜单" prop="hidden">
               <el-select v-model="dialogForm.hidden" :placeholder="$t('placeholder.select')">
                 <el-option key="1" label="是" :value="1" />
@@ -144,6 +131,21 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="重定向地址" prop="redirectUrl">
+              <el-input v-model="dialogForm.redirectUrl" placeholder="redirect" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="系统终端" prop="sysCode">
+              <el-select v-model="dialogForm.sysCode" :placeholder="$t('placeholder.select')">
+                <el-option key="1" label="PC端" value="PC" />
+                <el-option key="2" label="APP端" value="APP" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          
           <el-col :span="12">
             <el-form-item label="启用状态" prop="enabled">
               <el-select v-model="dialogForm.enabled" :placeholder="$t('placeholder.select')">

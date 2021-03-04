@@ -6,17 +6,16 @@ import com.anji.plus.gaea.bean.TreeNode;
 import com.anji.plus.gaea.curd.controller.GaeaBaseController;
 import com.anji.plus.gaea.curd.service.GaeaBaseService;
 import com.anji.plus.gaea.holder.UserContentHolder;
-import com.anji.plus.modules.authority.dao.entity.GaeaRoleAuthority;
 import com.anji.plus.modules.authority.service.GaeaAuthorityService;
 import com.anji.plus.modules.menu.controller.dto.GaeaLeftMenuDTO;
+import com.anji.plus.modules.menu.controller.dto.GaeaMenuAuthorityDTO;
 import com.anji.plus.modules.menu.controller.dto.GaeaMenuDTO;
-import com.anji.plus.modules.menu.controller.dto.TreeDTO;
 import com.anji.plus.modules.menu.controller.param.GaeaMenuParam;
 import com.anji.plus.modules.menu.controller.param.LeftMenuReqParam;
-import com.anji.plus.modules.menu.controller.param.MenuActionReqParam;
 import com.anji.plus.modules.menu.dao.entity.GaeaMenu;
 import com.anji.plus.modules.menu.service.GaeaMenuService;
 import com.anji.plus.modules.org.dao.entity.GaeaOrg;
+import com.anji.plus.modules.role.dao.entity.GaeaRoleMenuAuthority;
 import com.anji.plus.modules.role.service.GaeaRoleService;
 import com.anji.plus.modules.user.dao.entity.GaeaUser;
 import com.anji.plus.modules.user.service.GaeaUserService;
@@ -109,10 +108,12 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
             //获取当前用户所拥有的菜单
             List<GaeaLeftMenuDTO> userMenus = gaeaMenuService.getMenus(userRoles);
 
+            List<String> roles = gaeaUserService.getRoleByUserOrg(username, orgCode);
+
             //按钮权限
-            List<GaeaRoleAuthority> gaeaRoleAuthorities = gaeaAuthorityService.userAuthorities(orgCode);
+            List<GaeaRoleMenuAuthority> gaeaRoleAuthorities = gaeaAuthorityService.userAuthorities(orgCode, roles);
             //路径
-            List authorities  = gaeaRoleAuthorities.stream().map(GaeaRoleAuthority::getAuthCode).collect(Collectors.toList());
+            List authorities  = gaeaRoleAuthorities.stream().map(GaeaRoleMenuAuthority::getAuthCode).collect(Collectors.toList());
             userInfo.put("menus",userMenus);
             userInfo.put("roles",userRoles);
             userInfo.put("orgs",orgList);
@@ -152,30 +153,11 @@ public class GaeaMenuController extends GaeaBaseController<GaeaMenuParam, GaeaMe
         return responseSuccessWithData(gaeaMenuService.getSelectActions(roleCode));
     }
 
-    /**
-     * 获取菜单按钮树
-     * @param menuCode
-     * @return
-     */
-    @GetMapping("/queryActionTreeForMenu/{code}")
-    public ResponseBean queryActionTreeForMenu(@PathVariable("code")String menuCode){
-        TreeDTO data=gaeaMenuService.queryActionTreeForMenu(menuCode);
-        return responseSuccessWithData(data);
+
+    @PostMapping("/mapper/authorities")
+    public ResponseBean menuAuthority(@RequestBody GaeaMenuAuthorityDTO authorityDTO) {
+        gaeaMenuService.saveMenuAuthorities(authorityDTO.getMenuCode(), authorityDTO.getAuthCodes());
+        return responseSuccess();
     }
-
-    /**
-     * 保存菜单按钮树
-     * @param reqParam
-     * @return
-     */
-    @PostMapping("/saveActionTreeForMenu")
-    @GaeaAuditLog(pageTitle="设置菜单按钮")
-    public ResponseBean saveActionTreeForMenu(@RequestBody MenuActionReqParam reqParam){
-        Boolean data=gaeaMenuService.saveActionTreeForMenu(reqParam);
-        return responseSuccessWithData(data);
-    }
-
-
-
 
 }

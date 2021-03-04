@@ -36,3 +36,36 @@ export function saveUserMenuExtensionsBatchSave(data) {
   })
 }
 
+// 高级搜索字典查询
+export function queryDictSelect({ url, params }) {
+  return request({
+    url: url,
+    method: 'get',
+    params,
+  })
+}
+
+// 常用查询id
+export function queryCommonCondition(data) {
+  return request({
+    url: `/auth/commonCondition/queryByCondition`,
+    method: 'post',
+    data,
+  })
+}
+// 常用查询保存
+export function saveCommonCondition(data) {
+  return request({
+    url: `/auth/commonCondition/saveCondition`,
+    method: 'post',
+    data,
+  })
+}
+// 常用删除
+export function deleteCommonCondition(id) {
+  return request({
+    url: `/auth/commonCondition/${id}`,
+    method: 'delete',
+  })
+}
+    

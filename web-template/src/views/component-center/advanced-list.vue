@@ -43,15 +43,32 @@
             <el-button type="danger" @click="resetForm('formSearch')">{{ $t('btn.reset') }}</el-button>
           </el-col>
           <el-col :span="24">
+            <el-dropdown>
+              <el-button type="primary" class="buttonItem btnSpan">{{ $t('btn.commonSearch') }}</el-button>
+              <el-dropdown-menu slot="dropdown">
+                <!-- icon="el-icon-delete" -->
+                <el-dropdown-item v-for="(o,index) in commonList" :key="index" :command="o.id">
+                  <div class="dropdown-item">
+                    <i class="icon el-icon-delete" @click.stop="delItemCommon(o)" />
+                    <el-link class="link" type="info" @click.stop="openCommonSearch(o)">{{ o.searchName }}</el-link>
+                  </div>
+                </el-dropdown-item>
+                <el-dropdown-item command="add">
+                  <div class="dropdown-item">
+                    <i class="icon el-icon-circle-plus-outline" />
+                    <el-link class="link" type="primary" @click.stop="openAdvancedSearch('commonSearch')">{{ $t('setSearchConfig.newQuery') }}</el-link>
+                  </div>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
             <el-button plain @click="openAdvancedSearch">{{ $t('btn.advancedSearch') }}</el-button>
-            <el-button plain type="primary" @click="openCommonSearch">{{ $t('btn.commonSearch') }}</el-button>
           </el-col>
         </el-col>
       </el-row>
     </el-form>
     <div class="buttonList">
       <div class="list">
-        <el-button type="primary" size="small">按钮一</el-button>
+        <el-button type="primary" size="small">button</el-button>
       </div>
       <div class="config">
         <el-button plain type="primary" @click="openSetColumn">{{ $t('btn.customColumns') }}</el-button>
@@ -74,7 +91,8 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <el-dialog :visible.sync="setTabelDialog.dialog" width="800px" title="自定义列" @closed="closedSetTabel">
+    <!-- 自定义列弹窗 -->
+    <el-dialog :visible.sync="setTabelDialog.dialog" width="800px" :title="$t('setColumnTable.customColumns')" @closed="closedSetTabel">
       <div v-if="setTabelDialog.show" ref="dragBody" class="dragBody">
         <div ref="dragTable" class="dragTable">
           <div v-for="item in setTabelDialog.list" :key="item.code" class="item" :data-code="item.code">
@@ -86,7 +104,7 @@
               <span class="bg" :style="{width: (item.widthStr/setTabelDialog.max*100 +'%')}" />
             </div>
             <div class="width">
-              <span>宽度</span>
+              <span>{{ $t('setColumnTable.width') }}</span>
               <div class="input">
                 <el-input v-model="item.width" placeholder="auto">
                   <template slot="append">px</template>
@@ -97,19 +115,132 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="setTabelDialog.dialog = false">取 消</el-button>
-        <el-button type="primary" @click="submitTabelConfig">确 定</el-button>
+        <el-button @click="setTabelDialog.dialog = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="submitTabelConfig">{{ $t('table.ok') }}</el-button>
+      </span>
+    </el-dialog>
+    <!-- 高级搜索弹窗 -->
+    <el-dialog :title="advanced.title" :visible.sync="advanced.dialog" width="600px">
+      <div class="main">
+        <el-form
+          v-if="advanced.type==='commonSearch'"
+          ref="baseQueryForm"
+          :model="advanced"
+          :rules="{
+            name: [
+              { required: true, message: $t('table.pleaseFillIn'), trigger: 'blur' },
+              { max: 12, message: $t('table.maxLength12'), trigger: 'blur' }
+            ]}"
+          label-width="50px"
+          class="demo-ruleForm"
+        >
+          <el-form-item :label="$t('setSearchConfig.label')" prop="name">
+            <el-input v-model="advanced.name" maxlength="12" show-word-limit />
+          </el-form-item>
+        </el-form>
+        <div class="list baseQueryItems">
+          <el-row v-for="(row,idx) in advanced.addConfig" :key="idx" class="item" type="flex" align="middle">
+            <el-col :span="8">
+              <el-select v-model="row.prop" value-key="id" :placeholder="$t('table.pleaseSelect')" @change="updateAdvancedOption($event,advanced.addConfig[idx])">
+                <el-option v-for="item in advanced.templateOption" :key="item.id" :label="item.nameValue" :value="item" />
+              </el-select>
+            </el-col>
+            <el-col :span="5">
+              <el-select v-model="row.operator" :placeholder="$t('table.pleaseSelect')">
+                <el-option v-for="item in advanced.options" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-col>
+            <el-col :span="8">
+              <!-- // type: 1, //  条件类型(1:文本框、2:下拉框、3:日期控件、4:时间控件、5:日期时间控件、6:多记录文本、) -->
+              <el-input v-if="!row.prop" v-model="row.value" class="formItem" :placeholder="$t('table.pleaseFillIn')" />
+              <el-select v-else-if="row.prop.type===2" v-model="row.value" class="formItem" clearable :placeholder="$t('table.pleaseSelect')" @change="updateValueName($event,row)">
+                <el-option v-for="item in row.option" :key="item.id" :label="item.text" :value="item.id">
+                  <span style="float: left">{{ item.id }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.text }}</span>
+                </el-option>
+              </el-select>
+              <el-date-picker v-else-if="row.prop.type===3" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" type="date" :placeholder="$t('table.pleaseSelect')" />
+              <el-time-select v-else-if="row.prop.type===4" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" :placeholder="$t('table.pleaseSelect')" />
+              <el-date-picker v-else-if="row.prop.type===5" v-model="row.value" class="formItem" :value-format="row.prop.datePrecision" :format="row.prop.datePrecision" type="datetime" :placeholder="$t('table.pleaseSelect')" />
+              <el-input v-else-if="row.prop.type===6" v-model="row.value" class="formItem" type="textarea" :placeholder="$t('table.pleaseFillIn')" @focus="getHigh($event)" @blur="getNormal($event)" />
+              <el-input v-else v-model="row.value" :placeholder="$t('table.pleaseFillIn')" class="formItem" />
+            </el-col>
+            <el-col v-if="idx!==0" :span="3">
+              <i class="el-icon-delete" :title="$t('table.delete')" :style="{color:'red', fontSize: '20px',margin: '0 10px'}" @click="delAdvancedItem(idx)" />
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addAdvancedQuery">{{ $t('setSearchConfig.addItem') }}</el-button>
+        <el-button type="primary" @click="saveOtherSearch">{{ $t('table.ok') }}</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
-import { queryTableColumn, queryconditionList, queryAdvanceExport, saveUserMenuExtensionsBatchSave } from '@/api/advanced'
+import { queryTableColumn, queryconditionList, queryAdvanceExport, saveUserMenuExtensionsBatchSave, queryDictSelect, queryCommonCondition, 
+  saveCommonCondition, deleteCommonCondition } from '@/api/advanced'
 import Sortable from 'sortablejs'
 
 export default {
   data() {
     return {
+      visible: false,
+      advancedSearchForm: [],
+      commonList: [],
+      commonId: null,
+      advanced: {
+        dialog: false,
+        name: '',
+        type: '',
+        title: '',
+        templateOption: [],
+        template: {
+          prop: null,
+          option: [],
+          valueName: '',
+          queryApiOption: this.queryApiOption,
+          operator: 'EQ',
+          value: '',
+        },
+        addConfig: [],
+        options: [
+          {
+            value: 'EQ',
+            label: this.$('setSearchConfig.EQ'),
+          },
+          {
+            value: 'NE',
+            label: this.$('setSearchConfig.NE'),
+          },
+          {
+            value: 'GT',
+            label: this.$('setSearchConfig.GT'),
+          },
+          {
+            value: 'GE',
+            label: this.$('setSearchConfig.GE'),
+          },
+          {
+            value: 'LT',
+            label: this.$('setSearchConfig.LT'),
+          },
+          {
+            value: 'LE',
+            label: this.$('setSearchConfig.ELEQ'),
+          },
+          {
+            value: 'LIKE',
+            label: this.$('setSearchConfig.LIKE'),
+          },
+          {
+            value: 'IN',
+            label: this.$('setSearchConfig.IN'),
+          },
+        ],
+        list: [],
+      },
       pagination: {
         total: 0,
         pageNumber: 1,
@@ -124,7 +255,7 @@ export default {
       columns: [],
       tableConfig: {
         menuCode: 1118,
-        tableCode: 'test01',
+        tableCode: 'advanceTable',
         show: true,
         loading: false,
       },
@@ -141,8 +272,89 @@ export default {
   },
   mounted() {
     this.queryColumns()
+    this.queryCommonCondition()
   },
   methods: {
+    delItemCommon(o) {
+      deleteCommonCondition(o.id).then((res) => {
+        this.queryCommonCondition()
+      })
+    },
+    updateValueName(val, row) {
+      row.valueName = row.option.find((item) => item.id === val).text
+    },
+    getHigh(el) {
+      el.target.style.height = '100px'
+      el.target.style.width = '200%'
+      el.target.style.position = 'absolute'
+    },
+    getNormal(el) {
+      // const str = el.target.value
+      el.target.style.height = '100%'
+      el.target.style.width = '100%'
+      el.target.style.position = 'relative'
+    },
+    updateAdvancedOption(data, item) {
+      if (data.type === 2) {
+        queryDictSelect({ url: data.dataSourceValue }).then((res) => {
+          item.option = res.data || []
+        })
+      }
+      item.value = null
+    },
+    searchVariousQuery(params) {
+      if (!this.advanced.name) {
+        this.$message.error(this.$t('setSearchConfig.pleaseFillInName'))
+        return false
+      }
+      const data = {
+        commonConditionReqBOList: params,
+        menuCode: this.tableConfig.menuCode,
+        tableCode: this.tableConfig.tableCode,
+        searchName: this.advanced.name,
+      }
+      saveCommonCondition(data).then((res) => {
+        this.queryCommonCondition()
+        this.advanced.dialog = false
+      })
+    },
+    saveOtherSearch() {
+      const params = this.advanced.addConfig
+        .filter((item) => item.prop && item.value)
+        .map((item) => {
+          return {
+            name: item.prop.name,
+            value: item.value,
+            type: item.prop.type,
+            valueName: item.valueName,
+            valueType: item.prop.valueType,
+            datePrecision: item.prop.datePrecision,
+            operator: item.operator,
+          }
+        })
+      if (!params.length) {
+        this.$message.error(this.$t('table.selectAtLeastOne'))
+        return
+      }
+      if (this.advanced.type === 'advancedSearch') {
+        this.advancedSearchForm = params
+        this.getData()
+        this.advanced.dialog = false
+        // console.log()
+      } else {
+        this.searchVariousQuery(params)
+      }
+    },
+    addAdvancedQuery() {
+      const data = {
+        ...this.advanced.template,
+      }
+      this.advanced.addConfig.push(data)
+    },
+    delAdvancedItem(index) {
+      console.log(index)
+      this.advanced.addConfig.splice(index, 1)
+    },
     submitTabelConfig() {
       const arr = this.$refs.dragTable.querySelectorAll('.item')
       const list = this.setTabelDialog.list
@@ -199,19 +411,47 @@ export default {
         this.setSort()
       })
     },
-    openCustomColumns() {},
-    openAdvancedSearch() {},
-    openCommonSearch() {},
+    initAdvancedSearch(type = 'advancedSearch') {
+      this.advanced.title = this.$t('btn.advancedSearch')
+      this.advanced.type = type
+      this.advanced.name = ''
+      this.advanced.addConfig = [
+        {
+          ...this.advanced.template,
+        },
+      ]
+      this.advanced.dialog = true
+    },
+    openAdvancedSearch(type) {
+      if (!this.advanced.templateOption.length) {
+        queryconditionList({ menuCode: this.tableConfig.menuCode, tableCode: this.tableConfig.tableCode }).then((res) => {
+          this.advanced.templateOption = res.data || []
+          this.initAdvancedSearch(type)
+        })
+      } else {
+        this.initAdvancedSearch(type)
+      }
+    },
+    queryCommonCondition() {
+      queryCommonCondition({ menuCode: this.tableConfig.menuCode, tableCode: this.tableConfig.tableCode }).then((res) => {
+        this.commonList = res.data || []
+      })
+    },
+    openCommonSearch(o) {
+      this.commonId = o.id
+      this.getData()
+    },
     queryColumns() {
       queryTableColumn({ menuCode: this.tableConfig.menuCode, tableCode: this.tableConfig.tableCode }).then((res) => {
-        console.log(res.data)
         this.columns = res.data || []
         this.getData()
       })
     },
     getData() {
       const params = {
+        dynamicQueryBos: this.advancedSearchForm,
         pageNumber: this.pagination.pageNumber,
+        commonId: this.commonId ? this.commonId : '',
         pageSize: this.pagination.pageSize,
       }
       this.tableConfig.loading = true
@@ -292,6 +532,17 @@ export default {
       width: 120px;
       margin-left: 10px;
     }
+  }
+}
+.formItem {
+  display: block;
+  width: 100%;
+}
+.dropdown-item{
+  display: flex;
+  align-items: center;
+  .icon{
+    margin-right: 5px;
   }
 }
 </style>

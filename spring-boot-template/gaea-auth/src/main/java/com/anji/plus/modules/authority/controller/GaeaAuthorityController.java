@@ -7,14 +7,14 @@ import com.anji.plus.gaea.curd.service.GaeaBaseService;
 import com.anji.plus.modules.authority.controller.dto.GaeaAuthorityDTO;
 import com.anji.plus.modules.authority.controller.param.GaeaAuthorityParam;
 import com.anji.plus.modules.authority.dao.entity.GaeaAuthority;
-import com.anji.plus.modules.authority.dao.entity.GaeaRoleAuthority;
 import com.anji.plus.modules.authority.service.GaeaAuthorityService;
+import com.anji.plus.modules.role.dao.entity.GaeaRoleMenuAuthority;
 import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,14 +53,16 @@ public class GaeaAuthorityController extends GaeaBaseController<GaeaAuthorityPar
      * 权限树
      * @return
      */
-    @GetMapping("/authority/tree/{org}")
-    public ResponseBean authorityTree(@PathVariable("org") String org) {
+    @GetMapping("/authority/tree/{org}/{role}")
+    public ResponseBean authorityTree(@PathVariable("org") String org,@PathVariable("role") String role) {
         List<TreeNode> treeNodes = gaeaAuthorityService.authorityTree();
 
         //查询当前用户拥有的权限
-        List<GaeaRoleAuthority> gaeaRoleAuthorities = gaeaAuthorityService.userAuthorities(org);
+        List<String> roles = new ArrayList<>();
+        roles.add(role);
+        List<GaeaRoleMenuAuthority> gaeaRoleAuthorities = gaeaAuthorityService.userAuthorities(org,roles);
         //路径
-        List authorities  = gaeaRoleAuthorities.stream().map(GaeaRoleAuthority::getAuthorityPath).collect(Collectors.toList());
+        List authorities  = gaeaRoleAuthorities.stream().map(GaeaRoleMenuAuthority::getAuthPath).collect(Collectors.toList());
 
         Map<String, Object> result = new HashMap<>(2);
         result.put("has", authorities);
@@ -81,7 +83,7 @@ public class GaeaAuthorityController extends GaeaBaseController<GaeaAuthorityPar
             return responseSuccess();
         }
         List<String> authorities = gaeaAuthorityDTO.getAuthorities();
-        if (CollectionUtils.isEmpty(authorities)) {
+        if (authorities == null) {
             return responseSuccess();
         }
         gaeaAuthorityService.insertRoleAuthority(roleCode, authorities);

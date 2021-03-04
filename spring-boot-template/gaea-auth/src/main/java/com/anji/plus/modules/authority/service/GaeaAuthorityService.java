@@ -4,7 +4,7 @@ import com.anji.plus.gaea.bean.TreeNode;
 import com.anji.plus.gaea.curd.service.GaeaBaseService;
 import com.anji.plus.modules.authority.controller.param.GaeaAuthorityParam;
 import com.anji.plus.modules.authority.dao.entity.GaeaAuthority;
-import com.anji.plus.modules.authority.dao.entity.GaeaRoleAuthority;
+import com.anji.plus.modules.role.dao.entity.GaeaRoleMenuAuthority;
 
 import java.util.List;
 
@@ -38,6 +38,6 @@ public interface GaeaAuthorityService extends GaeaBaseService<GaeaAuthorityParam
      * @param org
      * @return
      */
-    List<GaeaRoleAuthority> userAuthorities(String org);
+    List<GaeaRoleMenuAuthority> userAuthorities(String org, List<String> role);
 
 }

@@ -1,14 +1,21 @@
 package com.anji.plus.modules.role.service.impl;
 
+import com.anji.plus.gaea.bean.TreeNode;
+import com.anji.plus.gaea.constant.Enabled;
+import com.anji.plus.gaea.constant.GaeaConstant;
+import com.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
+import com.anji.plus.modules.authority.dao.GaeaAuthorityMapper;
+import com.anji.plus.modules.authority.dao.entity.GaeaAuthority;
 import com.anji.plus.modules.menu.controller.dto.TreeDTO;
 import com.anji.plus.modules.org.dao.GaeaOrgMapper;
 import com.anji.plus.modules.org.dao.entity.GaeaOrg;
 import com.anji.plus.modules.role.controller.param.RoleMenuActionReqParam;
 import com.anji.plus.modules.role.controller.param.RoleOrgReqParam;
 import com.anji.plus.modules.role.dao.GaeaRoleMapper;
-import com.anji.plus.modules.role.dao.GaeaRoleMenuActionMapper;
+import com.anji.plus.modules.role.dao.GaeaRoleMenuAuthorityMapper;
 import com.anji.plus.modules.role.dao.GaeaRoleOrgMapper;
-import com.anji.plus.modules.role.dao.entity.GaeaRoleMenuAction;
+import com.anji.plus.modules.role.dao.entity.GaeaRole;
+import com.anji.plus.modules.role.dao.entity.GaeaRoleMenuAuthority;
 import com.anji.plus.modules.role.dao.entity.GaeaRoleOrg;
 import com.anji.plus.modules.role.service.GaeaRoleService;
 import com.anji.plus.modules.user.dao.GaeaUserRoleMapper;
@@ -20,16 +27,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.anji.plus.gaea.bean.TreeNode;
-import com.anji.plus.gaea.constant.Enabled;
-import com.anji.plus.modules.role.dao.entity.GaeaRole;
-import com.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +57,10 @@ public class GaeaRoleServiceImpl implements GaeaRoleService {
     @Autowired
     private GaeaUserRoleOrgMapper gaeaUserRoleOrgMapper;
     @Autowired
-    private GaeaRoleMenuActionMapper gaeaRoleMenuActionMapper;
+    private GaeaRoleMenuAuthorityMapper gaeaRoleMenuAuthorityMapper;
+
+    @Autowired
+    private GaeaAuthorityMapper gaeaAuthorityMapper;
 
     @Override
     public GaeaBaseMapper<GaeaRole> getMapper() {
@@ -132,25 +139,33 @@ public class GaeaRoleServiceImpl implements GaeaRoleService {
         List<String> checkedCodsList = reqParam.getCodes();
 
         //清除菜单的旧关联按钮
-        LambdaQueryWrapper<GaeaRoleMenuAction> queryWrapper=Wrappers.lambdaQuery();
-        queryWrapper.select(GaeaRoleMenuAction::getId,GaeaRoleMenuAction::getRoleCode)
-                .eq(GaeaRoleMenuAction::getRoleCode,roleCode);
-        gaeaRoleMenuActionMapper.delete(queryWrapper);
+        LambdaQueryWrapper<GaeaRoleMenuAuthority> queryWrapper=Wrappers.lambdaQuery();
+        queryWrapper.eq(GaeaRoleMenuAuthority::getRoleCode,roleCode);
+        gaeaRoleMenuAuthorityMapper.delete(queryWrapper);
+
+        List<GaeaAuthority> gaeaMenuAuthorities = gaeaAuthorityMapper.selectList(Wrappers.emptyWrapper());
+
+        Map<String, String> authorityPathMap = gaeaMenuAuthorities.stream().collect(Collectors.toMap(GaeaAuthority::getAuthCode, GaeaAuthority::getPath));
 
         if(CollectionUtils.isNotEmpty(checkedCodsList)){
-            List<GaeaRoleMenuAction> checkList=new ArrayList<>(checkedCodsList.size());
+            List<GaeaRoleMenuAuthority> checkList=new ArrayList<>(checkedCodsList.size());
             //保存新的关联
             checkedCodsList.forEach(s -> {
-                String[] codesArr= s.split(":");
-                String menuCode=codesArr[0];
-                String actionCode=codesArr[1];
-                GaeaRoleMenuAction gaeaRoleMenuAction=new GaeaRoleMenuAction();
-                gaeaRoleMenuAction.setRoleCode(roleCode);
-                gaeaRoleMenuAction.setActionCode(actionCode);
-                gaeaRoleMenuAction.setMenuCode(menuCode);
-                checkList.add(gaeaRoleMenuAction);
+
+                GaeaRoleMenuAuthority gaeaRoleMenuAuthority =new GaeaRoleMenuAuthority();
+                gaeaRoleMenuAuthority.setRoleCode(roleCode);
+                if (s.contains(GaeaConstant.REDIS_SPLIT)) {
+                    String[] menuAuth = s.split(GaeaConstant.REDIS_SPLIT);
+                    gaeaRoleMenuAuthority.setMenuCode(menuAuth[0]);
+                    gaeaRoleMenuAuthority.setAuthCode(menuAuth[1]);
+                    gaeaRoleMenuAuthority.setAuthPath(authorityPathMap.get(menuAuth[1]));
+                } else {
+                    gaeaRoleMenuAuthority.setMenuCode(s);
+                    gaeaRoleMenuAuthority.setAuthCode(s);
+                }
+                checkList.add(gaeaRoleMenuAuthority);
             });
-            gaeaRoleMenuActionMapper.insertBatch(checkList);
+            gaeaRoleMenuAuthorityMapper.insertBatch(checkList);
         }
         return true;
     }
