@@ -17,6 +17,7 @@ import com.anji.plus.modules.log.controller.param.GaeaLogParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,9 @@ import java.util.List;
 public class GaeaLogServiceImpl implements GaeaLogService {
     @Autowired
     private GaeaLogMapper gaeaLogMapper;
+
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolExportExecutor;
 
     @Value("${file.dist-path}")
     private String dictPath;
@@ -75,7 +79,9 @@ public class GaeaLogServiceImpl implements GaeaLogService {
         //保存当前操作人
         exportOperation.setCreaterUsername(UserContentHolder.getContext().getUsername());
         //调用盖亚组件实现导出文件
-        ExportUtil.getInstance().exportByFilePathSimple(exportOperation, GaeaLog.class);
+        threadPoolExportExecutor.execute(()->{
+            ExportUtil.getInstance().exportByFilePathSimple(exportOperation, GaeaLog.class);
+        });
         return true;
     }
 }
