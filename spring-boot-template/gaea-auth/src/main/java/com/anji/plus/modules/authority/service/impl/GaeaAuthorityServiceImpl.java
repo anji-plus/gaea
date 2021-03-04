@@ -52,7 +52,7 @@ public class GaeaAuthorityServiceImpl implements GaeaAuthorityService {
 
         Map<String, String> codeNameMap = gaeaAuthorities.stream()
                 .filter(gaeaAuthority -> StringUtils.isNotBlank(gaeaAuthority.getAuthName()))
-                .collect(Collectors.toMap(GaeaAuthority::getPath, GaeaAuthority::getAuthName));
+                .collect(Collectors.toMap(GaeaAuthority::getAuthCode, GaeaAuthority::getAuthName));
 
         Map<String, List<GaeaAuthority>> applicationTree = gaeaAuthorities.stream()
                 .collect(Collectors.groupingBy(GaeaAuthority::getApplicationName));
@@ -90,7 +90,7 @@ public class GaeaAuthorityServiceImpl implements GaeaAuthorityService {
                 beanAuthorities.stream().forEach(beanAuthority -> {
                     TreeNode nodeMethod = new TreeNode();
                     beanChildren.add(nodeMethod);
-                    nodeMethod.setId(beanAuthority.getPath());
+                    nodeMethod.setId(beanAuthority.getAuthCode());
                     if (codeNameMap.containsKey(beanAuthority.getAuthCode())) {
                         nodeMethod.setLabel(beanAuthority.getAuthName());
                     } else {

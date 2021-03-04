@@ -5,6 +5,8 @@ import com.anji.plus.gaea.bean.TreeNode;
 import com.anji.plus.gaea.constant.Enabled;
 import com.anji.plus.gaea.constant.GaeaConstant;
 import com.anji.plus.gaea.curd.mapper.GaeaBaseMapper;
+import com.anji.plus.modules.authority.dao.GaeaAuthorityMapper;
+import com.anji.plus.modules.authority.dao.entity.GaeaAuthority;
 import com.anji.plus.modules.menu.controller.dto.GaeaLeftMenuDTO;
 import com.anji.plus.modules.menu.controller.dto.GaeaMenuDTO;
 import com.anji.plus.modules.menu.dao.GaeaMenuAuthorityMapper;
@@ -14,7 +16,6 @@ import com.anji.plus.modules.menu.dao.entity.GaeaMenuAuthority;
 import com.anji.plus.modules.menu.service.GaeaMenuService;
 import com.anji.plus.modules.role.dao.GaeaRoleMenuAuthorityMapper;
 import com.anji.plus.modules.role.dao.entity.GaeaRoleMenuAuthority;
-import com.anji.plus.modules.role.service.GaeaRoleService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +47,7 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
     private GaeaMenuAuthorityMapper gaeaMenuAuthorityMapper;
 
     @Autowired
-    private GaeaRoleService gaeaRoleService;
+    private GaeaAuthorityMapper gaeaAuthorityMapper;
 
     @Override
     public GaeaBaseMapper<GaeaMenu> getMapper() {
@@ -171,6 +172,10 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
 
 
         List<GaeaMenu> allResources = gaeaMenuMapper.selectList(resourceQueryWrapper);
+        List<GaeaAuthority> gaeaAuthorities = gaeaAuthorityMapper.selectList(Wrappers.emptyWrapper());
+
+        Map<String, String> authorityMap = gaeaAuthorities.stream().filter(s -> StringUtils.isNotBlank(s.getAuthName()))
+                .collect(Collectors.toMap(GaeaAuthority::getAuthCode, GaeaAuthority::getAuthName));
 
         //查询菜单与权限的对应关系
         List<GaeaMenuAuthority> gaeaMenuActions = gaeaMenuAuthorityMapper.selectList(Wrappers.emptyWrapper());
@@ -181,7 +186,10 @@ public class GaeaMenuServiceImpl implements GaeaMenuService {
                     TreeNode treeNode = new TreeNode();
                     String key = authority.getMenuCode() + GaeaConstant.REDIS_SPLIT + authority.getAuthCode();
                     treeNode.setId(key);
-                    treeNode.setLabel(authority.getAuthCode());
+
+                    String authCode = authority.getAuthCode();
+                    String authName = authorityMap.get(authCode);
+                    treeNode.setLabel(StringUtils.isNotBlank(authName) ? authName : authCode);
                     return treeNode;
                 }, Collectors.toList())));
 
